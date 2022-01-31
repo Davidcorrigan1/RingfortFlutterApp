@@ -25,6 +25,8 @@ dependencies:
     sdk: flutter
   # Provider package to manage state
   provider: ^6.0.2
+  # For camera images and picking images
+  image_picker: ^0.8.4+4
 
 
   # The following adds the Cupertino Icons font to your application.
