@@ -6,6 +6,7 @@ import '../models/historic_site.dart';
 import '../providers/historic_sites_provider.dart';
 
 import '../widgets/image_input.dart';
+import '../widgets/location_input.dart';
 
 class AddRingfortScreen extends StatefulWidget {
   // Screen Route name to add to route table
@@ -165,8 +166,17 @@ class _AddRingfortScreenState extends State<AddRingfortScreen> {
                       SizedBox(
                         height: 10,
                       ),
-                      // This is the widget which controlls taking the image
+                      //----------------------------------------------------
+                      // This widget controlls taking the image
+                      //----------------------------------------------------
                       ImageInput(onSaveImage: _saveImage),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      //----------------------------------------------------
+                      // This widget controlls the location selection
+                      //----------------------------------------------------
+                      LocationInput(),
                     ],
                   ),
                 ),

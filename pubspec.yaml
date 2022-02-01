@@ -31,6 +31,8 @@ dependencies:
   path_provider: ^2.0.8
   # Helps with constructing file paths
   path: ^1.8.0
+  # Package to handle getting user location
+  location: ^4.3.0
 
 
   # The following adds the Cupertino Icons font to your application.
