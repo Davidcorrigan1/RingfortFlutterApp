@@ -35,10 +35,12 @@ class RingfortsListScreen extends StatelessWidget {
                         height: 100,
                         child: Image.file(
                           historicSites.sites[index].image,
+                          fit: BoxFit.cover,
                         ),
                       ),
                       title: Text(historicSites.sites[index].siteName),
                       subtitle: Text(historicSites.sites[index].siteDesc),
+                      //trailing: Text('${historicSites.sites[index].latitude}/${historicSites.sites[index].longitude}'),
                       onTap: () {},
                     ),
                   ),

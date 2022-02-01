@@ -1,5 +1,6 @@
 import 'dart:io' as io;
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 
 import '../models/historic_site.dart';
@@ -23,10 +24,17 @@ class _AddRingfortScreenState extends State<AddRingfortScreen> {
   final _descFocusNode = FocusNode();
   // Create a global key so we can interact with the widget from code
   final _form = GlobalKey<FormState>();
+  // Location picked  by the user
+  LatLng _pickedLocation;
 
-  // Methd to save the taken image from image_input widget to this class
+  // Method to save the taken image from image_input widget to this class
   void _saveImage(io.File takenImage) {
     _siteImage = takenImage;
+  }
+
+  // A method to pass into 'location_input' widget to save the location lat,lng
+  void _selectSiteLocation(double latitude, double longitude) {
+    _pickedLocation = LatLng(latitude, longitude);
   }
 
   // Create an initialize HistoricSite object
@@ -70,11 +78,21 @@ class _AddRingfortScreenState extends State<AddRingfortScreen> {
   void _saveForm() {
     final noErrors = _form.currentState.validate();
 
+    // Set the new site with the image taken
     if (_siteImage == null) {
       _showErrorDialog('You need to take an Image');
       return;
     } else {
       _newSite.image = _siteImage;
+    }
+
+    // Set the new site with the location picked.
+    if (_pickedLocation == null) {
+      _showErrorDialog('You need to select a location');
+      return;
+    } else {
+      _newSite.latitude = _pickedLocation.latitude;
+      _newSite.longitude = _pickedLocation.longitude;
     }
 
     if (!noErrors) {
@@ -116,6 +134,20 @@ class _AddRingfortScreenState extends State<AddRingfortScreen> {
                   padding: const EdgeInsets.all(15.0),
                   child: Column(
                     children: [
+                      //----------------------------------------------------
+                      // This widget controlls the location selection
+                      //----------------------------------------------------
+                      LocationInput(_selectSiteLocation),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      //----------------------------------------------------
+                      // This widget controlls taking the image
+                      //----------------------------------------------------
+                      ImageInput(onSaveImage: _saveImage),
+                      SizedBox(
+                        height: 10,
+                      ),
                       //--------------------------
                       // The Name form field
                       //--------------------------
@@ -166,17 +198,6 @@ class _AddRingfortScreenState extends State<AddRingfortScreen> {
                       SizedBox(
                         height: 10,
                       ),
-                      //----------------------------------------------------
-                      // This widget controlls taking the image
-                      //----------------------------------------------------
-                      ImageInput(onSaveImage: _saveImage),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      //----------------------------------------------------
-                      // This widget controlls the location selection
-                      //----------------------------------------------------
-                      LocationInput(),
                     ],
                   ),
                 ),

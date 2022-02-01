@@ -6,6 +6,11 @@
         android:label="ringfort_app"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
+        <meta-data android:name="com.google.android.geo.API_KEY"
+                android:value="AIzaSyCztckl11aetsT2xX53fpX3n4Hyy8CAqhM"/>
+
+        <!---->
+               android:value="@values/google_maps_api/google_maps_key"/>  -->
         <activity
             android:name=".MainActivity"
             android:exported="true"
