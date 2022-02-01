@@ -2,10 +2,19 @@ import 'dart:io' as io;
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path/path.dart' as pathHelp;
+import 'package:path_provider/path_provider.dart' as systemPath;
 
 class ImageInput extends StatefulWidget {
+  final Function onSaveImage;
+
+  // Class constructor taking in function to save image
+  const ImageInput({
+    @required this.onSaveImage,
+  });
+
   @override
-  _ImageInputState createState() => _ImageInputState();
+  State<ImageInput> createState() => _ImageInputState();
 }
 
 class _ImageInputState extends State<ImageInput> {
@@ -29,6 +38,16 @@ class _ImageInputState extends State<ImageInput> {
     setState(() {
       _siteImage = io.File(imageFile.path);
     });
+    // Get the location of the storage location for the application on IOS or Android
+    final applicationDirectory =
+        await systemPath.getApplicationDocumentsDirectory();
+    // Get the default camera filename for the image using path package
+    final fileName = pathHelp.basename(imageFile.path);
+    // Copy the site image file to the application directory and save location.
+    final savedSiteImage =
+        await _siteImage.copy('${applicationDirectory.path}/${fileName}');
+    print('The image was saved at ${savedSiteImage.path}');
+    widget.onSaveImage(savedSiteImage);
   }
 
   @override

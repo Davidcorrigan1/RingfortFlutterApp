@@ -1,3 +1,4 @@
+import 'dart:io' as io;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -15,9 +16,18 @@ class AddRingfortScreen extends StatefulWidget {
 }
 
 class _AddRingfortScreenState extends State<AddRingfortScreen> {
+  // The taken site image
+  io.File _siteImage;
+  // Focus node for the description field.
   final _descFocusNode = FocusNode();
   // Create a global key so we can interact with the widget from code
   final _form = GlobalKey<FormState>();
+
+  // Methd to save the taken image from image_input widget to this class
+  void _saveImage(io.File takenImage) {
+    _siteImage = takenImage;
+  }
+
   // Create an initialize HistoricSite object
   var _newSite = HistoricSite(
     uid: null,
@@ -35,10 +45,36 @@ class _AddRingfortScreenState extends State<AddRingfortScreen> {
     super.dispose();
   }
 
+  // Function will generate an error dialogue
+  void _showErrorDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text('An Error has occurred'),
+        content: Text(message),
+        actions: [
+          ElevatedButton(
+            onPressed: () {
+              Navigator.of(ctx).pop(); // Close the dialogue
+            },
+            child: Text('OK'),
+          ),
+        ],
+      ),
+    );
+  }
+
   // Function which will be call to submit form if there are
   // no validation errors found.
   void _saveForm() {
     final noErrors = _form.currentState.validate();
+
+    if (_siteImage == null) {
+      _showErrorDialog('You need to take an Image');
+      return;
+    } else {
+      _newSite.image = _siteImage;
+    }
 
     if (!noErrors) {
       return;
@@ -97,13 +133,7 @@ class _AddRingfortScreenState extends State<AddRingfortScreen> {
                           return null;
                         },
                         onSaved: (newValue) {
-                          _newSite = HistoricSite(
-                              uid: _newSite.uid,
-                              siteName: newValue,
-                              siteDesc: _newSite.siteDesc,
-                              latitude: _newSite.latitude,
-                              longitude: _newSite.longitude,
-                              image: _newSite.image);
+                          _newSite.siteName = newValue;
                         },
                       ),
                       //---------------------------
@@ -129,20 +159,14 @@ class _AddRingfortScreenState extends State<AddRingfortScreen> {
                         },
                         // what happens on saving the form
                         onSaved: (newValue) {
-                          _newSite = HistoricSite(
-                              uid: _newSite.uid,
-                              siteName: _newSite.siteName,
-                              siteDesc: newValue,
-                              latitude: _newSite.latitude,
-                              longitude: _newSite.longitude,
-                              image: _newSite.image);
+                          _newSite.siteDesc = newValue;
                         },
                       ),
                       SizedBox(
                         height: 10,
                       ),
-                      ImageInput(),
-                      
+                      // This is the widget which controlls taking the image
+                      ImageInput(onSaveImage: _saveImage),
                     ],
                   ),
                 ),

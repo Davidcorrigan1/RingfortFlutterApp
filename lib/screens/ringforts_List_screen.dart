@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:ringfort_app/providers/historic_sites_provider.dart';
+
 import '../screens/add_ringfort_screen.dart';
 
 // This screen will show the list of ringforts
@@ -17,8 +20,28 @@ class RingfortsListScreen extends StatelessWidget {
           )
         ],
       ),
-      body: Center(
-        child: CircularProgressIndicator(),
+      body: Consumer<HistoricSitesProvider>(
+        child: Center(
+          child: Text('No Ringforts Add yet'),
+        ),
+        builder: (context, historicSites, child) =>
+            historicSites.sites.length <= 0
+                ? child
+                : ListView.builder(
+                    itemCount: historicSites.sites.length,
+                    itemBuilder: (ctx, index) => ListTile(
+                      leading: Container(
+                        width: 100,
+                        height: 100,
+                        child: Image.file(
+                          historicSites.sites[index].image,
+                        ),
+                      ),
+                      title: Text(historicSites.sites[index].siteName),
+                      subtitle: Text(historicSites.sites[index].siteDesc),
+                      onTap: () {},
+                    ),
+                  ),
       ),
     );
   }

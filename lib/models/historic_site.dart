@@ -2,13 +2,13 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 
 class HistoricSite {
-  final String uid;
-  final String siteName;
-  final String siteDesc;
-  final double latitude;
-  final double longitude;
-  final String address;
-  final File image;
+  String uid;
+  String siteName;
+  String siteDesc;
+  double latitude;
+  double longitude;
+  String address;
+  File image;
 
   HistoricSite({
     @required this.uid,
