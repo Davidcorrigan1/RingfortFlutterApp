@@ -15,7 +15,10 @@ class MapsScreen extends StatefulWidget {
 
 class _MapsScreenState extends State<MapsScreen> {
   LatLng _userSelectedLocation;
+  MapType _selectMapType = MapType.normal;
 
+  // Set the user selected position for the marker and
+  // trigger a re-build to show it.
   void _selectLocation(LatLng position) {
     setState(() {
       _userSelectedLocation = position;
@@ -41,19 +44,43 @@ class _MapsScreenState extends State<MapsScreen> {
             )
         ],
       ),
-      body: GoogleMap(
-        initialCameraPosition: CameraPosition(
-            target: LatLng(widget.initialLatitude, widget.initialLongitude),
-            zoom: 16),
-        onTap: widget.isSelecting ? _selectLocation : null,
-        mapType: MapType.normal,
-        markers: _userSelectedLocation == null
-            ? {}
-            : {
-                Marker(
-                    markerId: MarkerId('m1'), position: _userSelectedLocation)
+      body: Stack(children: [
+        GoogleMap(
+          initialCameraPosition: CameraPosition(
+              target: LatLng(widget.initialLatitude, widget.initialLongitude),
+              zoom: 16),
+          onTap: widget.isSelecting ? _selectLocation : null,
+          mapType: _selectMapType,
+          markers: _userSelectedLocation == null
+              ? {}
+              : {
+                  Marker(
+                      markerId: MarkerId('m1'), position: _userSelectedLocation)
+                },
+        ),
+        Padding(
+          padding: const EdgeInsets.all(15.0),
+          child: Align(
+            alignment: Alignment.topRight,
+            child: FloatingActionButton(
+              onPressed: () {
+                // Trigger a switch in the Map type depending on the
+                // current status, and trigger re-build to show new map.
+                setState(() {
+                  _selectMapType = _selectMapType == MapType.normal
+                      ? MapType.satellite
+                      : MapType.normal;
+                });
               },
-      ),
+              materialTapTargetSize: MaterialTapTargetSize.padded,
+              backgroundColor: Theme.of(context).backgroundColor,
+              child: const Icon(
+                Icons.map,
+              ),
+            ),
+          ),
+        )
+      ]),
     );
   }
 }

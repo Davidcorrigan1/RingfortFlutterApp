@@ -295,15 +295,18 @@ class _AddRingfortScreenState extends State<AddRingfortScreen> {
           //--------------------------------------------
           // This is the button to add a new Ringfort
           //--------------------------------------------
-          ElevatedButton.icon(
-            style: ButtonStyle(
-              // Shrinks the space around the button
-              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-            ),
-            onPressed: _saveForm,
-            icon: Icon(Icons.save),
-            label: Text(
-              'SAVE',
+          Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: ElevatedButton.icon(
+              style: ButtonStyle(
+                // Shrinks the space around the button
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              ),
+              onPressed: _saveForm,
+              icon: Icon(Icons.save),
+              label: Text(
+                'SAVE',
+              ),
             ),
           ),
         ],

@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
@@ -65,7 +63,7 @@ class _LocationInputState extends State<LocationInput> {
   // to be Pop(ed) back with the selected location. It uses this selected 
   // location to show a preview on the AddRingfortScreen. It also passes
   // this location back to the AddRingfortScreen.
-  Future<Void> _selectPositionOnMap(double latitude, double longitude) async {
+  Future<void> _selectPositionOnMap(double latitude, double longitude) async {
     final LatLng selectedLocation = await Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => MapsScreen(latitude, longitude, true),
