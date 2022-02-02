@@ -10,7 +10,7 @@ class LocationHelper {
   }
 
   // This API will generate a Future which will return the address string at the given location.
-  static Future<String> getPositionAddress(
+  static Future<String> getLatLngPositionAddress(
       double latitude, double lonitude) async {
     final url = Uri.parse(
         'https://maps.googleapis.com/maps/api/geocode/json?latlng=$latitude,$lonitude&amp&key=$GOOGLE_API_KEY');

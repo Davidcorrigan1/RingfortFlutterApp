@@ -19,6 +19,7 @@ class HistoricSitesProvider with ChangeNotifier {
         uid: DateTime.now().toString(),
         siteName: site.siteName,
         siteDesc: site.siteDesc,
+        siteAccess: site.siteAccess,
         latitude: site.latitude,
         longitude: site.longitude,
         image: site.image);

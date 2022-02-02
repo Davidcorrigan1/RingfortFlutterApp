@@ -5,6 +5,7 @@ class HistoricSite {
   String uid;
   String siteName;
   String siteDesc;
+  String siteAccess;
   double latitude;
   double longitude;
   String address;
@@ -14,6 +15,7 @@ class HistoricSite {
     @required this.uid,
     @required this.siteName,
     @required this.siteDesc,
+    @required this.siteAccess,
     @required this.latitude,
     @required this.longitude,
     this.address,
