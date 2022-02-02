@@ -23,6 +23,7 @@ class _AddRingfortScreenState extends State<AddRingfortScreen> {
   // Focus node for the description and access fields.
   final _descFocusNode = FocusNode();
   final _accessFocusNode = FocusNode();
+  final _sizeFocusNode = FocusNode();
   // Create a global key so we can interact with the widget from code
   final _form = GlobalKey<FormState>();
   // Location picked  by the user
@@ -46,6 +47,7 @@ class _AddRingfortScreenState extends State<AddRingfortScreen> {
     siteAccess: '',
     latitude: 0.0,
     longitude: 0.0,
+    siteSize: 0.0,
     address: '',
     image: null,
   );
@@ -53,6 +55,8 @@ class _AddRingfortScreenState extends State<AddRingfortScreen> {
   @override
   void dispose() {
     _descFocusNode.dispose();
+    _accessFocusNode.dispose();
+    _sizeFocusNode.dispose();
     super.dispose();
   }
 
@@ -61,7 +65,7 @@ class _AddRingfortScreenState extends State<AddRingfortScreen> {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: Text('An Error has occurred'),
+        title: Text('Not all required data entered'),
         content: Text(message),
         actions: [
           ElevatedButton(
@@ -82,7 +86,7 @@ class _AddRingfortScreenState extends State<AddRingfortScreen> {
 
     // Set the new site with the image taken
     if (_siteImage == null) {
-      _showErrorDialog('You need to take an Image');
+      _showErrorDialog('You need to take an Image to proceed');
       return;
     } else {
       _newSite.image = _siteImage;
@@ -90,7 +94,7 @@ class _AddRingfortScreenState extends State<AddRingfortScreen> {
 
     // Set the new site with the location picked.
     if (_pickedLocation == null) {
-      _showErrorDialog('You need to select a location');
+      _showErrorDialog('You need to select a location to proceed');
       return;
     } else {
       _newSite.latitude = _pickedLocation.latitude;
@@ -133,7 +137,7 @@ class _AddRingfortScreenState extends State<AddRingfortScreen> {
           Expanded(
             child: SingleChildScrollView(
               child: Padding(
-                padding: const EdgeInsets.all(15.0),
+                padding: const EdgeInsets.all(10.0),
                 child: Container(
                   child: Column(
                     children: [
@@ -142,14 +146,14 @@ class _AddRingfortScreenState extends State<AddRingfortScreen> {
                       //----------------------------------------------------
                       LocationInput(_selectSiteLocation),
                       SizedBox(
-                        height: 10,
+                        height: 5,
                       ),
                       //----------------------------------------------------
                       // This widget controlls taking the image
                       //----------------------------------------------------
                       ImageInput(onSaveImage: _saveImage),
                       SizedBox(
-                        height: 10,
+                        height: 5,
                       ),
                       //----------------------------------------------------
                       // This Form will have a nested columns
@@ -158,115 +162,126 @@ class _AddRingfortScreenState extends State<AddRingfortScreen> {
                         key: _form, // linking our form to the GlobalKey
                         child: Column(
                           children: [
-                            Container(
-                              padding: EdgeInsets.only(
-                                left: 3,
-                                right: 2,
+                            //---------------------------
+                            // The Name form field
+                            //---------------------------
+                            TextFormField(
+                              decoration: InputDecoration(
+                                hintText: 'Ringfort Name',
+                                border: OutlineInputBorder(),
                               ),
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                  width: 2,
-                                  color: Colors.grey,
-                                ),
-                              ),
-                              child: TextFormField(
-                                decoration: InputDecoration(
-                                  labelText: 'Name',
-                                ),
-                                textInputAction: TextInputAction.next,
-                                onFieldSubmitted: (_) {
-                                  FocusScope.of(context)
-                                      .requestFocus(_descFocusNode);
-                                },
-                                validator: (value) {
-                                  if (value.isEmpty) {
-                                    return 'You must enter a name for the Ringfort';
-                                  }
-                                  return null;
-                                },
-                                onSaved: (newValue) {
-                                  _newSite.siteName = newValue;
-                                },
-                              ),
+                              textInputAction: TextInputAction.next,
+                              onFieldSubmitted: (_) {
+                                FocusScope.of(context)
+                                    .requestFocus(_descFocusNode);
+                              },
+                              validator: (value) {
+                                if (value.isEmpty) {
+                                  return 'You must enter a name for the Ringfort';
+                                }
+                                return null;
+                              },
+                              onSaved: (newValue) {
+                                _newSite.siteName = newValue;
+                              },
                             ),
                             SizedBox(
-                              height: 10,
+                              height: 5,
                             ),
                             //---------------------------
                             // The Description form field
                             //---------------------------
-                            Container(
-                              padding: EdgeInsets.only(
-                                left: 3,
-                                right: 2,
+                            TextFormField(
+                              decoration: InputDecoration(
+                                hintText: 'Description',
+                                border: OutlineInputBorder(),
                               ),
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                  width: 2,
-                                  color: Colors.grey,
-                                ),
-                              ),
-                              child: TextFormField(
-                                decoration: InputDecoration(
-                                  labelText: 'Description',
-                                ),
-                                maxLines: 4,
-                                keyboardType: TextInputType.multiline,
-                                textInputAction: TextInputAction.next,
-                                focusNode: _descFocusNode,
-                                // validation to happen
-                                validator: (value) {
-                                  if (value.isEmpty) {
-                                    return 'You must enter a description of the Ringfort';
-                                  }
-                                  if (value.length < 20) {
-                                    return 'You must enter a description of at least 20 characters';
-                                  }
-                                  return null;
-                                },
-                                // what happens on saving the form
-                                onSaved: (newValue) {
-                                  _newSite.siteDesc = newValue;
-                                },
-                              ),
+                              maxLines: 4,
+                              keyboardType: TextInputType.multiline,
+                              textInputAction: TextInputAction.next,
+                              onFieldSubmitted: (_) {
+                                FocusScope.of(context)
+                                    .requestFocus(_accessFocusNode);
+                              },
+                              focusNode: _descFocusNode,
+                              // validation to happen
+                              validator: (value) {
+                                if (value.isEmpty) {
+                                  return 'You must enter a description of the Ringfort';
+                                }
+                                if (value.length < 20) {
+                                  return 'You must enter a description of at least 20 characters';
+                                }
+                                return null;
+                              },
+                              // what happens on saving the form
+                              onSaved: (newValue) {
+                                _newSite.siteDesc = newValue;
+                              },
                             ),
                             SizedBox(
-                              height: 10,
+                              height: 5,
                             ),
                             //---------------------------
                             // The Access form field
                             //---------------------------
-                            Container(
-                              padding: EdgeInsets.only(
-                                left: 3,
-                                right: 2,
+                            TextFormField(
+                              decoration: InputDecoration(
+                                hintText: 'Access to Site',
+                                border: OutlineInputBorder(),
                               ),
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                  width: 2,
-                                  color: Colors.grey,
-                                ),
+                              maxLines: 4,
+                              keyboardType: TextInputType.multiline,
+                              textInputAction: TextInputAction.next,
+                              onFieldSubmitted: (_) {
+                                FocusScope.of(context)
+                                    .requestFocus(_sizeFocusNode);
+                              },
+                              focusNode: _accessFocusNode,
+                              // validation to happen
+                              validator: (value) {
+                                if (value.isEmpty) {
+                                  return 'You must enter details of access';
+                                }
+                                return null;
+                              },
+                              // what happens on saving the form
+                              onSaved: (newValue) {
+                                _newSite.siteAccess = newValue;
+                              },
+                            ),
+                            SizedBox(
+                              height: 5,
+                            ),
+                            //---------------------------
+                            // The Approx Size form field
+                            //---------------------------
+                            TextFormField(
+                              decoration: InputDecoration(
+                                hintText: 'Approx Size (Metres)',
+                                border: OutlineInputBorder(),
                               ),
-                              child: TextFormField(
-                                decoration: InputDecoration(
-                                  labelText: 'Access to Site',
-                                ),
-                                maxLines: 4,
-                                keyboardType: TextInputType.multiline,
-                                textInputAction: TextInputAction.next,
-                                focusNode: _accessFocusNode,
-                                // validation to happen
-                                validator: (value) {
-                                  if (value.isEmpty) {
-                                    return 'You must enter details of access';
-                                  }
-                                  return null;
-                                },
-                                // what happens on saving the form
-                                onSaved: (newValue) {
-                                  _newSite.siteAccess = newValue;
-                                },
-                              ),
+                              textInputAction: TextInputAction.next,
+                              keyboardType: TextInputType.numberWithOptions(
+                                  decimal: true),
+                              focusNode: _sizeFocusNode,
+                              // validation to happen
+                              validator: (value) {
+                                if (value.isEmpty) {
+                                  return 'You must enter approx size';
+                                }
+                                if (double.tryParse(value) == null) {
+                                  return 'Please enter a valid numeric';
+                                }
+                                if (double.parse(value) <= 0.00) {
+                                  return 'The size must be greater than 0.00';
+                                }
+                                return null;
+                              },
+                              // what happens on saving the form
+                              onSaved: (newValue) {
+                                _newSite.siteSize = double.parse(newValue);
+                              },
                             ),
                           ],
                         ),
@@ -288,7 +303,7 @@ class _AddRingfortScreenState extends State<AddRingfortScreen> {
             onPressed: _saveForm,
             icon: Icon(Icons.save),
             label: Text(
-              'Add Ringfort',
+              'SAVE',
             ),
           ),
         ],

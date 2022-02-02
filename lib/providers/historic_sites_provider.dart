@@ -22,6 +22,7 @@ class HistoricSitesProvider with ChangeNotifier {
         siteAccess: site.siteAccess,
         latitude: site.latitude,
         longitude: site.longitude,
+        siteSize: site.siteSize,
         image: site.image);
 
     _sites.add(newSite);

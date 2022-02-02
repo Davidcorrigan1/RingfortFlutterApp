@@ -24,6 +24,7 @@ class _LocationInputState extends State<LocationInput> {
   LocationData _currentLocation;
   double _userSelectedLatitude;
   double _userSelectedLongitude;
+  String _mapImageUrl;
 
   @override
   void initState() {
@@ -31,8 +32,8 @@ class _LocationInputState extends State<LocationInput> {
     super.initState();
   }
 
-  String _mapImageUrl;
-
+  // This will call google API to get static map URL. It uses
+  // setState to set the variable so to trigger a rebuild and show map.
   void _showPreview(double latitude, double longitude) {
     final staticMapImageURL = LocationHelper.generateStaticMapPreview(
         longitude: longitude, latitude: latitude);
@@ -42,6 +43,10 @@ class _LocationInputState extends State<LocationInput> {
     });
   }
 
+  // This method will use a google location API to retrieve the users
+  // current location. And then use this to get a static map URL of that
+  // location and trigger a re-build to display.
+  // It will pass this location back to the AddRingfortScreen.
   Future<void> _getCurrentLocation() async {
     _currentLocation = await Location().getLocation();
 
@@ -55,6 +60,11 @@ class _LocationInputState extends State<LocationInput> {
         _userSelectedLatitude, _userSelectedLongitude);
   }
 
+  // This method Push the MapsScreen onto the stack. This will trigger that
+  // screen centred at the location passed into method. It awaits the screen
+  // to be Pop(ed) back with the selected location. It uses this selected 
+  // location to show a preview on the AddRingfortScreen. It also passes
+  // this location back to the AddRingfortScreen.
   Future<Void> _selectPositionOnMap(double latitude, double longitude) async {
     final LatLng selectedLocation = await Navigator.of(context).push(
       MaterialPageRoute(
@@ -73,6 +83,7 @@ class _LocationInputState extends State<LocationInput> {
     // Call the passed in function to save the location
     widget.onSelectSiteLocationHander(
         selectedLocation.latitude, selectedLocation.longitude);
+    return null;
   }
 
   @override
@@ -87,8 +98,8 @@ class _LocationInputState extends State<LocationInput> {
             border: Border.all(width: 2.0, color: Colors.grey),
           ),
           child: _mapImageUrl == null
-              ? CircularProgressIndicator(
-                  color: Theme.of(context).primaryColor,
+              ? Center(
+                  child: CircularProgressIndicator(),
                 )
               : Image.network(
                   _mapImageUrl,

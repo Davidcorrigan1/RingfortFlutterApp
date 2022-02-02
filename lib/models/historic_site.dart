@@ -8,6 +8,7 @@ class HistoricSite {
   String siteAccess;
   double latitude;
   double longitude;
+  double siteSize;
   String address;
   File image;
 
@@ -18,6 +19,7 @@ class HistoricSite {
     @required this.siteAccess,
     @required this.latitude,
     @required this.longitude,
+    @required this.siteSize,
     this.address,
     @required this.image,
   });

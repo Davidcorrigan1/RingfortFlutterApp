@@ -46,6 +46,7 @@ class _MapsScreenState extends State<MapsScreen> {
             target: LatLng(widget.initialLatitude, widget.initialLongitude),
             zoom: 16),
         onTap: widget.isSelecting ? _selectLocation : null,
+        mapType: MapType.normal,
         markers: _userSelectedLocation == null
             ? {}
             : {
