@@ -10,6 +10,8 @@ class HistoricSite {
   double longitude;
   double siteSize;
   String address;
+  String province;
+  String county;
   File image;
 
   HistoricSite({
@@ -21,6 +23,8 @@ class HistoricSite {
     @required this.longitude,
     @required this.siteSize,
     this.address,
+    this.province,
+    this.county,
     @required this.image,
   });
 }

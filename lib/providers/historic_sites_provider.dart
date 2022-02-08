@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 
+import '../helpers/location_helper.dart';
 import '../models/historic_site.dart';
 
 class HistoricSitesProvider with ChangeNotifier {
@@ -14,7 +15,11 @@ class HistoricSitesProvider with ChangeNotifier {
   }
 
   // Add a new site to the List
-  void addSite(HistoricSite site) {
+  void addSite(HistoricSite site) async {
+    // get the address for the lat, lng coordinates picked.
+    final addressMap = await LocationHelper.getLatLngPositionAddress(
+        site.latitude, site.longitude);
+
     final newSite = HistoricSite(
         uid: DateTime.now().toString(),
         siteName: site.siteName,
@@ -23,8 +28,13 @@ class HistoricSitesProvider with ChangeNotifier {
         latitude: site.latitude,
         longitude: site.longitude,
         siteSize: site.siteSize,
+        address: addressMap['address'],
+        county: addressMap['county'],
+        province: addressMap['province'],
         image: site.image);
 
+    print(newSite.province);
+    print(newSite.county);
     _sites.add(newSite);
     notifyListeners();
   }
