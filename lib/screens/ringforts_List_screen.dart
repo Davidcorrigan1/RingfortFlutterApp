@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:ringfort_app/providers/historic_sites_provider.dart';
 
 import '../screens/add_ringfort_screen.dart';
+import '../screens/ringfort_detail_screen.dart';
 
 // This screen will show the list of ringforts
 class RingfortsListScreen extends StatelessWidget {
@@ -29,19 +30,59 @@ class RingfortsListScreen extends StatelessWidget {
                 ? child
                 : ListView.builder(
                     itemCount: historicSites.sites.length,
-                    itemBuilder: (ctx, index) => ListTile(
-                      leading: Container(
-                        width: 100,
-                        height: 100,
-                        child: Image.file(
-                          historicSites.sites[index].image,
-                          fit: BoxFit.cover,
+                    itemBuilder: (ctx, index) => Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                        padding: EdgeInsets.all(1),
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            width: 1,
+                            color: Colors.grey,
+                          ),
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(10),
+                          ),
+                        ),
+                        child: ListTile(
+                          leading: Container(
+                            width: 75,
+                            height: 75,
+                            child: Image.file(
+                              historicSites.sites[index].image,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                          title: Text(historicSites.sites[index].siteName),
+                          subtitle: Container(
+                            child: Column(
+                              children: [
+                                Text(
+                                  historicSites.sites[index].siteDesc,
+                                ),
+                                Text(
+                                  historicSites.sites[index].province,
+                                  textAlign: TextAlign.left,
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                Text(
+                                  historicSites.sites[index].county,
+                                  textAlign: TextAlign.left,
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          onTap: () {
+                            Navigator.of(context).pushNamed(
+                                RingfortDetailScreen.routeName,
+                                arguments: historicSites.sites[index].uid);
+                          },
                         ),
                       ),
-                      title: Text(historicSites.sites[index].siteName),
-                      subtitle: Text(historicSites.sites[index].siteDesc),
-                      //trailing: Text('${historicSites.sites[index].latitude}/${historicSites.sites[index].longitude}'),
-                      onTap: () {},
                     ),
                   ),
       ),

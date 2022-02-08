@@ -15,7 +15,21 @@ class LocationHelper {
   static Future<Map<String, String>> getLatLngPositionAddress(
       double latitude, double lonitude) async {
     // define the counties in eacg province
-    var leinster = ['WX','WW','KK','LH','LD','MH','OY','LS','CW','KE','D','WH'];
+    var leinster = [
+      'WX',
+      'WW',
+      'KK',
+      'County Kilkenny',
+      'LH',
+      'LD',
+      'MH',
+      'OY',
+      'LS',
+      'CW',
+      'KE',
+      'D',
+      'WH'
+    ];
     var munster = ['KY', 'C', 'L', 'W', 'CE', 'T'];
     var connaght = ['MO', 'G', 'SO', 'LM', 'RN'];
     var ulster = ['DL', 'CN', 'Northern Ireland'];
@@ -30,6 +44,7 @@ class LocationHelper {
     // Determine the county and province from the address returned,
     for (int i = 0; i < 5; i++) {
       if (responseMap['address_components'][i]['types'][0] != null) {
+        print(responseMap['address_components'][i]['long_name'].toString());
         if (responseMap['address_components'][i]['types'][0] ==
             'administrative_area_level_1') {
           addressMap['county'] =

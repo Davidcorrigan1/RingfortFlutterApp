@@ -14,6 +14,11 @@ class HistoricSitesProvider with ChangeNotifier {
     return [..._sites];
   }
 
+  // Returns a single Ringfort Site by the uid.
+  HistoricSite findSiteById(String uid) {
+    return _sites.firstWhere((site) => site.uid == uid);
+  }
+
   // Add a new site to the List
   void addSite(HistoricSite site) async {
     // get the address for the lat, lng coordinates picked.
