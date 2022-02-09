@@ -30,58 +30,50 @@ class RingfortsListScreen extends StatelessWidget {
                 ? child
                 : ListView.builder(
                     itemCount: historicSites.sites.length,
-                    itemBuilder: (ctx, index) => Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Container(
-                        padding: EdgeInsets.all(1),
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            width: 1,
-                            color: Colors.grey,
-                          ),
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(10),
+                    itemBuilder: (ctx, index) => Card(
+                      elevation: 2.0,
+                      margin: const EdgeInsets.all(8.0),
+                      child: ListTile(
+                        leading: Container(
+                          width: 75,
+                          height: 75,
+                          child: Image.file(
+                            historicSites.sites[index].image,
+                            fit: BoxFit.cover,
                           ),
                         ),
-                        child: ListTile(
-                          leading: Container(
-                            width: 75,
-                            height: 75,
-                            child: Image.file(
-                              historicSites.sites[index].image,
-                              fit: BoxFit.cover,
-                            ),
+                        title: Text(historicSites.sites[index].siteName),
+                        subtitle: Container(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                historicSites.sites[index].siteDesc,
+                              ),
+                              Text(
+                                historicSites.sites[index].province,
+                                textAlign: TextAlign.left,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Text(
+                                historicSites.sites[index].county,
+                                textAlign: TextAlign.left,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
                           ),
-                          title: Text(historicSites.sites[index].siteName),
-                          subtitle: Container(
-                            child: Column(
-                              children: [
-                                Text(
-                                  historicSites.sites[index].siteDesc,
-                                ),
-                                Text(
-                                  historicSites.sites[index].province,
-                                  textAlign: TextAlign.left,
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                Text(
-                                  historicSites.sites[index].county,
-                                  textAlign: TextAlign.left,
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          onTap: () {
-                            Navigator.of(context).pushNamed(
-                                RingfortDetailScreen.routeName,
-                                arguments: historicSites.sites[index].uid);
-                          },
                         ),
+                        onTap: () {
+                          // Navigates to the details page with the uid of
+                          // the Ringfort pressed.
+                          Navigator.of(context).pushNamed(
+                              RingfortDetailScreen.routeName,
+                              arguments: historicSites.sites[index].uid);
+                        },
                       ),
                     ),
                   ),

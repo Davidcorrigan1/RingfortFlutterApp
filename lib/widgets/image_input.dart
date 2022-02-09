@@ -7,10 +7,12 @@ import 'package:path_provider/path_provider.dart' as systemPath;
 
 class ImageInput extends StatefulWidget {
   final Function onSaveImage;
+  final io.File passedImage;
 
   // Class constructor taking in function to save image
   const ImageInput({
     @required this.onSaveImage,
+    @required this.passedImage,
   });
 
   @override
@@ -18,6 +20,16 @@ class ImageInput extends StatefulWidget {
 }
 
 class _ImageInputState extends State<ImageInput> {
+  // Here the check to see if it's an update and we already have an image
+  // if so we set the _siteImage to this value passed in.
+  @override
+  void initState() {
+    if (widget.passedImage != null) {
+      _siteImage = widget.passedImage;
+    }
+    super.initState();
+  }
+
   io.File _siteImage;
 
   Future<void> _takeCameraImage() async {

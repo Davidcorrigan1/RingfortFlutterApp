@@ -144,14 +144,14 @@ class _AddRingfortScreenState extends State<AddRingfortScreen> {
                       //----------------------------------------------------
                       // This widget controlls the location selection
                       //----------------------------------------------------
-                      LocationInput(_selectSiteLocation),
+                      LocationInput(_selectSiteLocation, null),
                       SizedBox(
                         height: 5,
                       ),
                       //----------------------------------------------------
                       // This widget controlls taking the image
                       //----------------------------------------------------
-                      ImageInput(onSaveImage: _saveImage),
+                      ImageInput(onSaveImage: _saveImage, passedImage: null,),
                       SizedBox(
                         height: 5,
                       ),
@@ -230,7 +230,7 @@ class _AddRingfortScreenState extends State<AddRingfortScreen> {
                                 hintText: 'Access to Site',
                                 border: OutlineInputBorder(),
                               ),
-                              maxLines: 4,
+                              maxLines: 2,
                               keyboardType: TextInputType.multiline,
                               textInputAction: TextInputAction.next,
                               onFieldSubmitted: (_) {

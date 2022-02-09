@@ -43,4 +43,18 @@ class HistoricSitesProvider with ChangeNotifier {
     _sites.add(newSite);
     notifyListeners();
   }
+
+  // This will find the site to be updated and update it.
+  void updateSite(String uid, HistoricSite updatedSite) {
+    final siteIndex = _sites.indexWhere((site) => site.uid == uid);
+
+    _sites[siteIndex] = updatedSite;
+    notifyListeners();
+  }
+
+  // This will delete the site which matches hte uid
+  void deleteSite(String uid) {
+    _sites.removeWhere((site) => site.uid == uid);
+    notifyListeners();
+  }
 }

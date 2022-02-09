@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: 'Ringforts of Ireland',
         theme: ThemeData(
-          primarySwatch: Colors.indigo,
+          primarySwatch: Colors.green,
           primaryColor: Colors.amber,
         ),
         home: RingfortsListScreen(),
@@ -24,7 +24,6 @@ class MyApp extends StatelessWidget {
         routes: {
           AddRingfortScreen.routeName: (ctx) => AddRingfortScreen(),
           RingfortDetailScreen.routeName: (ctx) => RingfortDetailScreen(),
-
         },
       ),
     );

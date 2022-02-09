@@ -7,11 +7,13 @@ import '../screens/maps_screen.dart';
 
 class LocationInput extends StatefulWidget {
   final Function onSelectSiteLocationHander;
+  final LatLng passedInLocation;
 
   // Constructor for the LocationInput class take a reference to a
   // function which will be called to save the location picked here
   const LocationInput(
     this.onSelectSiteLocationHander,
+    this.passedInLocation,
   );
 
   @override
@@ -46,12 +48,17 @@ class _LocationInputState extends State<LocationInput> {
   // location and trigger a re-build to display.
   // It will pass this location back to the AddRingfortScreen.
   Future<void> _getCurrentLocation() async {
-    _currentLocation = await Location().getLocation();
-
-    _showPreview(_currentLocation.latitude, _currentLocation.longitude);
-
-    _userSelectedLatitude = _currentLocation.latitude;
-    _userSelectedLongitude = _currentLocation.longitude;
+    if (widget.passedInLocation == null) {
+      _currentLocation = await Location().getLocation();
+      _showPreview(_currentLocation.latitude, _currentLocation.longitude);
+      _userSelectedLatitude = _currentLocation.latitude;
+      _userSelectedLongitude = _currentLocation.longitude;
+    } else {
+      _showPreview(
+          widget.passedInLocation.latitude, widget.passedInLocation.longitude);
+      _userSelectedLatitude = widget.passedInLocation.latitude;
+      _userSelectedLongitude = widget.passedInLocation.longitude;
+    }
 
     // Call the passed in function to save the location
     widget.onSelectSiteLocationHander(
@@ -60,7 +67,7 @@ class _LocationInputState extends State<LocationInput> {
 
   // This method Push the MapsScreen onto the stack. This will trigger that
   // screen centred at the location passed into method. It awaits the screen
-  // to be Pop(ed) back with the selected location. It uses this selected 
+  // to be Pop(ed) back with the selected location. It uses this selected
   // location to show a preview on the AddRingfortScreen. It also passes
   // this location back to the AddRingfortScreen.
   Future<void> _selectPositionOnMap(double latitude, double longitude) async {
@@ -109,7 +116,6 @@ class _LocationInputState extends State<LocationInput> {
           width: double.infinity,
           child: ElevatedButton.icon(
             onPressed: () {
-              print(_currentLocation.latitude);
               _selectPositionOnMap(
                   _userSelectedLatitude, _userSelectedLongitude);
             },
