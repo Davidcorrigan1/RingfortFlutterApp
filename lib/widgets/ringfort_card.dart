@@ -1,8 +1,9 @@
 import 'dart:io' as io;
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../screens/ringfort_detail_screen.dart';
-
+import '../providers/historic_sites_provider.dart';
 
 class RingfortCard extends StatelessWidget {
   final String uid;
@@ -23,45 +24,72 @@ class RingfortCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 2.0,
-      margin: const EdgeInsets.all(8.0),
-      child: ListTile(
-        leading: Container(
-          width: 75,
-          height: 75,
-          child: Image.file(siteImage,
-            fit: BoxFit.cover,
-          ),
+    // Adding the Dismissible which controls the deletion of a item from the
+    // screen using swipe and allows the action to be defined when triggered.
+    // Can also set the background i.e. red with a delete icon to appear
+    // when the swipe is happening.
+    return Dismissible(
+      key: ValueKey(uid),
+      background: Container(
+        color: Theme.of(context).errorColor,
+        child: Icon(
+          Icons.delete,
+          color: Colors.white,
+          size: 40,
         ),
-        title: Text(siteName),
-        subtitle: Container(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(siteDesc,
-              ),
-              Text(siteProvince,
-                textAlign: TextAlign.left,
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              Text(siteCounty,
-                textAlign: TextAlign.left,
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ],
+        alignment: Alignment.centerRight,
+        padding: EdgeInsets.only(right: 20),
+        margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+      ),
+      direction: DismissDirection.endToStart,
+      onDismissed: (direction) {
+        Provider.of<HistoricSitesProvider>(context, listen: false)
+            .deleteSite(uid);
+      },
+      child: Card(
+        elevation: 2.0,
+        margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+        child: ListTile(
+          leading: Container(
+            width: 75,
+            height: 75,
+            child: Image.file(
+              siteImage,
+              fit: BoxFit.cover,
+            ),
           ),
+          title: Text(siteName),
+          subtitle: Container(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  siteDesc,
+                ),
+                Text(
+                  siteProvince,
+                  textAlign: TextAlign.left,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text(
+                  siteCounty,
+                  textAlign: TextAlign.left,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          onTap: () {
+            // Navigates to the details page with the uid of
+            // the Ringfort pressed.
+            Navigator.of(context)
+                .pushNamed(RingfortDetailScreen.routeName, arguments: uid);
+          },
         ),
-        onTap: () {
-          // Navigates to the details page with the uid of
-          // the Ringfort pressed.
-          Navigator.of(context)
-              .pushNamed(RingfortDetailScreen.routeName, arguments: uid);
-        },
       ),
     );
   }
