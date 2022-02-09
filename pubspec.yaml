@@ -25,6 +25,18 @@ dependencies:
     sdk: flutter
   # Provider package to manage state
   provider: ^6.0.2
+  # For camera images and picking images
+  image_picker: ^0.8.4+4
+  # For finding usage stroage locations on devices
+  path_provider: ^2.0.8
+  # Helps with constructing file paths
+  path: ^1.8.0
+  # Package to handle getting user location
+  location: ^4.3.0
+  # Google Maps Package
+  google_maps_flutter: ^2.1.1
+  # For making Http requests easily
+  http: ^0.13.4
 
 
   # The following adds the Cupertino Icons font to your application.
