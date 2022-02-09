@@ -42,6 +42,33 @@ class RingfortCard extends StatelessWidget {
         margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
       ),
       direction: DismissDirection.endToStart,
+      // Making sure the user wants to delete it!
+      confirmDismiss: (direction) {
+        return showDialog(
+          context: context,
+          builder: (ctx) => AlertDialog(
+            title: Text('Are you sure?'),
+            content: Text('Do you want to delete the Ringfort?'),
+            actions: [
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.of(ctx).pop(false);
+                },
+                child: Text('No '),
+              ),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  primary: Theme.of(context).errorColor,
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop(true);
+                },
+                child: Text('Yes'),
+              ),
+            ],
+          ),
+        );
+      },
       onDismissed: (direction) {
         Provider.of<HistoricSitesProvider>(context, listen: false)
             .deleteSite(uid);
