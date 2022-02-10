@@ -26,16 +26,19 @@ class HistoricSitesProvider with ChangeNotifier {
 
   // Add a new site to the List
   void addSite(HistoricSite site, io.File image) async {
+    // Get a key for the image file (update later to firebase uid)
+    final keyDate = DateTime.now().toString();
+
     // get the address for the lat, lng coordinates picked.
     final addressMap = await LocationHelper.getLatLngPositionAddress(
         site.latitude, site.longitude);
 
     print('Just before call to addImage');
-    final imageUrl = await FirebaseDB().addImage(image);
+    final imageUrl = await FirebaseDB().addImage(image, keyDate);
     print('Just After call to addImage');
 
     final newSite = HistoricSite(
-        uid: DateTime.now().toString(),
+        uid: keyDate,
         siteName: site.siteName,
         siteDesc: site.siteDesc,
         siteAccess: site.siteAccess,
@@ -58,10 +61,13 @@ class HistoricSitesProvider with ChangeNotifier {
 
   // This will find the site to be updated and update it.
   void updateSite(String uid, HistoricSite updatedSite, io.File image) async {
+    // Get a key for the image file (update later to firebase uid)
+    final keyDate = DateTime.now().toString();
+
     final siteIndex = _sites.indexWhere((site) => site.uid == uid);
 
     // Store the image in Firebase Storage
-    final imageUrl = await FirebaseDB().addImage(image);
+    final imageUrl = await FirebaseDB().addImage(image, keyDate);
     print('after call to add image : $imageUrl');
     updatedSite.image = imageUrl;
 

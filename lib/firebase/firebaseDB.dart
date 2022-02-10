@@ -34,14 +34,13 @@ class FirebaseDB {
     await collection.doc(site.uid).delete();
   }
 
-  Future<String> addImage(io.File image) async {
+  Future<String> addImage(io.File image, String imageName) async {
     String imageUrl = '';
-    Reference ref = await storage.ref().child("images/imagename.jpg");
+    Reference ref = await storage.ref().child("images/image-${imageName}.jpg");
     var snapshot = await ref.putFile(image);
     if (snapshot.state == TaskState.success) {
       imageUrl = await snapshot.ref.getDownloadURL();
-    } else {
-      print('Error from image repo ${snapshot.state.toString()}');
+      print('Image updated successfully');
     }
     return imageUrl;
   }
