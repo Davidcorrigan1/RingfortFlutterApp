@@ -37,6 +37,11 @@ dependencies:
   google_maps_flutter: ^2.1.1
   # For making Http requests easily
   http: ^0.13.4
+  # Firebase Packages
+  firebase_core: ^1.6.0
+  cloud_firestore: ^2.5.1
+  firebase_storage: ^10.2.7
+
 
 
   # The following adds the Cupertino Icons font to your application.

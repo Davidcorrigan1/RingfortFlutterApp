@@ -1,10 +1,15 @@
+import 'dart:io' as io;
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 
 import '../helpers/location_helper.dart';
 import '../models/historic_site.dart';
+import '../firebase/firebaseDB.dart';
 
 class HistoricSitesProvider with ChangeNotifier {
+  final FirebaseDB firebaseDB = FirebaseDB();
+
   // private list of sites
   List<HistoricSite> _sites = [];
 
@@ -20,10 +25,14 @@ class HistoricSitesProvider with ChangeNotifier {
   }
 
   // Add a new site to the List
-  void addSite(HistoricSite site) async {
+  void addSite(HistoricSite site, io.File image) async {
     // get the address for the lat, lng coordinates picked.
     final addressMap = await LocationHelper.getLatLngPositionAddress(
         site.latitude, site.longitude);
+
+    print('Just before call to addImage');
+    final imageUrl = await FirebaseDB().addImage(image);
+    print('Just After call to addImage');
 
     final newSite = HistoricSite(
         uid: DateTime.now().toString(),
@@ -36,27 +45,32 @@ class HistoricSitesProvider with ChangeNotifier {
         address: addressMap['address'],
         county: addressMap['county'],
         province: addressMap['province'],
-        image: site.image);
+        image: imageUrl);
 
     print(newSite.province);
     print(newSite.county);
     _sites.add(newSite);
+
+    firebaseDB.addSite(newSite);
+
     notifyListeners();
   }
 
   // This will find the site to be updated and update it.
-  void updateSite(String uid, HistoricSite updatedSite) async {
+  void updateSite(String uid, HistoricSite updatedSite, io.File image) async {
     final siteIndex = _sites.indexWhere((site) => site.uid == uid);
 
-    // get the address for the lat, lng coordinates picked 
-    //if (_sites[siteIndex].latitude != updatedSite.latitude ||
-    //    _sites[siteIndex].longitude != updatedSite.longitude) {
-      final addressMap = await LocationHelper.getLatLngPositionAddress(
-          updatedSite.latitude, updatedSite.longitude);
-      updatedSite.address = addressMap['address'];
-      updatedSite.county = addressMap['county'];
-      updatedSite.province = addressMap['province'];
-    //}
+    // Store the image in Firebase Storage
+    final imageUrl = await FirebaseDB().addImage(image);
+    print('after call to add image : $imageUrl');
+    updatedSite.image = imageUrl;
+
+    // get the address for the lat, lng coordinates picked and update
+    final addressMap = await LocationHelper.getLatLngPositionAddress(
+        updatedSite.latitude, updatedSite.longitude);
+    updatedSite.address = addressMap['address'];
+    updatedSite.county = addressMap['county'];
+    updatedSite.province = addressMap['province'];
 
     // Update the RInfort object in the List
     _sites[siteIndex] = updatedSite;

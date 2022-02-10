@@ -49,7 +49,7 @@ class _AddRingfortScreenState extends State<AddRingfortScreen> {
     longitude: 0.0,
     siteSize: 0.0,
     address: '',
-    image: null,
+    image: '',
   );
 
   @override
@@ -88,8 +88,6 @@ class _AddRingfortScreenState extends State<AddRingfortScreen> {
     if (_siteImage == null) {
       _showErrorDialog('You need to take an Image to proceed');
       return;
-    } else {
-      _newSite.image = _siteImage;
     }
 
     // Set the new site with the location picked.
@@ -109,7 +107,7 @@ class _AddRingfortScreenState extends State<AddRingfortScreen> {
     // Add the new Ringfort Site to the List and Pop back to the
     // prewvious screen.
     Provider.of<HistoricSitesProvider>(context, listen: false)
-        .addSite(_newSite);
+        .addSite(_newSite, _siteImage);
     Navigator.of(context).pop();
   }
 
@@ -151,7 +149,10 @@ class _AddRingfortScreenState extends State<AddRingfortScreen> {
                       //----------------------------------------------------
                       // This widget controlls taking the image
                       //----------------------------------------------------
-                      ImageInput(onSaveImage: _saveImage, passedImage: null,),
+                      ImageInput(
+                        onSaveImage: _saveImage,
+                        passedImage: null,
+                      ),
                       SizedBox(
                         height: 5,
                       ),
