@@ -42,7 +42,7 @@ class LocationHelper {
     addressMap['address'] = responseMap['formatted_address'].toString();
 
     // Determine the county and province from the address returned,
-    for (int i = 0; i < 5; i++) {
+    for (int i = 0; i < responseMap['address_components'].length - 1; i++) {
       if (responseMap['address_components'][i]['types'][0] != null) {
         print(responseMap['address_components'][i]['long_name'].toString());
         if (responseMap['address_components'][i]['types'][0] ==

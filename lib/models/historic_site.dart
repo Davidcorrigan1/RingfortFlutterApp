@@ -27,4 +27,5 @@ class HistoricSite {
     this.county,
     @required this.image,
   });
+
 }

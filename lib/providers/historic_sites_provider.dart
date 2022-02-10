@@ -48,16 +48,15 @@ class HistoricSitesProvider with ChangeNotifier {
   void updateSite(String uid, HistoricSite updatedSite) async {
     final siteIndex = _sites.indexWhere((site) => site.uid == uid);
 
-    // get the address for the lat, lng coordinates picked if the
-    // new location is different and update site object
-    if (_sites[siteIndex].latitude != updatedSite.latitude ||
-        _sites[siteIndex].longitude != updatedSite.longitude) {
+    // get the address for the lat, lng coordinates picked 
+    //if (_sites[siteIndex].latitude != updatedSite.latitude ||
+    //    _sites[siteIndex].longitude != updatedSite.longitude) {
       final addressMap = await LocationHelper.getLatLngPositionAddress(
           updatedSite.latitude, updatedSite.longitude);
       updatedSite.address = addressMap['address'];
       updatedSite.county = addressMap['county'];
       updatedSite.province = addressMap['province'];
-    }
+    //}
 
     // Update the RInfort object in the List
     _sites[siteIndex] = updatedSite;
