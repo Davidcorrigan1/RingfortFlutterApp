@@ -118,13 +118,13 @@ class _RingfortDetailScreenState extends State<RingfortDetailScreen> {
     if (_displaySite.image == null) {
       _showErrorDialog('You need to take an Image to proceed');
       return;
-    } 
+    }
 
     // Set the new site with the location picked.
     if (_displaySite.latitude == null || _displaySite.longitude == null) {
       _showErrorDialog('You need to select a location to proceed');
       return;
-    } 
+    }
 
     if (!noErrors) {
       return;
@@ -163,14 +163,20 @@ class _RingfortDetailScreenState extends State<RingfortDetailScreen> {
                       //----------------------------------------------------
                       // This widget controlls the location selection
                       //----------------------------------------------------
-                      LocationInput(_selectSiteLocation, LatLng(_initValues['latitude'], _initValues['longitude'])),
+                      LocationInput(
+                          _selectSiteLocation,
+                          LatLng(_initValues['latitude'],
+                              _initValues['longitude'])),
                       SizedBox(
                         height: 5,
                       ),
                       //----------------------------------------------------
                       // This widget controlls taking the image
                       //----------------------------------------------------
-                      ImageInput(onSaveImage: _saveImage, passedImage: _displaySite.image,),
+                      ImageInput(
+                        onSaveImage: _saveImage,
+                        passedImage: _displaySite.image,
+                      ),
                       SizedBox(
                         height: 5,
                       ),

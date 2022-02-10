@@ -1,4 +1,4 @@
-package com.example.ringfort_app
+package com.wit.ringfort_app
 
 import io.flutter.embedding.android.FlutterActivity
 
