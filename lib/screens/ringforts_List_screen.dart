@@ -7,6 +7,11 @@ import '../widgets/ringfort_card.dart';
 
 // This screen will show the list of ringforts
 class RingfortsListScreen extends StatelessWidget {
+  Future<void> _refreshRingfortList(BuildContext context) async {
+    await Provider.of<HistoricSitesProvider>(context, listen: false)
+        .fetchAndSetRingforts();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,25 +26,34 @@ class RingfortsListScreen extends StatelessWidget {
           )
         ],
       ),
-      body: Consumer<HistoricSitesProvider>(
-        child: Center(
-          child: Text('No Ringforts Add yet'),
-        ),
-        builder: (context, historicSites, child) =>
-            historicSites.sites.length <= 0
-                ? child
-                : ListView.builder(
-                    itemCount: historicSites.sites.length,
-                    itemBuilder: (ctx, index) => RingfortCard(
-                        uid: historicSites.sites[index].uid,
-                        siteName: historicSites.sites[index].siteName,
-                        siteDesc: historicSites.sites[index].siteDesc,
-                        siteProvince: historicSites.sites[index].province,
-                        siteCounty: historicSites.sites[index].county,
-                        siteImage: historicSites.sites[index].image),
-                  ),
+      body: FutureBuilder(
+        future: _refreshRingfortList(context),
+        builder: (context, snapShot) => snapShot.connectionState ==
+                ConnectionState.waiting
+            ? Center(
+                child: CircularProgressIndicator(),
+              )
+            : RefreshIndicator(
+                onRefresh: () => _refreshRingfortList(context),
+                child: Consumer<HistoricSitesProvider>(
+                  builder: (context, historicSites, child) =>
+                      historicSites.sites.length <= 0
+                          ? child
+                          : ListView.builder(
+                              itemCount: historicSites.sites.length,
+                              itemBuilder: (ctx, index) => RingfortCard(
+                                uid: historicSites.sites[index].uid,
+                                siteName: historicSites.sites[index].siteName,
+                                siteDesc: historicSites.sites[index].siteDesc,
+                                siteProvince:
+                                    historicSites.sites[index].province,
+                                siteCounty: historicSites.sites[index].county,
+                                siteImage: historicSites.sites[index].image,
+                              ),
+                            ),
+                ),
+              ),
       ),
     );
   }
 }
-

@@ -1,5 +1,6 @@
 import 'dart:io' as io;
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 
@@ -10,21 +11,46 @@ import '../firebase/firebaseDB.dart';
 class HistoricSitesProvider with ChangeNotifier {
   final FirebaseDB firebaseDB = FirebaseDB();
 
+  //-------------------------------------------------------------
   // private list of sites
+  //-------------------------------------------------------------
   List<HistoricSite> _sites = [];
 
+  //-------------------------------------------------------------
   // This is a getter for the private sites list which
   // should be used to access sites outside the class
+  //-------------------------------------------------------------
   List<HistoricSite> get sites {
     return [..._sites];
   }
 
+  //-------------------------------------------------------------
+  // Returns the latest Ringfort data from Firestore and update
+  // the local List and then notify comsumer it's changed
+  //-------------------------------------------------------------
+  Future<void> fetchAndSetRingforts() async {
+    final List<HistoricSite> loadedSites = [];
+    var snapshot = await firebaseDB.fetchSites();
+
+    final documents = snapshot.docs.map((docs) => docs.data()).toList();
+    documents.forEach((site) {
+      HistoricSite ringfort = HistoricSite.fromJson(site);
+      loadedSites.add(ringfort);
+    });
+    _sites = loadedSites;
+    notifyListeners();
+  }
+
+  //-------------------------------------------------------------
   // Returns a single Ringfort Site by the uid.
+  //-------------------------------------------------------------
   HistoricSite findSiteById(String uid) {
     return _sites.firstWhere((site) => site.uid == uid);
   }
 
+  //-------------------------------------------------------------
   // Add a new site to the List
+  //-------------------------------------------------------------
   void addSite(HistoricSite site, io.File image) async {
     // Get a key for the image file (update later to firebase uid)
     final keyDate = DateTime.now().toString();
@@ -59,7 +85,9 @@ class HistoricSitesProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  //-------------------------------------------------------------
   // This will find the site to be updated and update it.
+  //-------------------------------------------------------------
   void updateSite(String uid, HistoricSite updatedSite, io.File image) async {
     // Get a key for the image file (update later to firebase uid)
     final keyDate = DateTime.now().toString();

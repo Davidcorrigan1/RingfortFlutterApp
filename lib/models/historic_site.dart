@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class HistoricSite {
   String uid;
@@ -14,6 +14,7 @@ class HistoricSite {
   String county;
   String image;
 
+  // Class constructor
   HistoricSite({
     @required this.uid,
     @required this.siteName,
@@ -29,27 +30,42 @@ class HistoricSite {
   });
 
   // A factory constructor to create Ringfort object from JSON
-  factory HistoricSite.fromJson(Map<String, dynamic> json) =>
-      _historicSiteFromJson(json);
+  factory HistoricSite.fromJson(Map<String, dynamic> json) {
+    return HistoricSite(
+        uid: json['uid'] ?? '',
+        siteName: json['siteName'] ?? '',
+        siteDesc: json['siteDesc'] ?? '',
+        siteAccess: json['siteAccess'] ?? '',
+        siteSize: json['siteSize'] ?? 0.0,
+        latitude: json['latitude'] ?? 0.0,
+        longitude: json['longitude'] ?? 0.0,
+        address: json['address'] ?? '',
+        province: json['province'] ?? '',
+        county: json['county'] ?? '',
+        image: json['image'] ?? '');
+  }
+
+  // Add a function to convert from firestore snapshot into a historicSite object
+  factory HistoricSite.fromFirestore(DocumentSnapshot document) {
+    Map data = document.data as Map;
+
+    return HistoricSite(
+        uid: document.id,
+        siteName: data['siteName'] ?? '',
+        siteDesc: data['siteDesc'] ?? '',
+        siteAccess: data['siteAccess'] ?? '',
+        siteSize: data['siteSize'] ?? 0.0,
+        latitude: data['latitude'] ?? 0.0,
+        longitude: data['longitude'] ?? 0.0,
+        address: data['address'] ?? '',
+        province: data['province'] ?? '',
+        county: data['county'] ?? '',
+        image: data['image'] ?? '');
+  }
+
 
   // Function to turn Ringfort object to a Map of key values pairs
   Map<String, dynamic> toJson() => _historicSiteToJson(this);
-}
-
-// Add a function to convert a map of key/value pairs into a historicSite object
-HistoricSite _historicSiteFromJson(Map<String, dynamic> json) {
-  return HistoricSite(
-      uid: json['uid'] as String,
-      siteName: json['siteName'] as String,
-      siteDesc: json['siteDesc'] as String,
-      siteAccess: json['siteAccess'] as String,
-      siteSize: json['siteSize'] as double,
-      latitude: json['latitude'] as double,
-      longitude: json['longitude'] as double,
-      address: json['address'] as String,
-      province: json['province'] as String,
-      county: json['county'] as String,
-      image: json['image'] as String);
 }
 
 // Convert a historicSite object into a map of key/value pairs.

@@ -18,6 +18,11 @@ class FirebaseDB {
     return collection.snapshots();
   }
 
+  // Retrieve all ringforts from the HistoricSites collection
+  Future<QuerySnapshot> fetchSites() async {
+    return collection.get();
+  }
+
   // Add a new Ringfort. This returns a Future if you want to wait for the result
   // Ity will automatically create a new document uid for the site
   Future<DocumentReference> addSite(HistoricSite site) {
