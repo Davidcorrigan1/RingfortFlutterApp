@@ -71,6 +71,7 @@ class _RingfortDetailScreenState extends State<RingfortDetailScreen> {
       _displaySite = Provider.of<HistoricSitesProvider>(context, listen: false)
           .findSiteById(uid);
       _initValues = {
+        'uid': uid,
         'siteName': _displaySite.siteName,
         'siteDesc': _displaySite.siteDesc,
         'siteAccess': _displaySite.siteAccess,

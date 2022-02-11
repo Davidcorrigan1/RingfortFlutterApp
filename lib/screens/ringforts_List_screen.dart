@@ -26,6 +26,12 @@ class RingfortsListScreen extends StatelessWidget {
           )
         ],
       ),
+      // Wrapping with RefreshIndicator which takes a function which returns a future.
+      // We define this to call the Provider class. The returned future tells the widget
+      // to stop showing the loader symbol
+      // Wrapping with a FutureBuilder which allows you to build a widget which depends on a Future
+      // being returned. We can then check the status of the Future with the snapShow.connectionState
+      // and display loader or the actual widget depending on if it's waiting or done.
       body: FutureBuilder(
         future: _refreshRingfortList(context),
         builder: (context, snapShot) => snapShot.connectionState ==

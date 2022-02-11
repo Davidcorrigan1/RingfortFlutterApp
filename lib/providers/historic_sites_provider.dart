@@ -12,7 +12,7 @@ class HistoricSitesProvider with ChangeNotifier {
   final FirebaseDB firebaseDB = FirebaseDB();
 
   //-------------------------------------------------------------
-  // private list of sites
+  // private list of ringfort sites
   //-------------------------------------------------------------
   List<HistoricSite> _sites = [];
 
@@ -52,19 +52,20 @@ class HistoricSitesProvider with ChangeNotifier {
   // Add a new site to the List
   //-------------------------------------------------------------
   void addSite(HistoricSite site, io.File image) async {
-    // Get a key for the image file (update later to firebase uid)
-    final keyDate = DateTime.now().toString();
+    // generate a document id for the new document on FB
+    var docId = await firebaseDB.generateDocumentId();
+    site.uid = docId;
 
     // get the address for the lat, lng coordinates picked.
     final addressMap = await LocationHelper.getLatLngPositionAddress(
         site.latitude, site.longitude);
 
-    print('Just before call to addImage');
-    final imageUrl = await FirebaseDB().addImage(image, keyDate);
-    print('Just After call to addImage');
+    // adding the image to Firebase storage
+    final imageUrl = await FirebaseDB().addImage(image, docId);
 
+    // waiting for the firebase storage o return a Url to store with site
     final newSite = HistoricSite(
-        uid: keyDate,
+        uid: site.uid,
         siteName: site.siteName,
         siteDesc: site.siteDesc,
         siteAccess: site.siteAccess,
@@ -76,12 +77,12 @@ class HistoricSitesProvider with ChangeNotifier {
         province: addressMap['province'],
         image: imageUrl);
 
-    print(newSite.province);
-    print(newSite.county);
+    // adding site to local list
     _sites.add(newSite);
 
+    // adding to Firebase Firestore
     firebaseDB.addSite(newSite);
-
+    // Notify consumers of changes
     notifyListeners();
   }
 
@@ -89,15 +90,13 @@ class HistoricSitesProvider with ChangeNotifier {
   // This will find the site to be updated and update it.
   //-------------------------------------------------------------
   void updateSite(String uid, HistoricSite updatedSite, io.File image) async {
-    // Get a key for the image file (update later to firebase uid)
-    final keyDate = DateTime.now().toString();
-
     final siteIndex = _sites.indexWhere((site) => site.uid == uid);
 
     // Store the image in Firebase Storage
-    final imageUrl = await FirebaseDB().addImage(image, keyDate);
-    print('after call to add image : $imageUrl');
-    updatedSite.image = imageUrl;
+    final imageUrl = await FirebaseDB().addImage(image, uid);
+    if (!imageUrl.isEmpty) {
+      updatedSite.image = imageUrl;
+    }
 
     // get the address for the lat, lng coordinates picked and update
     final addressMap = await LocationHelper.getLatLngPositionAddress(
@@ -108,6 +107,11 @@ class HistoricSitesProvider with ChangeNotifier {
 
     // Update the RInfort object in the List
     _sites[siteIndex] = updatedSite;
+
+    // Update the document on Firestore
+    firebaseDB.updateSite(updatedSite);
+
+    // Notify comsumers of the data
     notifyListeners();
   }
 
@@ -116,6 +120,7 @@ class HistoricSitesProvider with ChangeNotifier {
   //---------------------------------------------------------------------
   void deleteSite(String uid) {
     _sites.removeWhere((site) => site.uid == uid);
+    firebaseDB.deleteSite(uid);
     notifyListeners();
   }
 }

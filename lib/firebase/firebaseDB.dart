@@ -14,6 +14,8 @@ class FirebaseDB {
 
   // Use the snaphots method to get a stream of snapshots
   // This listens for updates automatically
+  // Decided not to use this in the end as I only want to
+  // refresh when the users triggers it.
   Stream<QuerySnapshot> getStream() {
     return collection.snapshots();
   }
@@ -23,10 +25,12 @@ class FirebaseDB {
     return collection.get();
   }
 
-  // Add a new Ringfort. This returns a Future if you want to wait for the result
-  // Ity will automatically create a new document uid for the site
-  Future<DocumentReference> addSite(HistoricSite site) {
-    return collection.add(site.toJson());
+  // Add a new Ringfort. This returns a Future
+  // First will generate new document uid for the site
+  // Then updates the UID of the site class to this.
+  // And finally save the document on Firebase with that id.
+  Future<void> addSite(HistoricSite site) async {
+    return collection.doc(site.uid).set(site.toJson());
   }
 
   // Update a specific ringfort document in the collection
@@ -35,18 +39,27 @@ class FirebaseDB {
   }
 
   // Delete a specific ringfort document from the collection
-  void deleteSite(HistoricSite site) async {
-    await collection.doc(site.uid).delete();
+  void deleteSite(String uid) async {
+    await collection.doc(uid).delete();
   }
 
   Future<String> addImage(io.File image, String imageName) async {
     String imageUrl = '';
     Reference ref = await storage.ref().child("images/image-${imageName}.jpg");
-    var snapshot = await ref.putFile(image);
-    if (snapshot.state == TaskState.success) {
-      imageUrl = await snapshot.ref.getDownloadURL();
-      print('Image updated successfully');
+    if (image != null) {
+      var snapshot = await ref.putFile(image);
+      if (snapshot.state == TaskState.success) {
+        imageUrl = await snapshot.ref.getDownloadURL();
+        print('Image updated successfully');
+      }
     }
     return imageUrl;
+  }
+
+  // Generates a document id which can be used to add a new document
+  Future<String> generateDocumentId() async {
+    var randomDoc = await collection.doc();
+    String docId = randomDoc.id;
+    return docId;
   }
 }
