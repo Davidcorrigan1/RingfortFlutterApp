@@ -26,6 +26,8 @@
 	<true/>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>We need to access your photos to proceed</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>We need to access your photos to proceed</string>
 	<key>NSCameraUsageDescription</key>
 	<string>We need to access your camera to proceed</string>
 	<key>NSLocationWhenInUseUsageDescription</key>

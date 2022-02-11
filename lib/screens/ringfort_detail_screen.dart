@@ -80,6 +80,7 @@ class _RingfortDetailScreenState extends State<RingfortDetailScreen> {
         'siteSize': _displaySite.siteSize,
         'image': _displaySite.image,
       };
+      
     }
     _isInit = false;
     super.didChangeDependencies();
@@ -179,6 +180,7 @@ class _RingfortDetailScreenState extends State<RingfortDetailScreen> {
                       ImageInput(
                         onSaveImage: _saveImage,
                         passedImage: _siteImage,
+                        passedUrl: _displaySite.image
                       ),
                       SizedBox(
                         height: 5,

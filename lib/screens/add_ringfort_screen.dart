@@ -152,6 +152,7 @@ class _AddRingfortScreenState extends State<AddRingfortScreen> {
                       ImageInput(
                         onSaveImage: _saveImage,
                         passedImage: null,
+                        passedUrl: null,
                       ),
                       SizedBox(
                         height: 5,
