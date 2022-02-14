@@ -84,20 +84,23 @@ class _ImageInputState extends State<ImageInput> {
           // Deciding which image to display
           // Either the image taken by camera or
           // the image on the current Ringfort
+          // else a No Image message.
           child: _siteImage != null
               ? Image.file(
                   _siteImage,
                   fit: BoxFit.cover,
                   width: double.infinity,
                 )
-              : _siteUrl != null ? Image.network(
-                  _siteUrl,
-                  fit: BoxFit.cover,
-                  width: double.infinity,
-                ): Text(
-                  'No Image',
-                  textAlign: TextAlign.center,
-                ),
+              : _siteUrl != null
+                  ? Image.network(
+                      _siteUrl,
+                      fit: BoxFit.cover,
+                      width: double.infinity,
+                    )
+                  : Text(
+                      'No Image',
+                      textAlign: TextAlign.center,
+                    ),
           alignment: Alignment.center,
         ),
         SizedBox(

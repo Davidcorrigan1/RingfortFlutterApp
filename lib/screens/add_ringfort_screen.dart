@@ -8,6 +8,7 @@ import '../providers/historic_sites_provider.dart';
 
 import '../widgets/image_input.dart';
 import '../widgets/location_input.dart';
+import '../widgets/app_drawer.dart';
 
 class AddRingfortScreen extends StatefulWidget {
   // Screen Route name to add to route table
@@ -123,6 +124,7 @@ class _AddRingfortScreenState extends State<AddRingfortScreen> {
           )
         ],
       ),
+      drawer: AppDrawer(),
       body: Column(
         // This is main alignment top to botton and will force the
         // button to the botton of the screen. The cross alignment will

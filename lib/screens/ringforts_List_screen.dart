@@ -4,6 +4,8 @@ import 'package:provider/provider.dart';
 import '../providers/historic_sites_provider.dart';
 import '../screens/add_ringfort_screen.dart';
 import '../widgets/ringfort_card.dart';
+import '../widgets/app_drawer.dart';
+
 
 // This screen will show the list of ringforts
 class RingfortsListScreen extends StatelessWidget {
@@ -26,6 +28,7 @@ class RingfortsListScreen extends StatelessWidget {
           )
         ],
       ),
+      drawer: AppDrawer(),
       // Wrapping with RefreshIndicator which takes a function which returns a future.
       // We define this to call the Provider class. The returned future tells the widget
       // to stop showing the loader symbol

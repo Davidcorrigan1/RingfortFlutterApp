@@ -8,6 +8,7 @@ import 'package:ringfort_app/models/historic_site.dart';
 import '../providers/historic_sites_provider.dart';
 import '../widgets/image_input.dart';
 import '../widgets/location_input.dart';
+import '../widgets/app_drawer.dart';
 
 class RingfortDetailScreen extends StatefulWidget {
   static const routeName = '/ringfort-detail';
@@ -80,7 +81,6 @@ class _RingfortDetailScreenState extends State<RingfortDetailScreen> {
         'siteSize': _displaySite.siteSize,
         'image': _displaySite.image,
       };
-      
     }
     _isInit = false;
     super.didChangeDependencies();
@@ -148,6 +148,7 @@ class _RingfortDetailScreenState extends State<RingfortDetailScreen> {
       appBar: AppBar(
         title: Text(_displaySite.siteName),
       ),
+      drawer: AppDrawer(),
       body: Column(
         // This is main alignment top to botton and will force the
         // button to the botton of the screen. The cross alignment will
@@ -178,10 +179,9 @@ class _RingfortDetailScreenState extends State<RingfortDetailScreen> {
                       // This widget controlls taking the image
                       //----------------------------------------------------
                       ImageInput(
-                        onSaveImage: _saveImage,
-                        passedImage: _siteImage,
-                        passedUrl: _displaySite.image
-                      ),
+                          onSaveImage: _saveImage,
+                          passedImage: _siteImage,
+                          passedUrl: _displaySite.image),
                       SizedBox(
                         height: 5,
                       ),

@@ -3,11 +3,16 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
 import '../models/historic_site.dart';
+import '../models/user_data.dart';
 
 class FirebaseDB {
   // Store a reference to the 'historicSites' collection
-  final CollectionReference collection =
+  final CollectionReference siteCollection =
       FirebaseFirestore.instance.collection('historicSites');
+
+  // Store a reference to the 'users' collection
+  final CollectionReference userCollection =
+      FirebaseFirestore.instance.collection('users');
 
   // Store a reference to the Firebase Storage
   final FirebaseStorage storage = FirebaseStorage.instance;
@@ -17,30 +22,33 @@ class FirebaseDB {
   // Decided not to use this in the end as I only want to
   // refresh when the users triggers it.
   Stream<QuerySnapshot> getStream() {
-    return collection.snapshots();
+    return siteCollection.snapshots();
   }
 
   // Retrieve all ringforts from the HistoricSites collection
   Future<QuerySnapshot> fetchSites() async {
-    return collection.get();
+    return siteCollection.get();
   }
 
-  // Add a new Ringfort. This returns a Future
-  // First will generate new document uid for the site
-  // Then updates the UID of the site class to this.
-  // And finally save the document on Firebase with that id.
+  
+  // Add site document on Firebase 
   Future<void> addSite(HistoricSite site) async {
-    return collection.doc(site.uid).set(site.toJson());
+    return siteCollection.doc(site.uid).set(site.toJson());
+  }
+
+  // Add user document on Firebase 
+  Future<void> addUser(UserData user) async {
+    return userCollection.doc(user.uid).set(user.toJson());
   }
 
   // Update a specific ringfort document in the collection
   void updateSite(HistoricSite site) async {
-    await collection.doc(site.uid).update(site.toJson());
+    await siteCollection.doc(site.uid).update(site.toJson());
   }
 
   // Delete a specific ringfort document from the collection
   void deleteSite(String uid) async {
-    await collection.doc(uid).delete();
+    await siteCollection.doc(uid).delete();
   }
 
   Future<String> addImage(io.File image, String imageName) async {
@@ -58,7 +66,7 @@ class FirebaseDB {
 
   // Generates a document id which can be used to add a new document
   Future<String> generateDocumentId() async {
-    var randomDoc = await collection.doc();
+    var randomDoc = await siteCollection.doc();
     String docId = randomDoc.id;
     return docId;
   }
