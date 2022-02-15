@@ -8,6 +8,7 @@ import '../providers/historic_sites_provider.dart';
 
 import '../widgets/image_input.dart';
 import '../widgets/location_input.dart';
+import '../widgets/app_drawer.dart';
 
 class AddRingfortScreen extends StatefulWidget {
   // Screen Route name to add to route table
@@ -49,7 +50,7 @@ class _AddRingfortScreenState extends State<AddRingfortScreen> {
     longitude: 0.0,
     siteSize: 0.0,
     address: '',
-    image: null,
+    image: '',
   );
 
   @override
@@ -88,8 +89,6 @@ class _AddRingfortScreenState extends State<AddRingfortScreen> {
     if (_siteImage == null) {
       _showErrorDialog('You need to take an Image to proceed');
       return;
-    } else {
-      _newSite.image = _siteImage;
     }
 
     // Set the new site with the location picked.
@@ -109,7 +108,7 @@ class _AddRingfortScreenState extends State<AddRingfortScreen> {
     // Add the new Ringfort Site to the List and Pop back to the
     // prewvious screen.
     Provider.of<HistoricSitesProvider>(context, listen: false)
-        .addSite(_newSite);
+        .addSite(_newSite, _siteImage);
     Navigator.of(context).pop();
   }
 
@@ -120,11 +119,16 @@ class _AddRingfortScreenState extends State<AddRingfortScreen> {
         title: Text('Add New Ringfort'),
         actions: [
           IconButton(
+            onPressed: () => Navigator.of(context).pop(),
+            icon: Icon(Icons.cancel, size: 30,),
+          ),
+          IconButton(
             onPressed: _saveForm,
-            icon: Icon(Icons.save),
+            icon: Icon(Icons.save_rounded, size: 30),
           )
         ],
       ),
+      drawer: AppDrawer(),
       body: Column(
         // This is main alignment top to botton and will force the
         // button to the botton of the screen. The cross alignment will
@@ -151,7 +155,11 @@ class _AddRingfortScreenState extends State<AddRingfortScreen> {
                       //----------------------------------------------------
                       // This widget controlls taking the image
                       //----------------------------------------------------
-                      ImageInput(onSaveImage: _saveImage, passedImage: null,),
+                      ImageInput(
+                        onSaveImage: _saveImage,
+                        passedImage: null,
+                        passedUrl: null,
+                      ),
                       SizedBox(
                         height: 5,
                       ),

@@ -1,4 +1,3 @@
-import 'dart:io' as io;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -11,7 +10,7 @@ class RingfortCard extends StatelessWidget {
   final String siteDesc;
   final String siteProvince;
   final String siteCounty;
-  final io.File siteImage;
+  final String siteImage;
 
   const RingfortCard({
     @required this.uid,
@@ -80,7 +79,7 @@ class RingfortCard extends StatelessWidget {
           leading: Container(
             width: 75,
             height: 75,
-            child: Image.file(
+            child: Image.network(
               siteImage,
               fit: BoxFit.cover,
             ),

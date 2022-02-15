@@ -8,6 +8,7 @@ import 'package:ringfort_app/models/historic_site.dart';
 import '../providers/historic_sites_provider.dart';
 import '../widgets/image_input.dart';
 import '../widgets/location_input.dart';
+import '../widgets/app_drawer.dart';
 
 class RingfortDetailScreen extends StatefulWidget {
   static const routeName = '/ringfort-detail';
@@ -43,6 +44,8 @@ class _RingfortDetailScreenState extends State<RingfortDetailScreen> {
     'image': null
   };
 
+  // The taken site image
+  io.File _siteImage;
   // Focus node for the description and access fields.
   final _descFocusNode = FocusNode();
   final _accessFocusNode = FocusNode();
@@ -52,7 +55,7 @@ class _RingfortDetailScreenState extends State<RingfortDetailScreen> {
 
   // Method to save the taken image from image_input widget to this class
   void _saveImage(io.File takenImage) {
-    _displaySite.image = takenImage;
+    _siteImage = takenImage;
   }
 
   // A method to pass into 'location_input' widget to save the location lat,lng
@@ -69,6 +72,7 @@ class _RingfortDetailScreenState extends State<RingfortDetailScreen> {
       _displaySite = Provider.of<HistoricSitesProvider>(context, listen: false)
           .findSiteById(uid);
       _initValues = {
+        'uid': uid,
         'siteName': _displaySite.siteName,
         'siteDesc': _displaySite.siteDesc,
         'siteAccess': _displaySite.siteAccess,
@@ -134,7 +138,7 @@ class _RingfortDetailScreenState extends State<RingfortDetailScreen> {
     // Add the new Ringfort Site to the List and Pop back to the
     // prewvious screen.
     Provider.of<HistoricSitesProvider>(context, listen: false)
-        .updateSite(uid, _displaySite);
+        .updateSite(uid, _displaySite, _siteImage);
     Navigator.of(context).pop();
   }
 
@@ -143,7 +147,17 @@ class _RingfortDetailScreenState extends State<RingfortDetailScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(_displaySite.siteName),
+        actions: [
+          IconButton(
+            onPressed: () => Navigator.of(context).pop(),
+            icon: Icon(
+              Icons.cancel,
+              size: 30,
+            ),
+          )
+        ],
       ),
+      drawer: AppDrawer(),
       body: Column(
         // This is main alignment top to botton and will force the
         // button to the botton of the screen. The cross alignment will
@@ -174,9 +188,9 @@ class _RingfortDetailScreenState extends State<RingfortDetailScreen> {
                       // This widget controlls taking the image
                       //----------------------------------------------------
                       ImageInput(
-                        onSaveImage: _saveImage,
-                        passedImage: _displaySite.image,
-                      ),
+                          onSaveImage: _saveImage,
+                          passedImage: _siteImage,
+                          passedUrl: _displaySite.image),
                       SizedBox(
                         height: 5,
                       ),

@@ -1,5 +1,5 @@
-import 'dart:io';
 import 'package:flutter/foundation.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class HistoricSite {
   String uid;
@@ -12,8 +12,9 @@ class HistoricSite {
   String address;
   String province;
   String county;
-  File image;
+  String image;
 
+  // Class constructor
   HistoricSite({
     @required this.uid,
     @required this.siteName,
@@ -28,4 +29,57 @@ class HistoricSite {
     @required this.image,
   });
 
+  // A factory constructor to create Ringfort object from JSON
+  factory HistoricSite.fromJson(Map<String, dynamic> json) {
+    return HistoricSite(
+        uid: json['uid'] ?? '',
+        siteName: json['siteName'] ?? '',
+        siteDesc: json['siteDesc'] ?? '',
+        siteAccess: json['siteAccess'] ?? '',
+        siteSize: json['siteSize'] ?? 0.0,
+        latitude: json['latitude'] ?? 0.0,
+        longitude: json['longitude'] ?? 0.0,
+        address: json['address'] ?? '',
+        province: json['province'] ?? '',
+        county: json['county'] ?? '',
+        image: json['image'] ?? '');
+  }
+
+  // Add a function to convert from firestore snapshot into a historicSite object
+  factory HistoricSite.fromFirestore(DocumentSnapshot document) {
+    Map data = document.data as Map;
+
+    return HistoricSite(
+        uid: document.id,
+        siteName: data['siteName'] ?? '',
+        siteDesc: data['siteDesc'] ?? '',
+        siteAccess: data['siteAccess'] ?? '',
+        siteSize: data['siteSize'] ?? 0.0,
+        latitude: data['latitude'] ?? 0.0,
+        longitude: data['longitude'] ?? 0.0,
+        address: data['address'] ?? '',
+        province: data['province'] ?? '',
+        county: data['county'] ?? '',
+        image: data['image'] ?? '');
+  }
+
+
+  // Function to turn Ringfort object to a Map of key values pairs
+  Map<String, dynamic> toJson() => _historicSiteToJson(this);
 }
+
+// Convert a historicSite object into a map of key/value pairs.
+Map<String, dynamic> _historicSiteToJson(HistoricSite instance) =>
+    <String, dynamic>{
+      'uid': instance.uid,
+      'siteName': instance.siteName,
+      'siteDesc': instance.siteDesc,
+      'siteAccess': instance.siteAccess,
+      'siteSize': instance.siteSize,
+      'latitude': instance.latitude,
+      'longitude': instance.longitude,
+      'address': instance.address,
+      'province': instance.province,
+      'county': instance.county,
+      'image': instance.image,
+    };

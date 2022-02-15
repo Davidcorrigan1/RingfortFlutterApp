@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "135407059404",
+    "project_id": "ringforts-ireland",
+    "storage_bucket": "ringforts-ireland.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:135407059404:android:1a28b5a458b43b1ee4dd69",
+        "android_client_info": {
+          "package_name": "com.wit.ringfort_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "135407059404-4g859o8814g4hgooh39i6o0mi4kdc137.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCrmaOtt_T1z992xDyElSmSmxksdH2tfO4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "135407059404-4g859o8814g4hgooh39i6o0mi4kdc137.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
