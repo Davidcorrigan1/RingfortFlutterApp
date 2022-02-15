@@ -8,6 +8,7 @@ import '../widgets/app_drawer.dart';
 
 // This screen will show the list of ringforts
 class RingfortsListScreen extends StatelessWidget {
+  
   Future<void> _refreshRingfortList(BuildContext context) async {
     await Provider.of<HistoricSitesProvider>(context, listen: false)
         .fetchAndSetRingforts();

@@ -9,6 +9,7 @@ import './screens/add_ringfort_screen.dart';
 import './screens/ringforts_List_screen.dart';
 import './screens/ringfort_detail_screen.dart';
 import './screens/authentication_screen.dart';
+import '../screens/map_overview_screen.dart';
 
 Future<void> main() async {
   // WidgetsFlutterBinding is used to interact with the Flutter engine,
@@ -57,6 +58,8 @@ class MyApp extends StatelessWidget {
             RingfortDetailScreen.routeName: (ctx) => RingfortDetailScreen(),
             //Route - AuthScreen
             AuthenticationScreen.routeName: (context) => AuthenticationScreen(),
+            //Route - Map Overview screen
+            MapOverviewScreen.routeName: (context) => MapOverviewScreen(),
           },
         ),
       ),
