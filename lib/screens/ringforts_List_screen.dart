@@ -6,7 +6,6 @@ import '../screens/add_ringfort_screen.dart';
 import '../widgets/ringfort_card.dart';
 import '../widgets/app_drawer.dart';
 
-
 // This screen will show the list of ringforts
 class RingfortsListScreen extends StatelessWidget {
   Future<void> _refreshRingfortList(BuildContext context) async {
@@ -24,7 +23,10 @@ class RingfortsListScreen extends StatelessWidget {
             onPressed: () {
               Navigator.of(context).pushNamed(AddRingfortScreen.routeName);
             },
-            icon: Icon(Icons.add_box_rounded),
+            icon: Icon(
+              Icons.add_circle,
+              size: 30,
+            ),
           )
         ],
       ),

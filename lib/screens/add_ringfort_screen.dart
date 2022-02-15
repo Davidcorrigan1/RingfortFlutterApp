@@ -119,8 +119,12 @@ class _AddRingfortScreenState extends State<AddRingfortScreen> {
         title: Text('Add New Ringfort'),
         actions: [
           IconButton(
+            onPressed: () => Navigator.of(context).pop(),
+            icon: Icon(Icons.cancel, size: 30,),
+          ),
+          IconButton(
             onPressed: _saveForm,
-            icon: Icon(Icons.save),
+            icon: Icon(Icons.save_rounded, size: 30),
           )
         ],
       ),

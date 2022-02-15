@@ -147,6 +147,15 @@ class _RingfortDetailScreenState extends State<RingfortDetailScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(_displaySite.siteName),
+        actions: [
+          IconButton(
+            onPressed: () => Navigator.of(context).pop(),
+            icon: Icon(
+              Icons.cancel,
+              size: 30,
+            ),
+          )
+        ],
       ),
       drawer: AppDrawer(),
       body: Column(
