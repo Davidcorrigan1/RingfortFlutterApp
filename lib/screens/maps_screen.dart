@@ -17,6 +17,12 @@ class _MapsScreenState extends State<MapsScreen> {
   LatLng _userSelectedLocation;
   MapType _selectMapType = MapType.normal;
 
+  @override
+  void initState() {
+    _userSelectedLocation = LatLng(widget.initialLatitude, widget.initialLongitude);
+    super.initState();
+  }
+
   // Set the user selected position for the marker and
   // trigger a re-build to show it.
   void _selectLocation(LatLng position) {

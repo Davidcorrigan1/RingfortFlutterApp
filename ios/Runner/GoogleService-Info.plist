@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>135407059404-6eo436u6h3o0lclof10o8l2gnteufmj4.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.135407059404-6eo436u6h3o0lclof10o8l2gnteufmj4</string>
+	<key>API_KEY</key>
+	<string>AIzaSyBmO6P_AYZD6ELtPLpVemiI50aYWQY8U6Y</string>
+	<key>GCM_SENDER_ID</key>
+	<string>135407059404</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.wit.ringfortapp</string>
+	<key>PROJECT_ID</key>
+	<string>ringforts-ireland</string>
+	<key>STORAGE_BUCKET</key>
+	<string>ringforts-ireland.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:135407059404:ios:04a52b164308d9f2e4dd69</string>
+</dict>
+</plist>

@@ -8,11 +8,13 @@ import 'package:path_provider/path_provider.dart' as systemPath;
 class ImageInput extends StatefulWidget {
   final Function onSaveImage;
   final io.File passedImage;
+  final String passedUrl;
 
   // Class constructor taking in function to save image
   const ImageInput({
     @required this.onSaveImage,
     @required this.passedImage,
+    @required this.passedUrl,
   });
 
   @override
@@ -27,10 +29,14 @@ class _ImageInputState extends State<ImageInput> {
     if (widget.passedImage != null) {
       _siteImage = widget.passedImage;
     }
+    if (widget.passedUrl != null) {
+      _siteUrl = widget.passedUrl;
+    }
     super.initState();
   }
 
   io.File _siteImage;
+  String _siteUrl;
 
   Future<void> _takeCameraImage() async {
     // Set up an image picker object
@@ -75,16 +81,26 @@ class _ImageInputState extends State<ImageInput> {
               color: Colors.grey,
             ),
           ),
+          // Deciding which image to display
+          // Either the image taken by camera or
+          // the image on the current Ringfort
+          // else a No Image message.
           child: _siteImage != null
               ? Image.file(
                   _siteImage,
                   fit: BoxFit.cover,
                   width: double.infinity,
                 )
-              : Text(
-                  'No Image',
-                  textAlign: TextAlign.center,
-                ),
+              : _siteUrl != null
+                  ? Image.network(
+                      _siteUrl,
+                      fit: BoxFit.cover,
+                      width: double.infinity,
+                    )
+                  : Text(
+                      'No Image',
+                      textAlign: TextAlign.center,
+                    ),
           alignment: Alignment.center,
         ),
         SizedBox(
