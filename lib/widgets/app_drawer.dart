@@ -1,11 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:ringfort_app/screens/map_overview_screen.dart';
 
 import '../firebase/firebaseAuth.dart';
-import '../models/user_data.dart';
 import '../screens/add_ringfort_screen.dart';
-import '../screens/authentication_screen.dart';
 
 class AppDrawer extends StatelessWidget {
   @override
@@ -25,6 +24,13 @@ class AppDrawer extends StatelessWidget {
             leading: Icon(Icons.list_alt_outlined),
             title: Text('List Sites'),
             onTap: () => Navigator.of(context).pushReplacementNamed('/'),
+          ),
+          Divider(),
+          ListTile(
+            leading: Icon(Icons.map_rounded),
+            title: Text('Map View'),
+            onTap: () =>
+                Navigator.of(context).pushNamed(MapOverviewScreen.routeName),
           ),
           Divider(),
           ListTile(
