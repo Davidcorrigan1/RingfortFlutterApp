@@ -37,7 +37,7 @@ class AppDrawer extends StatelessWidget {
             leading: Icon(Icons.add),
             title: Text('Add New'),
             onTap: () => Navigator.of(context)
-                .pushReplacementNamed(AddRingfortScreen.routeName),
+                .pushNamed(AddRingfortScreen.routeName),
           ),
           Divider(),
           ListTile(
