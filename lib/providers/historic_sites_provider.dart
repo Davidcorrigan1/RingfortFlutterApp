@@ -11,9 +11,10 @@ class HistoricSitesProvider with ChangeNotifier {
   final FirebaseDB firebaseDB = FirebaseDB();
 
   //-------------------------------------------------------------
-  // private list of ringfort sites
+  // private list of ringfort sites and filtered
   //-------------------------------------------------------------
   List<HistoricSite> _sites = [];
+  List<HistoricSite> _filteredSites = [];
 
   //-------------------------------------------------------------
   // This is a getter for the private sites list which
@@ -21,6 +22,38 @@ class HistoricSitesProvider with ChangeNotifier {
   //-------------------------------------------------------------
   List<HistoricSite> get sites {
     return [..._sites];
+  }
+
+  List<HistoricSite> get filteredSites {
+    return [..._filteredSites];
+  }
+
+  //-------------------------------------------------------------
+  // This method will return the list of filtered sites
+  //-------------------------------------------------------------
+  void setFilteredSites(String searchQuery) {
+    if (searchQuery.isEmpty) {
+      _filteredSites = [..._sites];
+    } else {
+      _filteredSites = _sites.where((ringfort) {
+        return ((ringfort.siteName
+                .toLowerCase()
+                .contains(searchQuery.toLowerCase())) ||
+            (ringfort.siteDesc
+                .toLowerCase()
+                .contains(searchQuery.toLowerCase())) ||
+            (ringfort.province
+                .toLowerCase()
+                .contains(searchQuery.toLowerCase())) ||
+            (ringfort.county
+                .toLowerCase()
+                .contains(searchQuery.toLowerCase())) ||
+            (ringfort.address
+                .toLowerCase()
+                .contains(searchQuery.toLowerCase())));
+      }).toList();
+    }
+    notifyListeners();
   }
 
   //-------------------------------------------------------------
@@ -78,6 +111,7 @@ class HistoricSitesProvider with ChangeNotifier {
 
     // adding site to local list
     _sites.add(newSite);
+    _filteredSites = [..._sites];
 
     // adding to Firebase Firestore
     firebaseDB.addSite(newSite);
@@ -104,8 +138,9 @@ class HistoricSitesProvider with ChangeNotifier {
     updatedSite.county = addressMap['county'];
     updatedSite.province = addressMap['province'];
 
-    // Update the RInfort object in the List
+    // Update the Rinfort object in the List
     _sites[siteIndex] = updatedSite;
+    _filteredSites = [..._sites];
 
     // Update the document on Firestore
     firebaseDB.updateSite(updatedSite);
