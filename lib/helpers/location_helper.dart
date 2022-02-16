@@ -7,7 +7,7 @@ import '../auth/secret.dart';
 class LocationHelper {
   // This API generates a url of a static map based on location and zoom provided with a marker of the location at lat,lng
   static String generateStaticMapPreview({double latitude, double longitude}) {
-    return 'https://maps.googleapis.com/maps/api/staticmap?center=${latitude},${longitude}&zoom=16&size=600x300&maptype=roadmap&markers=color:red%7Clabel:C%7C$latitude,$longitude&key=$GOOGLE_API_KEY';
+    return 'https://maps.googleapis.com/maps/api/staticmap?center=${latitude},${longitude}&zoom=18&size=600x300&maptype=hybrid&markers=color:red%7Clabel:C%7C$latitude,$longitude&key=$GOOGLE_API_KEY';
   }
 
   // This API will generate a Future which will return the address Map for the given location.
