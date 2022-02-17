@@ -10,6 +10,7 @@ import './screens/ringforts_List_screen.dart';
 import './screens/ringfort_detail_screen.dart';
 import './screens/authentication_screen.dart';
 import '../screens/map_overview_screen.dart';
+import '../screens/ringfort_home.dart';
 
 Future<void> main() async {
   // WidgetsFlutterBinding is used to interact with the Flutter engine,
@@ -48,13 +49,16 @@ class MyApp extends StatelessWidget {
             primarySwatch: Colors.green,
             primaryColor: Colors.grey,
           ),
+          home: RingfortHome(),
           //home: RingfortsListScreen(),
-          home: User != null ? RingfortsListScreen() : AuthenticationScreen(),
+          //home: User != null ? RingfortsListScreen() : AuthenticationScreen(),
           // Routing table for the app screens
           routes: {
             //Route - add a ringfort screen
             AddRingfortScreen.routeName: (ctx) => AddRingfortScreen(),
-            //Route - List the Ringforts screen
+            //Route - Ringfort List screen
+            RingfortsListScreen.routeName: (ctx) => RingfortsListScreen(),
+            //Route - Ringfort Detail screen
             RingfortDetailScreen.routeName: (ctx) => RingfortDetailScreen(),
             //Route - AuthScreen
             AuthenticationScreen.routeName: (context) => AuthenticationScreen(),

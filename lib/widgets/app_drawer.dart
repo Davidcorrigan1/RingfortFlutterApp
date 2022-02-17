@@ -9,14 +9,19 @@ import '../screens/add_ringfort_screen.dart';
 class AppDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    var userEmail = Provider.of<User>(context).email;
+    var userEmail;
+    try {
+      userEmail = Provider.of<User>(context, listen: false).email;
+    } catch (e) {
+      print('Error: $e');
+    }
 
     return Drawer(
       child: Column(
         children: [
           // adding appbar with automaticallyimpliedleading false to no Back button!
           AppBar(
-            title: Text('$userEmail'),
+            title: userEmail == null ? Text('Guest User') : Text('$userEmail'),
             //automaticallyImplyLeading: true,
           ),
           Divider(),

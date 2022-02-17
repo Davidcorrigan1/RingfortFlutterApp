@@ -9,6 +9,8 @@ import '../widgets/app_drawer.dart';
 
 // This screen will show the list of ringforts
 class RingfortsListScreen extends StatefulWidget {
+  static const routeName = '/ringfort-list';
+
   @override
   State<RingfortsListScreen> createState() => _RingfortsListScreenState();
 }
