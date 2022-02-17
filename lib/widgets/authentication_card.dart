@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:ringfort_app/firebase/firebaseAuth.dart';
+import 'package:provider/provider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
+import '../firebase/firebaseAuth.dart';
+import '../screens/ringforts_List_screen.dart';
 
 enum AuthMode { Signup, Login }
 
@@ -26,7 +29,7 @@ class _AuthenticationCardState extends State<AuthenticationCard> {
   //--------------------------------------------------------------
   // Submitting the form (either login or Signup)
   //--------------------------------------------------------------
-  void _submit() {
+  void _submit() async {
     if (!_formKey.currentState.validate()) {
       // Invalid!
       return;
@@ -36,13 +39,19 @@ class _AuthenticationCardState extends State<AuthenticationCard> {
       _isLoading = true;
     });
     if (_authMode == AuthMode.Login) {
-      FireBaseAuth.loginUser(_authData['email'], _authData['password']);
+      await FireBaseAuth.loginUser(_authData['email'], _authData['password']);
     } else {
-      FireBaseAuth.registerUser(_authData['email'], _authData['password']);
+      await FireBaseAuth.registerUser(
+          _authData['email'], _authData['password']);
     }
+
     setState(() {
       _isLoading = false;
     });
+    var userEmail = Provider.of<User>(context, listen: false).email;
+    if (userEmail != null) {
+      Navigator.of(context).pushNamed(RingfortsListScreen.routeName);
+    }
   }
 
   void _switchAuthMode() {
