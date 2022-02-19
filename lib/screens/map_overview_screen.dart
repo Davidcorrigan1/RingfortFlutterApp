@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:ringfort_app/models/historic_site.dart';
 
 import '../providers/historic_sites_provider.dart';
 import '../helpers/map_helper.dart';
@@ -14,13 +13,12 @@ class MapOverviewScreen extends StatefulWidget {
 }
 
 class _MapOverviewScreenState extends State<MapOverviewScreen> {
-  var initFirst = true;
+  var _initFirst = true;
+  var _isLoading = false;
   MapType _selectMapType = MapType.normal;
   Set<Marker> _markers = {};
   List<LatLng> _points = [];
   Marker _marker;
-  List<HistoricSite> _filteredSites = [];
-  List<HistoricSite> _sites = [];
   TextEditingController _searchQueryController = TextEditingController();
   bool _isSearching = false;
   String searchQuery = "";
@@ -30,11 +28,19 @@ class _MapOverviewScreenState extends State<MapOverviewScreen> {
   // provider from Firebase.
   @override
   void didChangeDependencies() {
-    if (initFirst) {
+    print('MapsScreen: didChangeDependencies ');
+    if (_initFirst) {
+      _isLoading = true;
       Provider.of<HistoricSitesProvider>(context, listen: false)
-          .fetchAndSetRingforts();
+          .fetchAndSetRingforts()
+          .then((value) => _retrieveSiteandMarkers(context))
+          .then((value) {
+        setState(() {
+          _isLoading = false;
+        });
+      });
     }
-    initFirst = false;
+    _initFirst = false;
     super.didChangeDependencies();
   }
 
@@ -42,32 +48,15 @@ class _MapOverviewScreenState extends State<MapOverviewScreen> {
   // It calls the HistoricSitesProvider to refresh the site list from Firebase
   // and then retrieves the list into this class
   // If there is a filter seach term entered it will filter the results to show.
-  Future<void> _retrieveSiteandMarkers(BuildContext context) async {
-    _sites =
-        await Provider.of<HistoricSitesProvider>(context, listen: false).sites;
-
+  void _retrieveSiteandMarkers(BuildContext context) {
+    print('MapsScreen: Run _retrieveSiteandMarkers ');
     // Filter the sites based on the search criteria
-    if (searchQuery.isEmpty || searchQuery == null) {
-      _filteredSites = _sites;
-    } else {
-      _filteredSites = _sites.where((ringfort) {
-        return ((ringfort.siteName
-                .toLowerCase()
-                .contains(searchQuery.toLowerCase())) ||
-            (ringfort.siteDesc
-                .toLowerCase()
-                .contains(searchQuery.toLowerCase())) ||
-            (ringfort.province
-                .toLowerCase()
-                .contains(searchQuery.toLowerCase())) ||
-            (ringfort.county
-                .toLowerCase()
-                .contains(searchQuery.toLowerCase())) ||
-            (ringfort.address
-                .toLowerCase()
-                .contains(searchQuery.toLowerCase())));
-      }).toList();
-    }
+    Provider.of<HistoricSitesProvider>(context, listen: false)
+        .setFilteredSites(searchQuery);
+
+    var _filteredSites =
+        Provider.of<HistoricSitesProvider>(context, listen: false)
+            .filteredSites;
 
     // Get the markers and the bound points for the filtered sites
     _markers = {};
@@ -81,6 +70,28 @@ class _MapOverviewScreenState extends State<MapOverviewScreen> {
       _markers.add(_marker);
       _points.add(LatLng(site.latitude, site.longitude));
     });
+    // Pointing the Map camera at the markers which match the filter using
+    // the map controller. Not doing this the first time as onMapCreated will
+    // do it. But will do subsequently if there is a visible marker in the map.
+    // If there is only 1 matching marker then the zoom needs to be handled
+    // differently so as to not zoom too much.
+    if (!_initFirst &&
+        _myController != null &&
+        _markers.first.markerId != null) {
+      if (_myController.isMarkerInfoWindowShown(_markers.first.markerId) !=
+          null) {
+        if (_filteredSites.length > 1) {
+          _myController.animateCamera(
+            CameraUpdate.newLatLngBounds(
+                MapHelper.boundsFromLatLngList(_points), 45),
+          );
+        } else {
+          _myController.animateCamera(CameraUpdate.newLatLngZoom(
+              LatLng(_filteredSites[0].latitude, _filteredSites[0].longitude),
+              15));
+        }
+      }
+    }
   }
 
   // Based on https://stackoverflow.com/questions/58908968/how-to-implement-a-flutter-search-app-bar
@@ -155,6 +166,7 @@ class _MapOverviewScreenState extends State<MapOverviewScreen> {
   void updateSearchQuery(String newQuery) {
     setState(() {
       searchQuery = newQuery;
+      _retrieveSiteandMarkers(context);
     });
   }
 
@@ -188,28 +200,30 @@ class _MapOverviewScreenState extends State<MapOverviewScreen> {
         title: _isSearching ? _buildSearchField() : _buildTitle(context),
         actions: _buildActions(),
       ),
-      body: FutureBuilder(
-        future: _retrieveSiteandMarkers(context),
-        builder: (context, snapShot) => snapShot.connectionState ==
-                ConnectionState.waiting
-            ? Center(
-                child: CircularProgressIndicator(),
-              )
-            : _filteredSites.length > 0
-                ? Stack(children: [
-                    GoogleMap(
+      body: _isLoading
+          ? Center(child: CircularProgressIndicator())
+          : Provider.of<HistoricSitesProvider>(context, listen: false)
+                      .filteredSites
+                      .length >
+                  0
+              ? Stack(children: [
+                  Consumer<HistoricSitesProvider>(
+                    builder: (context, historicSites, child) => GoogleMap(
                       initialCameraPosition: CameraPosition(
                           target: LatLng(52.55444, -6.2376), zoom: 16),
                       onTap: null,
                       mapType: _selectMapType,
-                      markers: _filteredSites.length <= 0 ? {} : _markers,
+                      markers: historicSites.filteredSites.length <= 0
+                          ? {}
+                          : _markers,
                       onMapCreated: (controller) {
                         _myController = controller;
+                        print('MapsScreen: onMapCreated executed');
                         // If there is only 1 ringfort then zoom differently
-                        if (_filteredSites.length == 1) {
+                        if (historicSites.filteredSites.length == 1) {
                           controller.animateCamera(CameraUpdate.newLatLngZoom(
-                              LatLng(_filteredSites[0].latitude,
-                                  _filteredSites[0].longitude),
+                              LatLng(historicSites.filteredSites[0].latitude,
+                                  historicSites.filteredSites[0].longitude),
                               15));
                         } else {
                           controller.animateCamera(
@@ -219,33 +233,33 @@ class _MapOverviewScreenState extends State<MapOverviewScreen> {
                         }
                       },
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(15.0),
-                      child: Align(
-                        alignment: Alignment.topRight,
-                        child: FloatingActionButton(
-                          onPressed: () {
-                            // Trigger a switch in the Map type depending on the
-                            // current status, and trigger re-build to show new map.
-                            setState(() {
-                              _selectMapType = _selectMapType == MapType.normal
-                                  ? MapType.satellite
-                                  : MapType.normal;
-                            });
-                          },
-                          materialTapTargetSize: MaterialTapTargetSize.padded,
-                          backgroundColor: Theme.of(context).backgroundColor,
-                          child: const Icon(
-                            Icons.map,
-                          ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(15.0),
+                    child: Align(
+                      alignment: Alignment.topRight,
+                      child: FloatingActionButton(
+                        onPressed: () {
+                          // Trigger a switch in the Map type depending on the
+                          // current status, and trigger re-build to show new map.
+                          setState(() {
+                            _selectMapType = _selectMapType == MapType.normal
+                                ? MapType.satellite
+                                : MapType.normal;
+                          });
+                        },
+                        materialTapTargetSize: MaterialTapTargetSize.padded,
+                        backgroundColor: Theme.of(context).backgroundColor,
+                        child: const Icon(
+                          Icons.map,
                         ),
                       ),
-                    )
-                  ])
-                : Center(
-                    child: Text('No Matching Ringforts'),
-                  ),
-      ),
+                    ),
+                  )
+                ])
+              : Center(
+                  child: Text('No Matching Ringforts'),
+                ),
     );
   }
 }

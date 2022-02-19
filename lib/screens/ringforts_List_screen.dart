@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-
 import '../providers/historic_sites_provider.dart';
 import '../screens/add_ringfort_screen.dart';
 import '../widgets/ringfort_card.dart';
@@ -16,27 +15,30 @@ class RingfortsListScreen extends StatefulWidget {
 }
 
 class _RingfortsListScreenState extends State<RingfortsListScreen> {
-  var initRun = true;
+  var _initRun = true;
+  var _isLoading = false;
   TextEditingController _searchQueryController = TextEditingController();
   bool _isSearching = false;
   String searchQuery = "";
 
-  Future<void> _getRingfortsFuture() async {
-    print('Calling _getRingfortsFuture');
-    await Provider.of<HistoricSitesProvider>(context, listen: false)
-        .fetchAndSetRingforts();
-
-    Provider.of<HistoricSitesProvider>(context, listen: false).setFilteredSites(searchQuery);
-
-  }
-
   @override
+  // Refresh the ringforts from Firebase and then run the filter query
   void didChangeDependencies() {
-    if (initRun) {
+    if (_initRun) {
       print('didChangeDependancies run');
-      _getRingfortsFuture();
+      _isLoading = true;
+      Provider.of<HistoricSitesProvider>(context, listen: false)
+          .fetchAndSetRingforts()
+          .then((value) =>
+              Provider.of<HistoricSitesProvider>(context, listen: false)
+                  .setFilteredSites(searchQuery))
+          .then((value) {
+        setState(() {
+          _isLoading = false;
+        });
+      });
     }
-    initRun = false;
+    _initRun = false;
     super.didChangeDependencies();
   }
 
@@ -51,10 +53,9 @@ class _RingfortsListScreenState extends State<RingfortsListScreen> {
         .fetchAndSetRingforts();
 
     setState(() {
-          Provider.of<HistoricSitesProvider>(context, listen: false)
-              .setFilteredSites(searchQuery);
+      Provider.of<HistoricSitesProvider>(context, listen: false)
+          .setFilteredSites(searchQuery);
     });
-
   }
 
   // Based on https://stackoverflow.com/questions/58908968/how-to-implement-a-flutter-search-app-bar
@@ -101,7 +102,7 @@ class _RingfortsListScreenState extends State<RingfortsListScreen> {
       ];
     }
 
-    // This is
+    // These are the appBar icons when the search icon is not pressed
     return <Widget>[
       IconButton(
         icon: const Icon(Icons.search),
@@ -138,6 +139,8 @@ class _RingfortsListScreenState extends State<RingfortsListScreen> {
   void updateSearchQuery(String newQuery) {
     setState(() {
       searchQuery = newQuery;
+      Provider.of<HistoricSitesProvider>(context, listen: false)
+          .setFilteredSites(searchQuery);
     });
   }
 
@@ -170,45 +173,46 @@ class _RingfortsListScreenState extends State<RingfortsListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: _isSearching ? _buildSearchField() : _buildTitle(context),
-          actions: _buildActions(),
-        ),
-        drawer: AppDrawer(),
-        // Wrapping with RefreshIndicator which takes a function which returns a future.
-        // We define this to call the Provider class. The returned future tells the widget
-        // to stop showing the loader symbol
-        // Wrapping with a FutureBuilder which allows you to build a widget which depends on a Future
-        // being returned. We can then check the status of the Future with the snapShow.connectionState
-        // and display loader or the actual widget depending on if it's waiting or done.
-        body: FutureBuilder(
-          future: _getRingfortsFuture(),
-          builder: (context, snapShot) => snapShot.connectionState ==
-                  ConnectionState.waiting
-              ? Center(
-                  child: CircularProgressIndicator(),
-                )
-              : RefreshIndicator(
-                  onRefresh: () => _refreshRingfortList(),
-                  child: Consumer<HistoricSitesProvider>(
-                    builder: (context, historicSites, child) =>
-                        historicSites.filteredSites.length > 0
-                            ? ListView.builder(
-                                itemCount: historicSites.filteredSites.length,
-                                itemBuilder: (ctx, index) => RingfortCard(
-                                      uid: historicSites.filteredSites[index].uid,
-                                      siteName: historicSites.filteredSites[index].siteName,
-                                      siteDesc: historicSites.filteredSites[index].siteDesc,
-                                      siteProvince:
-                                          historicSites.filteredSites[index].province,
-                                      siteCounty: historicSites.filteredSites[index].county,
-                                      siteImage: historicSites.filteredSites[index].image,
-                                    ))
-                            : Center(
-                                child: Text('No matches'),
-                              ),
-                  ),
-                ),
-        ));
+      appBar: AppBar(
+        title: _isSearching ? _buildSearchField() : _buildTitle(context),
+        actions: _buildActions(),
+      ),
+      drawer: AppDrawer(),
+      // Wrapping with RefreshIndicator which takes a function which returns a future.
+      // We define this to call the Provider class. The returned future tells the widget
+      // to stop showing the loader symbol
+      // Wrapping with a FutureBuilder which allows you to build a widget which depends on a Future
+      // being returned. We can then check the status of the Future with the snapShow.connectionState
+      // and display loader or the actual widget depending on if it's waiting or done.
+      body: _isLoading
+          ? Center(
+              child: CircularProgressIndicator(),
+            )
+          : RefreshIndicator(
+              onRefresh: () => _refreshRingfortList(),
+              child: Consumer<HistoricSitesProvider>(
+                builder: (context, historicSites, child) =>
+                    historicSites.filteredSites.length > 0
+                        ? ListView.builder(
+                            itemCount: historicSites.filteredSites.length,
+                            itemBuilder: (ctx, index) => RingfortCard(
+                                  uid: historicSites.filteredSites[index].uid,
+                                  siteName: historicSites
+                                      .filteredSites[index].siteName,
+                                  siteDesc: historicSites
+                                      .filteredSites[index].siteDesc,
+                                  siteProvince: historicSites
+                                      .filteredSites[index].province,
+                                  siteCounty:
+                                      historicSites.filteredSites[index].county,
+                                  siteImage:
+                                      historicSites.filteredSites[index].image,
+                                ))
+                        : Center(
+                            child: Text('No matches'),
+                          ),
+              ),
+            ),
+    );
   }
 }
