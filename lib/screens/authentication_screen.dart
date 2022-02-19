@@ -54,7 +54,7 @@ class AuthenticationScreen extends StatelessWidget {
                       child: Text(
                         'Ringforts Ireland',
                         style: TextStyle(
-                          color: Theme.of(context).primaryColor,
+                          color: Colors.white,
                           fontSize: 50,
                           fontFamily: 'Anton',
                           fontWeight: FontWeight.normal,
