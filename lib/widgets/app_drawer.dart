@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:ringfort_app/screens/map_overview_screen.dart';
+import 'package:ringfort_app/screens/ringforts_List_screen.dart';
 
 import '../firebase/firebaseAuth.dart';
 import '../screens/add_ringfort_screen.dart';
@@ -28,7 +29,8 @@ class AppDrawer extends StatelessWidget {
           ListTile(
             leading: Icon(Icons.list_alt_outlined),
             title: Text('List Sites'),
-            onTap: () => Navigator.of(context).pushReplacementNamed('/'),
+            onTap: () =>
+                Navigator.of(context).pushNamed(RingfortsListScreen.routeName),
           ),
           Divider(),
           ListTile(

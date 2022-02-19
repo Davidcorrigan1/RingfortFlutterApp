@@ -38,14 +38,22 @@ class _ImageInputState extends State<ImageInput> {
   io.File _siteImage;
   String _siteUrl;
 
-  Future<void> _takeCameraImage() async {
+  Future<void> _getImage({bool camera}) async {
     // Set up an image picker object
     // and use it to take a picure on the camera
     final imagePicker = ImagePicker();
-    final imageFile = await imagePicker.pickImage(
-      source: ImageSource.camera,
-      maxWidth: 600,
-    );
+    XFile imageFile;
+    if (camera) {
+      imageFile = await imagePicker.pickImage(
+        source: ImageSource.camera,
+        maxWidth: 600,
+      );
+    } else {
+      imageFile = await imagePicker.pickImage(
+        source: ImageSource.gallery,
+        maxWidth: 600,
+      );
+    }
 
     // Check if image taken or not
     if (imageFile == null) {
@@ -73,11 +81,11 @@ class _ImageInputState extends State<ImageInput> {
     return Row(
       children: [
         Container(
-          width: 100,
-          height: 100,
+          width: 110,
+          height: 110,
           decoration: BoxDecoration(
             border: Border.all(
-              width: 2,
+              width: 1,
               color: Colors.grey,
             ),
           ),
@@ -88,14 +96,14 @@ class _ImageInputState extends State<ImageInput> {
           child: _siteImage != null
               ? Image.file(
                   _siteImage,
-                  fit: BoxFit.cover,
-                  width: double.infinity,
+                  fit: BoxFit.fill,
+                  //width: double.infinity,
                 )
               : _siteUrl != null
                   ? Image.network(
                       _siteUrl,
-                      fit: BoxFit.cover,
-                      width: double.infinity,
+                      fit: BoxFit.fill,
+                      //  width: double.infinity,
                     )
                   : Text(
                       'No Image',
@@ -106,23 +114,53 @@ class _ImageInputState extends State<ImageInput> {
         SizedBox(
           height: 10,
         ),
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Container(
-            width: 100,
-            height: 100,
-            child: ElevatedButton.icon(
-              style: ButtonStyle(
-                // Shrinks the space around the button
-                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              ),
-              onPressed: _takeCameraImage,
-              icon: Icon(Icons.camera),
-              label: Text(
-                'Take Image',
+        Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(5.0),
+              child: Container(
+                width: 110,
+                height: 50,
+                child: ElevatedButton.icon(
+                  style: ButtonStyle(
+                    // Shrinks the space around the button
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    backgroundColor: MaterialStateProperty.all(
+                        Theme.of(context).backgroundColor),
+                  ),
+                  onPressed: () => _getImage(camera: true),
+                  icon: Icon(Icons.camera),
+                  label: Text(
+                    'Take Image',
+                  ),
+                ),
               ),
             ),
-          ),
+            SizedBox(
+              height: 1,
+            ),
+            Padding(
+              padding: const EdgeInsets.all(5.0),
+              child: Container(
+                width: 110,
+                height: 50,
+                child: ElevatedButton.icon(
+                  style: ButtonStyle(
+                    // Shrinks the space around the button
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    backgroundColor: MaterialStateProperty.all(
+                        Theme.of(context).backgroundColor),
+                  ),
+                  onPressed: () => _getImage(camera: false),
+                  icon: Icon(Icons.photo_album),
+                  label: Text(
+                    'Photos',
+                    style: TextStyle(fontSize: 14),
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
       ],
     );
