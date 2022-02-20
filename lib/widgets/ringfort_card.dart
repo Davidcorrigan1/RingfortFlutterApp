@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import '../screens/ringfort_detail_screen.dart';
 import '../providers/historic_sites_provider.dart';
@@ -11,6 +12,7 @@ class RingfortCard extends StatelessWidget {
   final String siteProvince;
   final String siteCounty;
   final String siteImage;
+  final User user;
 
   const RingfortCard({
     @required this.uid,
@@ -19,6 +21,7 @@ class RingfortCard extends StatelessWidget {
     @required this.siteProvince,
     @required this.siteCounty,
     @required this.siteImage,
+    @required this.user,
   });
 
   @override
@@ -113,8 +116,10 @@ class RingfortCard extends StatelessWidget {
             // Navigates to the details page with the uid of
             // the Ringfort pressed. It will execute the passed in onGoBack
             // function when we pop back from update screen.
-            Navigator.of(context)
-                .pushNamed(RingfortDetailScreen.routeName, arguments: uid);
+            if (user != null) {
+              Navigator.of(context)
+                  .pushNamed(RingfortDetailScreen.routeName, arguments: uid);
+            }
           },
         ),
       ),

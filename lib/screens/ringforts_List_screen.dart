@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:ringfort_app/screens/authentication_screen.dart';
 
 import '../providers/historic_sites_provider.dart';
 import '../screens/add_ringfort_screen.dart';
@@ -40,6 +42,34 @@ class _RingfortsListScreenState extends State<RingfortsListScreen> {
     }
     _initRun = false;
     super.didChangeDependencies();
+  }
+
+  // This method will ask user if they want to login to proceed Yes or no
+  void _showErrorDialog(BuildContext ctx) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text('This option is only available to logged in Users'),
+        content: Text('Do you want to login?'),
+        actions: [
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pop(ctx);
+            },
+            child: Text('No '),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              primary: Theme.of(ctx).backgroundColor,
+            ),
+            onPressed: () {
+              Navigator.of(ctx).pushNamed(AuthenticationScreen.routeName);
+            },
+            child: Text('Yes'),
+          ),
+        ],
+      ),
+    );
   }
 
   // This method is called then the list is pulled down to refresh.
@@ -110,7 +140,12 @@ class _RingfortsListScreenState extends State<RingfortsListScreen> {
       ),
       IconButton(
         onPressed: () {
-          Navigator.of(context).pushNamed(AddRingfortScreen.routeName);
+          var user = Provider.of<User>(context, listen: false);
+          if (user == null) {
+            _showErrorDialog(context);
+          } else {
+            Navigator.of(context).pushNamed(AddRingfortScreen.routeName);
+          }
         },
         icon: Icon(
           Icons.add_circle,
@@ -207,6 +242,7 @@ class _RingfortsListScreenState extends State<RingfortsListScreen> {
                                       historicSites.filteredSites[index].county,
                                   siteImage:
                                       historicSites.filteredSites[index].image,
+                                  user: Provider.of<User>(context, listen: false),
                                 ))
                         : Center(
                             child: Text('No matches'),
