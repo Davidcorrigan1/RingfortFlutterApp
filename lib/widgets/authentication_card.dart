@@ -4,7 +4,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 import '../firebase/firebaseAuth.dart';
 import '../screens/ringforts_List_screen.dart';
-import '../models/app_exception.dart';
 
 enum AuthMode { Signup, Login }
 
@@ -65,31 +64,36 @@ class _AuthenticationCardState extends State<AuthenticationCard> {
         await FireBaseAuth.registerUser(
             _authData['email'], _authData['password']);
       }
-    } on AppException catch (error) {
+    } on Exception catch (error) {
+      print('AuthScreen: $error');
       var errorMessage = 'Authentication Failed';
-      if (error.toString().contains('EMAIL_EXISTS')) {
-        errorMessage = 'This email address is already in use';
-      } else if (error.toString().contains('INVALID_EMAIL')) {
-        errorMessage = 'This is not a valid email address';
-      } else if (error.toString().contains('WEAK_PASSWORD')) {
-        errorMessage = 'This password is too weak';
-      } else if (error.toString().contains('EMAIL_ NOT_FOUND')) {
-        errorMessage = 'Could not find a user with that email';
-      } else if (error.toString().contains('INVALID_PASSWORD')) {
+
+      if (error.toString().contains('firebase_auth/wrong-password')) {
         errorMessage = 'Invalid Password';
+      } else if (error.toString().contains('firebase_auth/user-not-found')) {
+        errorMessage = 'Could not find a user with that email';
+      } else if (error
+          .toString()
+          .contains('firebase_auth/email-already-in-use')) {
+        errorMessage = 'This email address is already in use';
+      } else if (error.toString().contains('firebase_auth/invalid-email')) {
+        errorMessage = 'This is not a valid email address';
       }
-      _showErrorDialog(errorMessage);
-    } catch (error) {
-      const errorMessage = 'Could not authenticate you, please try again later';
       _showErrorDialog(errorMessage);
     }
 
     setState(() {
       _isLoading = false;
     });
-    var userEmail = Provider.of<User>(context, listen: false).email;
-    if (userEmail != null) {
-      Navigator.of(context).pushNamed(RingfortsListScreen.routeName);
+
+    // Check if the user is logged in, if they are go to the List screen
+    try {
+      var user = Provider.of<User>(context, listen: false);
+      if (user != null) {
+        Navigator.of(context).pushNamed(RingfortsListScreen.routeName);
+      }
+    } on Exception catch (error) {
+      print(error);
     }
   }
 
