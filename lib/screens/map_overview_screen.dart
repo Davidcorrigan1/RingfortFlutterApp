@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 
+import '../widgets/app_drawer.dart';
 import '../providers/historic_sites_provider.dart';
 import '../helpers/map_helper.dart';
 
@@ -44,7 +45,6 @@ class _MapOverviewScreenState extends State<MapOverviewScreen> {
     super.didChangeDependencies();
   }
 
-  // This method is called by the FutureBuilder widget.
   // It calls the HistoricSitesProvider to refresh the site list from Firebase
   // and then retrieves the list into this class
   // If there is a filter seach term entered it will filter the results to show.
@@ -200,6 +200,7 @@ class _MapOverviewScreenState extends State<MapOverviewScreen> {
         title: _isSearching ? _buildSearchField() : _buildTitle(context),
         actions: _buildActions(),
       ),
+      drawer: AppDrawer(),
       body: _isLoading
           ? Center(child: CircularProgressIndicator())
           : Provider.of<HistoricSitesProvider>(context, listen: false)

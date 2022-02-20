@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../widgets/authentication_card.dart';
 
+
 class AuthenticationScreen extends StatelessWidget {
   static const routeName = '/auth';
 
