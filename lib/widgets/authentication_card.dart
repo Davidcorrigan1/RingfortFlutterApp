@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:ringfort_app/models/user_data.dart';
 
 import '../firebase/firebaseAuth.dart';
 import '../screens/ringforts_List_screen.dart';
+import '../providers/user_provider.dart';
 
 enum AuthMode { Signup, Login }
 
@@ -58,12 +60,17 @@ class _AuthenticationCardState extends State<AuthenticationCard> {
       _isLoading = true;
     });
     try {
+      String uid;
       if (_authMode == AuthMode.Login) {
-        await FireBaseAuth.loginUser(_authData['email'], _authData['password']);
+        uid = await FireBaseAuth.loginUser(
+            _authData['email'], _authData['password']);
       } else {
-        await FireBaseAuth.registerUser(
+        uid = await FireBaseAuth.registerUser(
             _authData['email'], _authData['password']);
       }
+      // retrieve the Firestore collection for the loggin user.
+      var userData =
+          await Provider.of<UserProvider>(context, listen: false).getCurrentUserData(uid);
     } on Exception catch (error) {
       print('AuthScreen: $error');
       var errorMessage = 'Authentication Failed';

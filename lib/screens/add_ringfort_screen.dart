@@ -1,6 +1,7 @@
 import 'dart:io' as io;
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
 
 import '../models/historic_site.dart';
@@ -19,6 +20,20 @@ class AddRingfortScreen extends StatefulWidget {
 }
 
 class _AddRingfortScreenState extends State<AddRingfortScreen> {
+  var _initFirst = true;
+  String uid;
+
+  @override
+  void didChangeDependencies() {
+    if (_initFirst) {
+      _initFirst = false;
+    }
+
+    uid = Provider.of<User>(context, listen: false).uid;
+
+    super.didChangeDependencies();
+  }
+
   // The taken site image
   io.File _siteImage;
   // Focus node for the description and access fields.
@@ -42,16 +57,17 @@ class _AddRingfortScreenState extends State<AddRingfortScreen> {
 
   // Create an initialize HistoricSite object
   var _newSite = HistoricSite(
-    uid: null,
-    siteName: '',
-    siteDesc: '',
-    siteAccess: '',
-    latitude: 0.0,
-    longitude: 0.0,
-    siteSize: 0.0,
-    address: '',
-    image: '',
-  );
+      uid: null,
+      siteName: '',
+      siteDesc: '',
+      siteAccess: '',
+      latitude: 0.0,
+      longitude: 0.0,
+      siteSize: 0.0,
+      address: '',
+      image: '',
+      lastUpdatedBy: '',
+      createdBy: '');
 
   @override
   void dispose() {
@@ -100,6 +116,9 @@ class _AddRingfortScreenState extends State<AddRingfortScreen> {
       _newSite.longitude = _pickedLocation.longitude;
     }
 
+    _newSite.createdBy = uid;
+    _newSite.lastUpdatedBy = uid;
+
     if (!noErrors) {
       return;
     }
@@ -120,7 +139,10 @@ class _AddRingfortScreenState extends State<AddRingfortScreen> {
         actions: [
           IconButton(
             onPressed: () => Navigator.of(context).pop(),
-            icon: Icon(Icons.cancel, size: 30,),
+            icon: Icon(
+              Icons.cancel,
+              size: 30,
+            ),
           ),
           IconButton(
             onPressed: _saveForm,

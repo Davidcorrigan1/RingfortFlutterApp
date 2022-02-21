@@ -4,6 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:ringfort_app/firebase/firebaseAuth.dart';
 
+import '../providers/user_provider.dart';
 import '../providers/historic_sites_provider.dart';
 import './screens/add_ringfort_screen.dart';
 import './screens/ringforts_List_screen.dart';
@@ -40,6 +41,9 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider<HistoricSitesProvider>.value(
           value: HistoricSitesProvider(),
+        ),
+        ChangeNotifierProvider<UserProvider>.value(
+          value: UserProvider(),
         ),
       ],
       child: Consumer<User>(

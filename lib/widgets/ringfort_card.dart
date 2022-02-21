@@ -5,6 +5,7 @@ import 'package:extended_image/extended_image.dart';
 
 import '../screens/ringfort_detail_screen.dart';
 import '../providers/historic_sites_provider.dart';
+import '../widgets/favourite_icon.dart';
 
 class RingfortCard extends StatelessWidget {
   final String uid;
@@ -42,7 +43,7 @@ class RingfortCard extends StatelessWidget {
         ),
         alignment: Alignment.centerRight,
         padding: EdgeInsets.only(right: 20),
-        margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+        margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       ),
       direction: DismissDirection.endToStart,
       // Making sure the user wants to delete it!
@@ -91,32 +92,41 @@ class RingfortCard extends StatelessWidget {
             ),
           ),
           title: Text(siteName),
-          subtitle: Container(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  siteDesc + '\n',
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                Text(
-                  siteProvince,
-                  textAlign: TextAlign.left,
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
+          subtitle: Stack(children: [
+            Container(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    siteDesc + '\n',
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                   ),
-                ),
-                Text(
-                  siteCounty,
-                  textAlign: TextAlign.left,
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
+                  Text(
+                    siteProvince,
+                    textAlign: TextAlign.left,
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),
-              ],
+                  Text(
+                    siteCounty,
+                    textAlign: TextAlign.left,
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
+            Align(
+              alignment: Alignment.bottomRight,
+              child: Container(
+                margin: const EdgeInsets.symmetric(horizontal: 1, vertical: 5),
+                child: FavouriteIcon(ringfortUID: uid,),
+              ),
+            ),
+          ]),
           onTap: () {
             // Navigates to the details page with the uid of
             // the Ringfort pressed. It will execute the passed in onGoBack
