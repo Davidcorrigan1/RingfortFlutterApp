@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:extended_image/extended_image.dart';
 
 import '../screens/ringfort_detail_screen.dart';
 import '../providers/historic_sites_provider.dart';
@@ -82,8 +83,10 @@ class RingfortCard extends StatelessWidget {
           leading: Container(
             width: 75,
             height: 75,
-            child: Image.network(
+            // using a plugin 'extendedImage' which will cache the image
+            child: ExtendedImage.network(
               siteImage,
+              cache: true,
               fit: BoxFit.cover,
             ),
           ),

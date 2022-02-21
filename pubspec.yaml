@@ -44,6 +44,8 @@ dependencies:
   firebase_auth: ^3.3.7
   # tuple support
   tuple: ^2.0.0
+  # addition image capabilities
+  extended_image: ^6.0.1
 
 
 
