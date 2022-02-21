@@ -16,6 +16,7 @@ class MapOverviewScreen extends StatefulWidget {
 class _MapOverviewScreenState extends State<MapOverviewScreen> {
   var _initFirst = true;
   var _isLoading = false;
+  var _isMapVisible = false;
   MapType _selectMapType = MapType.normal;
   Set<Marker> _markers = {};
   List<LatLng> _points = [];
@@ -209,30 +210,43 @@ class _MapOverviewScreenState extends State<MapOverviewScreen> {
                   0
               ? Stack(children: [
                   Consumer<HistoricSitesProvider>(
-                    builder: (context, historicSites, child) => GoogleMap(
-                      initialCameraPosition: CameraPosition(
-                          target: LatLng(52.55444, -6.2376), zoom: 16),
-                      onTap: null,
-                      mapType: _selectMapType,
-                      markers: historicSites.filteredSites.length <= 0
-                          ? {}
-                          : _markers,
-                      onMapCreated: (controller) {
-                        _myController = controller;
-                        print('MapsScreen: onMapCreated executed');
-                        // If there is only 1 ringfort then zoom differently
-                        if (historicSites.filteredSites.length == 1) {
-                          controller.animateCamera(CameraUpdate.newLatLngZoom(
-                              LatLng(historicSites.filteredSites[0].latitude,
-                                  historicSites.filteredSites[0].longitude),
-                              15));
-                        } else {
-                          controller.animateCamera(
-                            CameraUpdate.newLatLngBounds(
-                                MapHelper.boundsFromLatLngList(_points), 45),
-                          );
-                        }
-                      },
+                    // Using AnimatedOpacity as a workaround for a Google Maps for
+                    // Flutter: see https://github.com/flutter/flutter/issues/39797
+                    // and suggested workaround by zubairehman.
+                    builder: (context, historicSites, child) => AnimatedOpacity(
+                      curve: Curves.fastOutSlowIn,
+                      opacity: _isMapVisible ? 1.0 : 0,
+                      duration: Duration(microseconds: 600),
+                      child: GoogleMap(
+                        initialCameraPosition: CameraPosition(
+                            target: LatLng(52.55444, -6.2376), zoom: 16),
+                        onTap: null,
+                        mapType: _selectMapType,
+                        markers: historicSites.filteredSites.length <= 0
+                            ? {}
+                            : _markers,
+                        onMapCreated: (controller) {
+                          _myController = controller;
+                          print('MapsScreen: onMapCreated executed');
+                          Future.delayed(
+                              const Duration(milliseconds: 550),
+                              () => setState(() {
+                                    _isMapVisible = true;
+                                  }));
+                          // If there is only 1 ringfort then zoom differently
+                          if (historicSites.filteredSites.length == 1) {
+                            controller.animateCamera(CameraUpdate.newLatLngZoom(
+                                LatLng(historicSites.filteredSites[0].latitude,
+                                    historicSites.filteredSites[0].longitude),
+                                15));
+                          } else {
+                            controller.animateCamera(
+                              CameraUpdate.newLatLngBounds(
+                                  MapHelper.boundsFromLatLngList(_points), 45),
+                            );
+                          }
+                        },
+                      ),
                     ),
                   ),
                   Padding(
