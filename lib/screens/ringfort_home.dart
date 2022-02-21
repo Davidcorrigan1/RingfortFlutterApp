@@ -14,7 +14,10 @@ class RingfortHome extends StatelessWidget {
         body: Column(
           children: [
             Container(
-              height: MediaQuery.of(context).size.height - 100.0,
+              // Height after bottons and possible pop-up keyboard 
+              height: MediaQuery.of(context).size.height -
+                  100.0 -
+                  MediaQuery.of(context).viewInsets.bottom,
               width: MediaQuery.of(context).size.width,
               child: Stack(
                 children: [
