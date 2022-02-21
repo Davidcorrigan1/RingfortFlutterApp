@@ -77,17 +77,17 @@ class RingfortCard extends StatelessWidget {
             .deleteSite(uid);
       },
       child: Card(
-        elevation: 2.0,
-        margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+        color: Colors.grey[100],
+        elevation: 3.0,
+        margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 7),
         child: ListTile(
-          leading: Container(
-            width: 75,
-            height: 75,
-            // using a plugin 'extendedImage' which will cache the image
+          leading: SizedBox(
+            width: 90,
+            height: 90,
             child: ExtendedImage.network(
               siteImage,
               cache: true,
-              fit: BoxFit.cover,
+              fit: BoxFit.fill,
             ),
           ),
           title: Text(siteName),
@@ -96,7 +96,9 @@ class RingfortCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  siteDesc,
+                  siteDesc + '\n',
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                 ),
                 Text(
                   siteProvince,

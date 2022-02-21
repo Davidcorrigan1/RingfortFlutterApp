@@ -231,20 +231,27 @@ class _MapOverviewScreenState extends State<MapOverviewScreen> {
                           Future.delayed(
                               const Duration(milliseconds: 550),
                               () => setState(() {
+                                    // If there is only 1 ringfort then zoom differently
+                                    if (historicSites.filteredSites.length ==
+                                        1) {
+                                      controller.animateCamera(
+                                          CameraUpdate.newLatLngZoom(
+                                              LatLng(
+                                                  historicSites.filteredSites[0]
+                                                      .latitude,
+                                                  historicSites.filteredSites[0]
+                                                      .longitude),
+                                              15));
+                                    } else {
+                                      controller.animateCamera(
+                                        CameraUpdate.newLatLngBounds(
+                                            MapHelper.boundsFromLatLngList(
+                                                _points),
+                                            45),
+                                      );
+                                    }
                                     _isMapVisible = true;
                                   }));
-                          // If there is only 1 ringfort then zoom differently
-                          if (historicSites.filteredSites.length == 1) {
-                            controller.animateCamera(CameraUpdate.newLatLngZoom(
-                                LatLng(historicSites.filteredSites[0].latitude,
-                                    historicSites.filteredSites[0].longitude),
-                                15));
-                          } else {
-                            controller.animateCamera(
-                              CameraUpdate.newLatLngBounds(
-                                  MapHelper.boundsFromLatLngList(_points), 45),
-                            );
-                          }
                         },
                       ),
                     ),
