@@ -84,15 +84,11 @@ class RingfortCard extends StatelessWidget {
           leading: SizedBox(
             width: 90,
             height: 90,
-            // using a plugin 'extendedImage' which will cache the image
-            //child: FittedBox(
-            //  fit: BoxFit.fill,
             child: ExtendedImage.network(
               siteImage,
               cache: true,
               fit: BoxFit.fill,
             ),
-            //),
           ),
           title: Text(siteName),
           subtitle: Container(
