@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:ringfort_app/models/historic_site.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import '../providers/historic_sites_provider.dart';
 import '../widgets/image_input.dart';
@@ -22,6 +23,8 @@ class _RingfortDetailScreenState extends State<RingfortDetailScreen> {
   var _isInit = true;
   // uid of site being updated
   var uid = '';
+  // User collection uid
+  var userUid = '';
   // Initialize a HistoricSite object to display
   var _displaySite = HistoricSite(
       uid: '',
@@ -31,7 +34,9 @@ class _RingfortDetailScreenState extends State<RingfortDetailScreen> {
       latitude: 0.0,
       longitude: 0.0,
       siteSize: 0.0,
-      image: null);
+      image: null,
+      lastUpdatedBy: '',
+      createdBy: '');
 
   // Variable which will hold inital values of Ringfort being updated
   var _initValues = {
@@ -71,6 +76,7 @@ class _RingfortDetailScreenState extends State<RingfortDetailScreen> {
       uid = ModalRoute.of(context).settings.arguments;
       _displaySite = Provider.of<HistoricSitesProvider>(context, listen: false)
           .findSiteById(uid);
+      userUid = Provider.of<User>(context).uid;
       _initValues = {
         'uid': uid,
         'siteName': _displaySite.siteName,
@@ -129,6 +135,8 @@ class _RingfortDetailScreenState extends State<RingfortDetailScreen> {
       _showErrorDialog('You need to select a location to proceed');
       return;
     }
+
+    _displaySite.lastUpdatedBy = userUid;
 
     if (!noErrors) {
       return;

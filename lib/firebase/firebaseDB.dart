@@ -30,15 +30,19 @@ class FirebaseDB {
     return siteCollection.get();
   }
 
-  
-  // Add site document on Firebase 
+  // Add site document on Firebase
   Future<void> addSite(HistoricSite site) async {
     return siteCollection.doc(site.uid).set(site.toJson());
   }
 
-  // Add user document on Firebase 
+  // Add user document on Firebase
   Future<void> addUser(UserData user) async {
     return userCollection.doc(user.uid).set(user.toJson());
+  }
+
+  // Update user document on Firebase
+  Future<void> updateUser(UserData user) async {
+    return userCollection.doc(user.uid).update(user.toJson());
   }
 
   // Update a specific ringfort document in the collection
@@ -69,5 +73,14 @@ class FirebaseDB {
     var randomDoc = await siteCollection.doc();
     String docId = randomDoc.id;
     return docId;
+  }
+
+  // retrieve user data from Firestore and convert to 'UserData' class object
+  Future<UserData> getUserdata(String uid) async {
+    print('userid: $uid');
+    var snapshot = await userCollection.doc(uid).get();
+    print('snapshot: $snapshot');
+    UserData userData = UserData.fromJson(snapshot.data());
+    return userData;
   }
 }

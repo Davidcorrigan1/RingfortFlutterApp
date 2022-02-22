@@ -13,6 +13,8 @@ class HistoricSite {
   String province;
   String county;
   String image;
+  String lastUpdatedBy;
+  String createdBy;
 
   // Class constructor
   HistoricSite({
@@ -27,6 +29,8 @@ class HistoricSite {
     this.province,
     this.county,
     @required this.image,
+    @required this.lastUpdatedBy,
+    @required this.createdBy,
   });
 
   // A factory constructor to create Ringfort object from JSON
@@ -42,7 +46,9 @@ class HistoricSite {
         address: json['address'] ?? '',
         province: json['province'] ?? '',
         county: json['county'] ?? '',
-        image: json['image'] ?? '');
+        image: json['image'] ?? '',
+        lastUpdatedBy: json['lastUpdatedBy'] ?? '',
+        createdBy: json['createdBy']);
   }
 
   // Add a function to convert from firestore snapshot into a historicSite object
@@ -50,19 +56,21 @@ class HistoricSite {
     Map data = document.data as Map;
 
     return HistoricSite(
-        uid: document.id,
-        siteName: data['siteName'] ?? '',
-        siteDesc: data['siteDesc'] ?? '',
-        siteAccess: data['siteAccess'] ?? '',
-        siteSize: data['siteSize'] ?? 0.0,
-        latitude: data['latitude'] ?? 0.0,
-        longitude: data['longitude'] ?? 0.0,
-        address: data['address'] ?? '',
-        province: data['province'] ?? '',
-        county: data['county'] ?? '',
-        image: data['image'] ?? '');
+      uid: document.id,
+      siteName: data['siteName'] ?? '',
+      siteDesc: data['siteDesc'] ?? '',
+      siteAccess: data['siteAccess'] ?? '',
+      siteSize: data['siteSize'] ?? 0.0,
+      latitude: data['latitude'] ?? 0.0,
+      longitude: data['longitude'] ?? 0.0,
+      address: data['address'] ?? '',
+      province: data['province'] ?? '',
+      county: data['county'] ?? '',
+      image: data['image'] ?? '',
+      lastUpdatedBy: data['lastUpdatedBy'] ?? '',
+      createdBy: data['createdBy'],
+    );
   }
-
 
   // Function to turn Ringfort object to a Map of key values pairs
   Map<String, dynamic> toJson() => _historicSiteToJson(this);
@@ -82,4 +90,6 @@ Map<String, dynamic> _historicSiteToJson(HistoricSite instance) =>
       'province': instance.province,
       'county': instance.county,
       'image': instance.image,
+      'lastUpdatedBy': instance.lastUpdatedBy,
+      'createdBy': instance.createdBy
     };

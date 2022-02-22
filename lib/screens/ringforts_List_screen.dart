@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:ringfort_app/screens/authentication_screen.dart';
 
 import '../providers/historic_sites_provider.dart';
+import '../providers/user_provider.dart';
 import '../screens/add_ringfort_screen.dart';
 import '../widgets/ringfort_card.dart';
 import '../widgets/app_drawer.dart';
@@ -19,6 +20,7 @@ class RingfortsListScreen extends StatefulWidget {
 class _RingfortsListScreenState extends State<RingfortsListScreen> {
   var _initRun = true;
   var _isLoading = false;
+  User user;
   TextEditingController _searchQueryController = TextEditingController();
   bool _isSearching = false;
   String searchQuery = "";
@@ -29,19 +31,31 @@ class _RingfortsListScreenState extends State<RingfortsListScreen> {
     if (_initRun) {
       print('didChangeDependancies run');
       _isLoading = true;
+      user = Provider.of<User>(context, listen: false);
       Provider.of<HistoricSitesProvider>(context, listen: false)
           .fetchAndSetRingforts()
           .then((value) =>
               Provider.of<HistoricSitesProvider>(context, listen: false)
                   .setFilteredSites(searchQuery))
           .then((value) {
-        setState(() {
-          _isLoading = false;
-        });
+        if (user != null) {
+          Provider.of<UserProvider>(context, listen: false)
+              .getCurrentUserData(user.uid)
+              .then((value) {
+            setState(() {
+              _isLoading = false;
+            });
+          });
+        } else {
+          setState(() {
+            _isLoading = false;
+          });
+        }
       });
+
+      _initRun = false;
+      super.didChangeDependencies();
     }
-    _initRun = false;
-    super.didChangeDependencies();
   }
 
   // This method will ask user if they want to login to proceed Yes or no
@@ -226,27 +240,28 @@ class _RingfortsListScreenState extends State<RingfortsListScreen> {
           : RefreshIndicator(
               onRefresh: () => _refreshRingfortList(),
               child: Consumer<HistoricSitesProvider>(
-                builder: (context, historicSites, child) =>
-                    historicSites.filteredSites.length > 0
-                        ? ListView.builder(
-                            itemCount: historicSites.filteredSites.length,
-                            itemBuilder: (ctx, index) => RingfortCard(
-                                  uid: historicSites.filteredSites[index].uid,
-                                  siteName: historicSites
-                                      .filteredSites[index].siteName,
-                                  siteDesc: historicSites
-                                      .filteredSites[index].siteDesc,
-                                  siteProvince: historicSites
-                                      .filteredSites[index].province,
-                                  siteCounty:
-                                      historicSites.filteredSites[index].county,
-                                  siteImage:
-                                      historicSites.filteredSites[index].image,
-                                  user: Provider.of<User>(context, listen: false),
-                                ))
-                        : Center(
-                            child: Text('No matches'),
-                          ),
+                builder: (context, historicSites, child) => historicSites
+                            .filteredSites.length >
+                        0
+                    ? ListView.builder(
+                        itemCount: historicSites.filteredSites.length,
+                        itemBuilder: (ctx, index) => RingfortCard(
+                              uid: historicSites.filteredSites[index].uid,
+                              siteName:
+                                  historicSites.filteredSites[index].siteName,
+                              siteDesc:
+                                  historicSites.filteredSites[index].siteDesc,
+                              siteProvince:
+                                  historicSites.filteredSites[index].province,
+                              siteCounty:
+                                  historicSites.filteredSites[index].county,
+                              siteImage:
+                                  historicSites.filteredSites[index].image,
+                              user: Provider.of<User>(context, listen: false),
+                            ))
+                    : Center(
+                        child: Text('No matches'),
+                      ),
               ),
             ),
     );

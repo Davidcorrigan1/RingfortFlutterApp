@@ -97,17 +97,20 @@ class HistoricSitesProvider with ChangeNotifier {
 
     // waiting for the firebase storage o return a Url to store with site
     final newSite = HistoricSite(
-        uid: site.uid,
-        siteName: site.siteName,
-        siteDesc: site.siteDesc,
-        siteAccess: site.siteAccess,
-        latitude: site.latitude,
-        longitude: site.longitude,
-        siteSize: site.siteSize,
-        address: addressMap['address'],
-        county: addressMap['county'],
-        province: addressMap['province'],
-        image: imageUrl);
+      uid: site.uid,
+      siteName: site.siteName,
+      siteDesc: site.siteDesc,
+      siteAccess: site.siteAccess,
+      latitude: site.latitude,
+      longitude: site.longitude,
+      siteSize: site.siteSize,
+      address: addressMap['address'],
+      county: addressMap['county'],
+      province: addressMap['province'],
+      image: imageUrl,
+      lastUpdatedBy: site.lastUpdatedBy,
+      createdBy: site.createdBy,
+    );
 
     // adding site to local list
     _sites.add(newSite);
@@ -122,11 +125,11 @@ class HistoricSitesProvider with ChangeNotifier {
   //-------------------------------------------------------------
   // This will find the site to be updated and update it.
   //-------------------------------------------------------------
-  void updateSite(String uid, HistoricSite updatedSite, io.File image) async {
-    final siteIndex = _sites.indexWhere((site) => site.uid == uid);
+  void updateSite(String siteUid,  HistoricSite updatedSite, io.File image) async {
+    final siteIndex = _sites.indexWhere((site) => site.uid == siteUid);
 
     // Store the image in Firebase Storage
-    final imageUrl = await FirebaseDB().addImage(image, uid);
+    final imageUrl = await FirebaseDB().addImage(image, siteUid);
     if (!imageUrl.isEmpty) {
       updatedSite.image = imageUrl;
     }

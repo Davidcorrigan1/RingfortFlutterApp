@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
 
 import '../widgets/app_drawer.dart';
 import '../providers/historic_sites_provider.dart';
+import '../providers/user_provider.dart';
 import '../helpers/map_helper.dart';
 
 class MapOverviewScreen extends StatefulWidget {
@@ -17,6 +19,7 @@ class _MapOverviewScreenState extends State<MapOverviewScreen> {
   var _initFirst = true;
   var _isLoading = false;
   var _isMapVisible = false;
+  User user;
   MapType _selectMapType = MapType.normal;
   Set<Marker> _markers = {};
   List<LatLng> _points = [];
@@ -33,13 +36,24 @@ class _MapOverviewScreenState extends State<MapOverviewScreen> {
     print('MapsScreen: didChangeDependencies ');
     if (_initFirst) {
       _isLoading = true;
+      user = Provider.of<User>(context, listen: false);
       Provider.of<HistoricSitesProvider>(context, listen: false)
           .fetchAndSetRingforts()
           .then((value) => _retrieveSiteandMarkers(context))
           .then((value) {
-        setState(() {
-          _isLoading = false;
-        });
+        if (user != null) {
+          Provider.of<UserProvider>(context, listen: false)
+              .getCurrentUserData(user.uid)
+              .then((value) {
+            setState(() {
+              _isLoading = false;
+            });
+          });
+        } else {
+          setState(() {
+            _isLoading = false;
+          });
+        }
       });
     }
     _initFirst = false;
