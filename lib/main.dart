@@ -7,11 +7,11 @@ import 'package:ringfort_app/firebase/firebaseAuth.dart';
 import '../providers/user_provider.dart';
 import '../providers/historic_sites_provider.dart';
 import './screens/add_ringfort_screen.dart';
+import 'screens/ringfort_home_screen.dart';
 import './screens/ringforts_List_screen.dart';
 import './screens/ringfort_detail_screen.dart';
 import './screens/authentication_screen.dart';
 import '../screens/map_overview_screen.dart';
-import '../screens/ringfort_home.dart';
 
 Future<void> main() async {
   // WidgetsFlutterBinding is used to interact with the Flutter engine,
@@ -53,17 +53,17 @@ class MyApp extends StatelessWidget {
             primarySwatch: Colors.green,
             primaryColor: Colors.grey,
           ),
-          home: RingfortHome(),
-          //home: RingfortsListScreen(),
-          //home: User != null ? RingfortsListScreen() : AuthenticationScreen(),
+          home: RingfortHomeScreen(),
           // Routing table for the app screens
           routes: {
+            //Route - Ringfort Home screen
+            RingfortHomeScreen.routeName: (context) => RingfortHomeScreen(),
             //Route - add a ringfort screen
-            AddRingfortScreen.routeName: (ctx) => AddRingfortScreen(),
+            AddRingfortScreen.routeName: (context) => AddRingfortScreen(),
             //Route - Ringfort List screen
-            RingfortsListScreen.routeName: (ctx) => RingfortsListScreen(),
+            RingfortsListScreen.routeName: (context) => RingfortsListScreen(),
             //Route - Ringfort Detail screen
-            RingfortDetailScreen.routeName: (ctx) => RingfortDetailScreen(),
+            RingfortDetailScreen.routeName: (context) => RingfortDetailScreen(),
             //Route - AuthScreen
             AuthenticationScreen.routeName: (context) => AuthenticationScreen(),
             //Route - Map Overview screen

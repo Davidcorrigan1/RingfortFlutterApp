@@ -119,11 +119,17 @@ class RingfortCard extends StatelessWidget {
                 ],
               ),
             ),
+            // This will display the favourites icon if a user is logged in.
             Align(
               alignment: Alignment.bottomRight,
               child: Container(
                 margin: const EdgeInsets.symmetric(horizontal: 1, vertical: 5),
-                child: FavouriteIcon(ringfortUID: uid,),
+                child: user != null
+                    ? FavouriteIcon(
+                        ringfortUID: uid,
+                        user: user,
+                      )
+                    : Container(),
               ),
             ),
           ]),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:ringfort_app/models/user_data.dart';
+
 
 import '../firebase/firebaseAuth.dart';
 import '../screens/ringforts_List_screen.dart';
@@ -69,8 +69,7 @@ class _AuthenticationCardState extends State<AuthenticationCard> {
             _authData['email'], _authData['password']);
       }
       // retrieve the Firestore collection for the loggin user.
-      var userData =
-          await Provider.of<UserProvider>(context, listen: false).getCurrentUserData(uid);
+      await Provider.of<UserProvider>(context, listen: false).getCurrentUserData(uid);
     } on Exception catch (error) {
       print('AuthScreen: $error');
       var errorMessage = 'Authentication Failed';
