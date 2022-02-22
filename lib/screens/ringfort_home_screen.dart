@@ -1,9 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:ringfort_app/screens/authentication_screen.dart';
-import 'package:ringfort_app/screens/map_overview_screen.dart';
-import 'package:ringfort_app/screens/ringforts_List_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:provider/provider.dart';
 
-class RingfortHome extends StatelessWidget {
+import '../screens/authentication_screen.dart';
+import '../screens/map_overview_screen.dart';
+import '../screens/ringforts_List_screen.dart';
+import '../providers/user_provider.dart';
+import '../firebase/firebaseAuth.dart';
+
+class RingfortHomeScreen extends StatefulWidget {
+  static const routeName = '/ringfort-home';
+
+  @override
+  State<RingfortHomeScreen> createState() => _RingfortHomeScreenState();
+}
+
+class _RingfortHomeScreenState extends State<RingfortHomeScreen> {
   @override
   Widget build(BuildContext context) {
     // WillPopScope stops the screen from popping from Stack
@@ -14,7 +26,7 @@ class RingfortHome extends StatelessWidget {
         body: Column(
           children: [
             Container(
-              // Height after bottons and possible pop-up keyboard 
+              // Height after bottons and possible pop-up keyboard
               height: MediaQuery.of(context).size.height -
                   100.0 -
                   MediaQuery.of(context).viewInsets.bottom,
@@ -93,24 +105,41 @@ class RingfortHome extends StatelessWidget {
                       ),
                     ),
                   ),
-                  GestureDetector(
-                    onTap: () => Navigator.of(context)
-                        .pushNamed(AuthenticationScreen.routeName),
-                    child: Container(
-                      height: 100,
-                      width: MediaQuery.of(context).size.width / 3.0,
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).backgroundColor,
-                        border: Border.all(
-                          width: 2,
+                  Consumer<User>(
+                    builder: (context, userObject, child) => GestureDetector(
+                      onTap: () {
+                        if (userObject != null) {
+                          FireBaseAuth.logoutUser();
+                          setState(() {
+                            Provider.of<UserProvider>(context, listen: false)
+                                .logoutUser;
+                          });
+                        } else {
+                          Navigator.of(context)
+                              .pushNamed(AuthenticationScreen.routeName);
+                        }
+                      },
+                      child: Container(
+                        height: 100,
+                        width: MediaQuery.of(context).size.width / 3.0,
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).backgroundColor,
+                          border: Border.all(
+                            width: 2,
+                          ),
                         ),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(20.0),
-                        child: Center(
-                          child: Text(
-                            'Login',
-                            textAlign: TextAlign.center,
+                        child: Padding(
+                          padding: const EdgeInsets.all(20.0),
+                          child: Center(
+                            child: userObject != null
+                                ? Text(
+                                    'Logout',
+                                    textAlign: TextAlign.center,
+                                  )
+                                : Text(
+                                    'Login',
+                                    textAlign: TextAlign.center,
+                                  ),
                           ),
                         ),
                       ),

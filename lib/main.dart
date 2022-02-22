@@ -4,13 +4,14 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:ringfort_app/firebase/firebaseAuth.dart';
 
+import '../providers/user_provider.dart';
 import '../providers/historic_sites_provider.dart';
 import './screens/add_ringfort_screen.dart';
+import 'screens/ringfort_home_screen.dart';
 import './screens/ringforts_List_screen.dart';
 import './screens/ringfort_detail_screen.dart';
 import './screens/authentication_screen.dart';
 import '../screens/map_overview_screen.dart';
-import '../screens/ringfort_home.dart';
 
 Future<void> main() async {
   // WidgetsFlutterBinding is used to interact with the Flutter engine,
@@ -41,31 +42,32 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider<HistoricSitesProvider>.value(
           value: HistoricSitesProvider(),
         ),
-      ],
-      child: Consumer<User>(
-        builder: (context, User, child) => MaterialApp(
-          title: 'Ringforts of Ireland',
-          theme: ThemeData(
-            primarySwatch: Colors.green,
-            primaryColor: Colors.grey,
-          ),
-          home: RingfortHome(),
-          //home: RingfortsListScreen(),
-          //home: User != null ? RingfortsListScreen() : AuthenticationScreen(),
-          // Routing table for the app screens
-          routes: {
-            //Route - add a ringfort screen
-            AddRingfortScreen.routeName: (ctx) => AddRingfortScreen(),
-            //Route - Ringfort List screen
-            RingfortsListScreen.routeName: (ctx) => RingfortsListScreen(),
-            //Route - Ringfort Detail screen
-            RingfortDetailScreen.routeName: (ctx) => RingfortDetailScreen(),
-            //Route - AuthScreen
-            AuthenticationScreen.routeName: (context) => AuthenticationScreen(),
-            //Route - Map Overview screen
-            MapOverviewScreen.routeName: (context) => MapOverviewScreen(),
-          },
+        ChangeNotifierProvider<UserProvider>.value(
+          value: UserProvider(),
         ),
+      ],
+      child: MaterialApp(
+        title: 'Ringforts of Ireland',
+        theme: ThemeData(
+          primarySwatch: Colors.green,
+          primaryColor: Colors.grey,
+        ),
+        home: RingfortHomeScreen(),
+        // Routing table for the app screens
+        routes: {
+          //Route - Ringfort Home screen
+          RingfortHomeScreen.routeName: (context) => RingfortHomeScreen(),
+          //Route - add a ringfort screen
+          AddRingfortScreen.routeName: (context) => AddRingfortScreen(),
+          //Route - Ringfort List screen
+          RingfortsListScreen.routeName: (context) => RingfortsListScreen(),
+          //Route - Ringfort Detail screen
+          RingfortDetailScreen.routeName: (context) => RingfortDetailScreen(),
+          //Route - AuthScreen
+          AuthenticationScreen.routeName: (context) => AuthenticationScreen(),
+          //Route - Map Overview screen
+          MapOverviewScreen.routeName: (context) => MapOverviewScreen(),
+        },
       ),
     );
   }

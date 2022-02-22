@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:ringfort_app/screens/authentication_screen.dart';
 import 'package:ringfort_app/screens/map_overview_screen.dart';
+import 'package:ringfort_app/screens/ringfort_home_screen.dart';
 import 'package:ringfort_app/screens/ringforts_List_screen.dart';
 
 import '../firebase/firebaseAuth.dart';
 import '../screens/add_ringfort_screen.dart';
+import '../providers/user_provider.dart';
 
 class AppDrawer extends StatelessWidget {
   @override
@@ -41,8 +43,8 @@ class AppDrawer extends StatelessWidget {
         ),
       );
     }
-  
-    // Here we check if the user is logged in, and get the email if they are. 
+
+    // Here we check if the user is logged in, and get the email if they are.
     try {
       user = Provider.of<User>(context);
       if (user != null) {
@@ -77,7 +79,7 @@ class AppDrawer extends StatelessWidget {
             },
           ),
           Divider(),
-          // This is the add Ringfort option, when tapped it checks if the 
+          // This is the add Ringfort option, when tapped it checks if the
           // user is logged on or not and asks them to logon to proceed if not.
           ListTile(
             leading: Icon(Icons.add),
@@ -104,9 +106,10 @@ class AppDrawer extends StatelessWidget {
                     Navigator.of(context).pop();
                     // Then navigate to home screen which will check login status and switch to login screen
                     Navigator.of(context)
-                        .pushReplacementNamed(AuthenticationScreen.routeName);
+                        .pushReplacementNamed(RingfortHomeScreen.routeName);
                     //then FirebaseAuth to logout.
                     FireBaseAuth.logoutUser();
+                    Provider.of<UserProvider>(context, listen: false).logoutUser;
                   })
               : ListTile(
                   leading: Icon(Icons.login),

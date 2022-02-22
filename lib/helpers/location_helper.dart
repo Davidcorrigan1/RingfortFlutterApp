@@ -30,7 +30,7 @@ class LocationHelper {
       'D',
       'WH'
     ];
-    var munster = ['KY', 'C', 'L', 'W', 'CE', 'T'];
+    var munster = ['KY', 'C', 'L', 'W', 'CE', 'T', 'TA'];
     var connaght = ['MO', 'G', 'SO', 'LM', 'RN'];
     var ulster = ['DL', 'CN', 'Northern Ireland'];
 
