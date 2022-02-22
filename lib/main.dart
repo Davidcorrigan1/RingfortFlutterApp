@@ -46,30 +46,28 @@ class MyApp extends StatelessWidget {
           value: UserProvider(),
         ),
       ],
-      child: Consumer<User>(
-        builder: (context, User, child) => MaterialApp(
-          title: 'Ringforts of Ireland',
-          theme: ThemeData(
-            primarySwatch: Colors.green,
-            primaryColor: Colors.grey,
-          ),
-          home: RingfortHomeScreen(),
-          // Routing table for the app screens
-          routes: {
-            //Route - Ringfort Home screen
-            RingfortHomeScreen.routeName: (context) => RingfortHomeScreen(),
-            //Route - add a ringfort screen
-            AddRingfortScreen.routeName: (context) => AddRingfortScreen(),
-            //Route - Ringfort List screen
-            RingfortsListScreen.routeName: (context) => RingfortsListScreen(),
-            //Route - Ringfort Detail screen
-            RingfortDetailScreen.routeName: (context) => RingfortDetailScreen(),
-            //Route - AuthScreen
-            AuthenticationScreen.routeName: (context) => AuthenticationScreen(),
-            //Route - Map Overview screen
-            MapOverviewScreen.routeName: (context) => MapOverviewScreen(),
-          },
+      child: MaterialApp(
+        title: 'Ringforts of Ireland',
+        theme: ThemeData(
+          primarySwatch: Colors.green,
+          primaryColor: Colors.grey,
         ),
+        home: RingfortHomeScreen(),
+        // Routing table for the app screens
+        routes: {
+          //Route - Ringfort Home screen
+          RingfortHomeScreen.routeName: (context) => RingfortHomeScreen(),
+          //Route - add a ringfort screen
+          AddRingfortScreen.routeName: (context) => AddRingfortScreen(),
+          //Route - Ringfort List screen
+          RingfortsListScreen.routeName: (context) => RingfortsListScreen(),
+          //Route - Ringfort Detail screen
+          RingfortDetailScreen.routeName: (context) => RingfortDetailScreen(),
+          //Route - AuthScreen
+          AuthenticationScreen.routeName: (context) => AuthenticationScreen(),
+          //Route - Map Overview screen
+          MapOverviewScreen.routeName: (context) => MapOverviewScreen(),
+        },
       ),
     );
   }

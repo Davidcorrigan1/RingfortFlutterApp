@@ -88,7 +88,7 @@ class RingfortCard extends StatelessWidget {
             child: ExtendedImage.network(
               siteImage,
               cache: true,
-              fit: BoxFit.fill,
+              fit: BoxFit.cover,
             ),
           ),
           title: Text(siteName),

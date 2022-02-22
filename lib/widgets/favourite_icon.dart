@@ -29,7 +29,7 @@ class _FavouriteIconState extends State<FavouriteIcon> {
       builder: (context, userData, child) => GestureDetector(
         child: CircleAvatar(
           backgroundColor: Colors.white,
-          child: widget.user == null
+          child: userData.userFavourites == null
               ? Container()
               : userData.userFavourites.any((fav) => fav == widget.ringfortUID)
                   ? Icon(

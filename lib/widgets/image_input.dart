@@ -96,13 +96,13 @@ class _ImageInputState extends State<ImageInput> {
           child: _siteImage != null
               ? Image.file(
                   _siteImage,
-                  fit: BoxFit.fill,
+                  fit: BoxFit.cover,
                   //width: double.infinity,
                 )
               : _siteUrl != null
                   ? Image.network(
                       _siteUrl,
-                      fit: BoxFit.fill,
+                      fit: BoxFit.cover,
                       //  width: double.infinity,
                     )
                   : Text(
