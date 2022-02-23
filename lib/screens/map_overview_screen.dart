@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 
 import '../models/user_data.dart';
 import '../widgets/app_drawer.dart';
+import '../widgets/map_card.dart';
 import '../providers/historic_sites_provider.dart';
 import '../providers/user_provider.dart';
 import '../helpers/map_helper.dart';
@@ -307,6 +308,43 @@ class _MapOverviewScreenState extends State<MapOverviewScreen> {
                         backgroundColor: Theme.of(context).backgroundColor,
                         child: const Icon(
                           Icons.map,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(5),
+                    child: Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Container(
+                        width: MediaQuery.of(context).size.width,
+                        height: 120,
+                        child: Consumer<HistoricSitesProvider>(
+                          builder: (context, historicSites, child) =>
+                              historicSites.filteredSites.length > 0
+                                  ? ListView.builder(
+                                      scrollDirection: Axis.horizontal,
+                                      itemCount:
+                                          historicSites.filteredSites.length,
+                                      itemBuilder: (ctx, index) => MapCard(
+                                            uid: historicSites
+                                                .filteredSites[index].uid,
+                                            siteName: historicSites
+                                                .filteredSites[index].siteName,
+                                            siteDesc: historicSites
+                                                .filteredSites[index].siteDesc,
+                                            siteProvince: historicSites
+                                                .filteredSites[index].province,
+                                            siteCounty: historicSites
+                                                .filteredSites[index].county,
+                                            siteImage: historicSites
+                                                .filteredSites[index].image,
+                                            user: Provider.of<User>(context,
+                                                listen: false),
+                                          ))
+                                  : Center(
+                                      child: Text('No matches'),
+                                    ),
                         ),
                       ),
                     ),
