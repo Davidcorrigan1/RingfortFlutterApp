@@ -2,6 +2,7 @@ import 'dart:io' as io;
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
+import 'package:ringfort_app/models/user_data.dart';
 
 import '../helpers/location_helper.dart';
 import '../models/historic_site.dart';
@@ -30,12 +31,28 @@ class HistoricSitesProvider with ChangeNotifier {
 
   //-------------------------------------------------------------
   // This method will return the list of filtered sites
+  // checking if the search text is present in any of the
+  // ringforts fields, and if favourite selected, check if
+  // the ringfort uid is one of the users favourites.
   //-------------------------------------------------------------
-  void setFilteredSites(String searchQuery) {
+  void setFilteredSites(
+      String searchQuery, bool _showFavourites, UserData userData) {
     if (searchQuery.isEmpty) {
-      _filteredSites = [..._sites];
+      if (_showFavourites) {
+        _filteredSites = _sites.where((ringfort) {
+          bool _found = false;
+          userData.favourites.forEach((fav) {
+            if (fav == ringfort.uid) {
+              _found = true;
+            }
+          });
+          return _found;
+        }).toList();
+      } else {
+        _filteredSites = [..._sites];
+      }
     } else {
-      _filteredSites = _sites.where((ringfort) {
+      var _searchedSites = _sites.where((ringfort) {
         return ((ringfort.siteName
                 .toLowerCase()
                 .contains(searchQuery.toLowerCase())) ||
@@ -52,6 +69,19 @@ class HistoricSitesProvider with ChangeNotifier {
                 .toLowerCase()
                 .contains(searchQuery.toLowerCase())));
       }).toList();
+      if (_showFavourites) {
+        _filteredSites = _searchedSites.where((ringfort) {
+          bool _found = false;
+          userData.favourites.forEach((fav) {
+            if (fav == ringfort.uid) {
+              _found = true;
+            }
+          });
+          return _found;
+        }).toList();
+      } else {
+        _filteredSites = [..._searchedSites];
+      }
     }
     notifyListeners();
   }
@@ -125,7 +155,8 @@ class HistoricSitesProvider with ChangeNotifier {
   //-------------------------------------------------------------
   // This will find the site to be updated and update it.
   //-------------------------------------------------------------
-  void updateSite(String siteUid,  HistoricSite updatedSite, io.File image) async {
+  void updateSite(
+      String siteUid, HistoricSite updatedSite, io.File image) async {
     final siteIndex = _sites.indexWhere((site) => site.uid == siteUid);
 
     // Store the image in Firebase Storage
