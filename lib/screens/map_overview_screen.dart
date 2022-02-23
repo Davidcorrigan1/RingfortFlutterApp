@@ -3,6 +3,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
 
+import '../models/user_data.dart';
 import '../widgets/app_drawer.dart';
 import '../providers/historic_sites_provider.dart';
 import '../providers/user_provider.dart';
@@ -19,7 +20,9 @@ class _MapOverviewScreenState extends State<MapOverviewScreen> {
   var _initFirst = true;
   var _isLoading = false;
   var _isMapVisible = false;
+  var _showFavourites = false;
   User user;
+  UserData userData;
   MapType _selectMapType = MapType.normal;
   Set<Marker> _markers = {};
   List<LatLng> _points = [];
@@ -46,6 +49,7 @@ class _MapOverviewScreenState extends State<MapOverviewScreen> {
               .getCurrentUserData(user.uid)
               .then((value) {
             setState(() {
+              userData = value;
               _isLoading = false;
             });
           });
@@ -62,12 +66,15 @@ class _MapOverviewScreenState extends State<MapOverviewScreen> {
 
   // It calls the HistoricSitesProvider to refresh the site list from Firebase
   // and then retrieves the list into this class
-  // If there is a filter seach term entered it will filter the results to show.
+  // If there is a filter search term entered it will filter the results to show.
+  // It also takes a favourites flag and usedata which had the users favourites.
+  // So if _showFavourites set to true will only show those ringforts which
+  // match the users selected favs.
   void _retrieveSiteandMarkers(BuildContext context) {
     print('MapsScreen: Run _retrieveSiteandMarkers ');
     // Filter the sites based on the search criteria
     Provider.of<HistoricSitesProvider>(context, listen: false)
-        .setFilteredSites(searchQuery);
+        .setFilteredSites(searchQuery, _showFavourites, userData);
 
     var _filteredSites =
         Provider.of<HistoricSitesProvider>(context, listen: false)
@@ -159,6 +166,18 @@ class _MapOverviewScreenState extends State<MapOverviewScreen> {
         icon: const Icon(Icons.search),
         onPressed: _startSearch,
       ),
+      user != null
+          ? Switch(
+              value: _showFavourites,
+              activeColor: Colors.black87,
+              onChanged: (value) {
+                setState(() {
+                  _showFavourites = value;
+                  _retrieveSiteandMarkers(context);
+                });
+              },
+            )
+          : Container(),
     ];
   }
 
