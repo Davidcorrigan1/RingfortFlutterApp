@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:ringfort_app/models/user_data.dart';
 import 'package:ringfort_app/screens/authentication_screen.dart';
 
 import '../providers/historic_sites_provider.dart';
@@ -20,7 +21,9 @@ class RingfortsListScreen extends StatefulWidget {
 class _RingfortsListScreenState extends State<RingfortsListScreen> {
   var _initRun = true;
   var _isLoading = false;
+  var _showFavourites = false;
   User user;
+  UserData userData;
   TextEditingController _searchQueryController = TextEditingController();
   bool _isSearching = false;
   String searchQuery = "";
@@ -36,13 +39,14 @@ class _RingfortsListScreenState extends State<RingfortsListScreen> {
           .fetchAndSetRingforts()
           .then((value) =>
               Provider.of<HistoricSitesProvider>(context, listen: false)
-                  .setFilteredSites(searchQuery))
+                  .setFilteredSites(searchQuery, false, null))
           .then((value) {
         if (user != null) {
           Provider.of<UserProvider>(context, listen: false)
               .getCurrentUserData(user.uid)
               .then((value) {
             setState(() {
+              userData = value;
               _isLoading = false;
             });
           });
@@ -98,7 +102,7 @@ class _RingfortsListScreenState extends State<RingfortsListScreen> {
 
     setState(() {
       Provider.of<HistoricSitesProvider>(context, listen: false)
-          .setFilteredSites(searchQuery);
+          .setFilteredSites(searchQuery, _showFavourites, userData);
     });
   }
 
@@ -152,6 +156,19 @@ class _RingfortsListScreenState extends State<RingfortsListScreen> {
         icon: const Icon(Icons.search),
         onPressed: _startSearch,
       ),
+      user != null
+          ? Switch(
+              value: _showFavourites,
+              activeColor: Theme.of(context).errorColor,
+              onChanged: (value) {
+                setState(() {
+                  _showFavourites = value;
+                  Provider.of<HistoricSitesProvider>(context, listen: false)
+                      .setFilteredSites(searchQuery, _showFavourites, userData);
+                });
+              },
+            )
+          : Container(),
       IconButton(
         onPressed: () {
           var user = Provider.of<User>(context, listen: false);
@@ -189,7 +206,7 @@ class _RingfortsListScreenState extends State<RingfortsListScreen> {
     setState(() {
       searchQuery = newQuery;
       Provider.of<HistoricSitesProvider>(context, listen: false)
-          .setFilteredSites(searchQuery);
+          .setFilteredSites(searchQuery, _showFavourites, userData);
     });
   }
 
