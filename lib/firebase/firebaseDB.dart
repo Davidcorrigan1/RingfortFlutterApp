@@ -1,6 +1,7 @@
 import 'dart:io' as io;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:ringfort_app/models/historic_site_staging.dart';
 
 import '../models/historic_site.dart';
 import '../models/user_data.dart';
@@ -9,6 +10,10 @@ class FirebaseDB {
   // Store a reference to the 'historicSites' collection
   final CollectionReference siteCollection =
       FirebaseFirestore.instance.collection('historicSites');
+
+    // Store a reference to the 'historicSitesStaging' collection
+  final CollectionReference siteStagingCollection =
+      FirebaseFirestore.instance.collection('historicSitesStaging');
 
   // Store a reference to the 'users' collection
   final CollectionReference userCollection =
@@ -30,9 +35,19 @@ class FirebaseDB {
     return siteCollection.get();
   }
 
+  // Retrieve all Staging ringforts changes from the HistoricSitesStaging collection
+  Future<QuerySnapshot> fetchStagingSites() async {
+    return siteStagingCollection.get();
+  }
+
   // Add site document on Firebase
-  Future<void> addSite(HistoricSite site) async {
-    return siteCollection.doc(site.uid).set(site.toJson());
+  Future<void> addSite(bool adminUser, HistoricSite site, HistoricSiteStaging stageingSite) async {
+    if (adminUser) {
+      return siteCollection.doc(site.uid).set(site.toJson());
+    } else {
+      return siteStagingCollection.doc(stageingSite.uid).set(stageingSite.toJson());
+    }
+    
   }
 
   // Add user document on Firebase

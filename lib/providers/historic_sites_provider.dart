@@ -2,20 +2,23 @@ import 'dart:io' as io;
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
-import 'package:ringfort_app/models/user_data.dart';
 
-import '../helpers/location_helper.dart';
+import '../models/historic_site_staging.dart';
+import '../models/user_data.dart';
 import '../models/historic_site.dart';
 import '../firebase/firebaseDB.dart';
+import '../helpers/location_helper.dart';
 
 class HistoricSitesProvider with ChangeNotifier {
   final FirebaseDB firebaseDB = FirebaseDB();
 
   //-------------------------------------------------------------
-  // private list of ringfort sites and filtered
+  // private list of ringfort sites and filtered Sites
+  // Also a list of Staging changes awaiting approval
   //-------------------------------------------------------------
   List<HistoricSite> _sites = [];
   List<HistoricSite> _filteredSites = [];
+  List<HistoricSiteStaging> _stagingSites = [];
 
   //-------------------------------------------------------------
   // This is a getter for the private sites list which
@@ -27,6 +30,10 @@ class HistoricSitesProvider with ChangeNotifier {
 
   List<HistoricSite> get filteredSites {
     return [..._filteredSites];
+  }
+
+  List<HistoricSiteStaging> get stagingSites {
+    return [..._stagingSites];
   }
 
   //-------------------------------------------------------------
@@ -104,6 +111,23 @@ class HistoricSitesProvider with ChangeNotifier {
   }
 
   //-------------------------------------------------------------
+  // Returns the latest Staging Ringfort data from Firestore and update
+  // the local List and then notify comsumer it's changed
+  //-------------------------------------------------------------
+  Future<void> fetchAndSetStagingRingforts() async {
+    final List<HistoricSiteStaging> loadedSites = [];
+    var snapshot = await firebaseDB.fetchStagingSites();
+
+    final documents = snapshot.docs.map((docs) => docs.data()).toList();
+    documents.forEach((site) {
+      HistoricSiteStaging ringfort = HistoricSiteStaging.fromJson(site);
+      loadedSites.add(ringfort);
+    });
+    _stagingSites = loadedSites;
+    notifyListeners();
+  }
+
+  //-------------------------------------------------------------
   // Returns a single Ringfort Site by the uid.
   //-------------------------------------------------------------
   HistoricSite findSiteById(String uid) {
@@ -111,9 +135,17 @@ class HistoricSitesProvider with ChangeNotifier {
   }
 
   //-------------------------------------------------------------
+  // Returns a single Staging Ringfort Site by the uid.
+  //-------------------------------------------------------------
+  HistoricSiteStaging findStagingSiteById(String uid) {
+    return _stagingSites.firstWhere((site) => site.uid == uid);
+  }
+
+
+  //-------------------------------------------------------------
   // Add a new site to the List
   //-------------------------------------------------------------
-  void addSite(HistoricSite site, io.File image) async {
+  void addSite(UserData userData, HistoricSite site, io.File image) async {
     // generate a document id for the new document on FB
     var docId = await firebaseDB.generateDocumentId();
     site.uid = docId;
@@ -142,12 +174,27 @@ class HistoricSitesProvider with ChangeNotifier {
       createdBy: site.createdBy,
     );
 
-    // adding site to local list
-    _sites.add(newSite);
+    // Set up the site data for staging
+    final newStagingSite = HistoricSiteStaging(
+        uid: site.uid,
+        action: 'add',
+        actionDate: DateTime.now(),
+        actionStatus: 'awaiting',
+        actionedBy: userData.uid,
+        updatedSite: newSite);
+
+    if (userData.adminUser) {
+      // adding site to local site list, but only if admin user.
+      _sites.add(newSite);
+    } else {
+      // else add it to the local staging list
+      _stagingSites.add(newStagingSite);
+    }
+
     _filteredSites = [..._sites];
 
     // adding to Firebase Firestore
-    firebaseDB.addSite(newSite);
+    firebaseDB.addSite(userData.adminUser, newSite, newStagingSite);
     // Notify consumers of changes
     notifyListeners();
   }

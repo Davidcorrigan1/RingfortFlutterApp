@@ -4,9 +4,10 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
 
+import '../models/user_data.dart';
 import '../models/historic_site.dart';
 import '../providers/historic_sites_provider.dart';
-
+import '../providers/user_provider.dart';
 import '../widgets/image_input.dart';
 import '../widgets/location_input.dart';
 import '../widgets/app_drawer.dart';
@@ -22,15 +23,15 @@ class AddRingfortScreen extends StatefulWidget {
 class _AddRingfortScreenState extends State<AddRingfortScreen> {
   var _initFirst = true;
   String uid;
+  UserData user;
 
   @override
   void didChangeDependencies() {
     if (_initFirst) {
-      _initFirst = false;
+      uid = Provider.of<User>(context, listen: false).uid;
+      user = Provider.of<UserProvider>(context, listen: false).currentUserData;
     }
-
-    uid = Provider.of<User>(context, listen: false).uid;
-
+    _initFirst = false;
     super.didChangeDependencies();
   }
 
@@ -127,7 +128,7 @@ class _AddRingfortScreenState extends State<AddRingfortScreen> {
     // Add the new Ringfort Site to the List and Pop back to the
     // prewvious screen.
     Provider.of<HistoricSitesProvider>(context, listen: false)
-        .addSite(_newSite, _siteImage);
+        .addSite(user, _newSite, _siteImage);
     Navigator.of(context).pop();
   }
 
