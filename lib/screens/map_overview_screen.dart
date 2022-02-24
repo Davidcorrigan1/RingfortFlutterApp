@@ -307,6 +307,9 @@ class _MapOverviewScreenState extends State<MapOverviewScreen> {
                       ),
                     ),
                   ),
+                  //-----------------------------------------------------------
+                  // Stacked Floating action button
+                  //-----------------------------------------------------------
                   Padding(
                     padding: const EdgeInsets.all(15.0),
                     child: Align(
@@ -329,6 +332,9 @@ class _MapOverviewScreenState extends State<MapOverviewScreen> {
                       ),
                     ),
                   ),
+                  //-----------------------------------------------------------
+                  // Stacked Horizonal Scrolling list of sites
+                  //-----------------------------------------------------------
                   Padding(
                     padding: const EdgeInsets.all(5),
                     child: Align(

@@ -29,9 +29,9 @@ class MapCard extends StatelessWidget {
     return Card(
       color: Colors.grey[100],
       elevation: 3.0,
-      margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+      margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 10),
       child: Container(
-        width: 300,
+        width: 370,
         height: 120,
         child: ListTile(
           leading: Container(
@@ -73,7 +73,7 @@ class MapCard extends StatelessWidget {
             ),
             // This will display the favourites icon if a user is logged in.
             Align(
-              alignment: Alignment.bottomRight,
+              alignment: Alignment.centerRight,
               child: Container(
                 margin: const EdgeInsets.symmetric(horizontal: 1, vertical: 5),
                 child: user != null
