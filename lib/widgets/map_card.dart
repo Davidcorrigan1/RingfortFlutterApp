@@ -29,7 +29,7 @@ class MapCard extends StatelessWidget {
     return Card(
       color: Colors.grey[100],
       elevation: 3.0,
-      margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+      margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
       child: Container(
         width: 300,
         height: 120,

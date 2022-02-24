@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 import '../models/user_data.dart';
 import '../widgets/app_drawer.dart';
@@ -32,6 +33,7 @@ class _MapOverviewScreenState extends State<MapOverviewScreen> {
   bool _isSearching = false;
   String searchQuery = "";
   GoogleMapController _myController;
+  final ItemScrollController itemScrollController = ItemScrollController();
 
   // Before the Widget builds do a refresh of the site list in the
   // provider from Firebase.
@@ -89,6 +91,19 @@ class _MapOverviewScreenState extends State<MapOverviewScreen> {
         markerId: MarkerId('${site.uid}'),
         position: LatLng(site.latitude, site.longitude),
         infoWindow: InfoWindow(title: site.siteName),
+        onTap: () {
+          {
+            var index = _filteredSites.indexOf(site);
+            // See https://pub.dev/packages/scrollable_positioned_list
+            itemScrollController.scrollTo(
+              index: index,
+              duration: Duration(
+                seconds: 1,
+              ),
+            );
+          }
+          ;
+        },
       );
       _markers.add(_marker);
       _points.add(LatLng(site.latitude, site.longitude));
@@ -244,7 +259,7 @@ class _MapOverviewScreenState extends State<MapOverviewScreen> {
                   0
               ? Stack(children: [
                   Consumer<HistoricSitesProvider>(
-                    // Using AnimatedOpacity as a workaround for a Google Maps for
+                    // Using AnimatedOpacity as a workaround for a Google Maps issue.
                     // Flutter: see https://github.com/flutter/flutter/issues/39797
                     // and suggested workaround by zubairehman.
                     builder: (context, historicSites, child) => AnimatedOpacity(
@@ -254,6 +269,8 @@ class _MapOverviewScreenState extends State<MapOverviewScreen> {
                       child: GoogleMap(
                         initialCameraPosition: CameraPosition(
                             target: LatLng(52.55444, -6.2376), zoom: 16),
+                        // positioning the Horizonal listview on marker selction.
+                        // FInd index of marker which matches the LatLng selected.
                         onTap: null,
                         mapType: _selectMapType,
                         markers: historicSites.filteredSites.length <= 0
@@ -320,31 +337,33 @@ class _MapOverviewScreenState extends State<MapOverviewScreen> {
                         width: MediaQuery.of(context).size.width,
                         height: 120,
                         child: Consumer<HistoricSitesProvider>(
-                          builder: (context, historicSites, child) =>
-                              historicSites.filteredSites.length > 0
-                                  ? ListView.builder(
-                                      scrollDirection: Axis.horizontal,
-                                      itemCount:
-                                          historicSites.filteredSites.length,
-                                      itemBuilder: (ctx, index) => MapCard(
-                                            uid: historicSites
-                                                .filteredSites[index].uid,
-                                            siteName: historicSites
-                                                .filteredSites[index].siteName,
-                                            siteDesc: historicSites
-                                                .filteredSites[index].siteDesc,
-                                            siteProvince: historicSites
-                                                .filteredSites[index].province,
-                                            siteCounty: historicSites
-                                                .filteredSites[index].county,
-                                            siteImage: historicSites
-                                                .filteredSites[index].image,
-                                            user: Provider.of<User>(context,
-                                                listen: false),
-                                          ))
-                                  : Center(
-                                      child: Text('No matches'),
-                                    ),
+                          builder: (context, historicSites, child) => historicSites
+                                      .filteredSites.length >
+                                  0
+                              ? ScrollablePositionedList.builder(
+                                  // See https://pub.dev/packages/scrollable_positioned_list
+                                  itemScrollController: itemScrollController,
+                                  scrollDirection: Axis.horizontal,
+                                  itemCount: historicSites.filteredSites.length,
+                                  itemBuilder: (ctx, index) => MapCard(
+                                        uid: historicSites
+                                            .filteredSites[index].uid,
+                                        siteName: historicSites
+                                            .filteredSites[index].siteName,
+                                        siteDesc: historicSites
+                                            .filteredSites[index].siteDesc,
+                                        siteProvince: historicSites
+                                            .filteredSites[index].province,
+                                        siteCounty: historicSites
+                                            .filteredSites[index].county,
+                                        siteImage: historicSites
+                                            .filteredSites[index].image,
+                                        user: Provider.of<User>(context,
+                                            listen: false),
+                                      ))
+                              : Center(
+                                  child: Text('No matches'),
+                                ),
                         ),
                       ),
                     ),
