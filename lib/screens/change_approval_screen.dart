@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import '../models/user_data.dart';
-import '../screens/authentication_screen.dart';
 import '../providers/historic_sites_provider.dart';
 import '../providers/user_provider.dart';
 import '../widgets/staging_card.dart';
@@ -44,34 +43,6 @@ class _ChangeApprovalScreenState extends State<ChangeApprovalScreen> {
       _initRun = false;
       super.didChangeDependencies();
     }
-  }
-
-  // This method will ask user if they want to login to proceed Yes or no
-  void _showErrorDialog(BuildContext ctx) {
-    showDialog(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text('This option is only available to logged in Users'),
-        content: Text('Do you want to login?'),
-        actions: [
-          ElevatedButton(
-            onPressed: () {
-              Navigator.pop(ctx);
-            },
-            child: Text('No '),
-          ),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              primary: Theme.of(ctx).backgroundColor,
-            ),
-            onPressed: () {
-              Navigator.of(ctx).pushNamed(AuthenticationScreen.routeName);
-            },
-            child: Text('Yes'),
-          ),
-        ],
-      ),
-    );
   }
 
   // This method is called then the list is pulled down to refresh.

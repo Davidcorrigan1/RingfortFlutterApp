@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:ringfort_app/screens/approval_detail_screen.dart';
 
-import '../screens/ringfort_detail_screen.dart';
+import '../screens/approval_detail_screen.dart';
 import '../providers/historic_sites_provider.dart';
 
 class StagingCard extends StatefulWidget {
@@ -65,10 +64,11 @@ class _StagingCardState extends State<StagingCard> {
   Widget build(BuildContext context) {
     // Adding the Dismissible which controls the deletion of a item from the
     // screen using swipe and allows the action to be defined when triggered.
-    // Can also set the background i.e. red with a delete icon to appear
-    // when the swipe is happening.
+    // Can also set the background i.e. red with a thumbs down icon to appear
+    // when the right swipe is happening to approve. And green with a thumbs dowm when
+    // the left swipe to reject.
     return Dismissible(
-      key: ValueKey(widget.uid),
+      key: UniqueKey(),
       background: Container(
         color: Colors.green[400],
         child: Icon(
@@ -105,8 +105,10 @@ class _StagingCardState extends State<StagingCard> {
         }
       },
       onDismissed: (direction) {
-        Provider.of<HistoricSitesProvider>(context, listen: false)
-            .deleteSite(widget.uid);
+        if (direction == DismissDirection.startToEnd) {
+          Provider.of<HistoricSitesProvider>(context, listen: false)
+              .approveStagingSite(widget.uid);
+        }
       },
       child: Card(
         color: Colors.grey[100],

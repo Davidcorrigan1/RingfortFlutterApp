@@ -141,7 +141,6 @@ class HistoricSitesProvider with ChangeNotifier {
     return _stagingSites.firstWhere((site) => site.uid == uid);
   }
 
-
   //-------------------------------------------------------------
   // Add a new site to the List
   //-------------------------------------------------------------
@@ -236,6 +235,30 @@ class HistoricSitesProvider with ChangeNotifier {
   void deleteSite(String uid) {
     _sites.removeWhere((site) => site.uid == uid);
     firebaseDB.deleteSite(uid);
+    notifyListeners();
+  }
+
+  //----------------------------------------------------------------------
+  //  This will approve the staging site. Adding it to the historicSites
+  // collection and updating on the historicSitesStaging to approved
+  //----------------------------------------------------------------------
+  void approveStagingSite(String uid) {
+    // Find the staging site object
+    var historicSiteStaging =
+        _stagingSites.firstWhere((site) => site.uid == uid);
+
+    // Add to local sites
+    _sites.add(historicSiteStaging.updatedSite);
+
+    // Adding to Firebase Firestore
+    firebaseDB.addSite(true, historicSiteStaging.updatedSite, null);
+
+    // delete from the local staging site table
+    _stagingSites.removeWhere((site) => site.uid == historicSiteStaging.uid);
+
+    // delete from the historicSitesStaging firestore collection
+    firebaseDB.deleteStagingSite(historicSiteStaging.uid);
+
     notifyListeners();
   }
 }

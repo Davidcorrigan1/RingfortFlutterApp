@@ -52,7 +52,8 @@ class AppDrawer extends StatelessWidget {
       user = Provider.of<User>(context, listen: false);
       if (user != null) {
         userEmail = user.email;
-        userData = Provider.of<UserProvider>(context, listen: false).currentUserData;
+        userData =
+            Provider.of<UserProvider>(context, listen: false).currentUserData;
       }
     } catch (e) {
       print('Error: $e');
@@ -83,16 +84,20 @@ class AppDrawer extends StatelessWidget {
             },
           ),
           // The link to the Approvals Screen for Admin users
-          if (userData.adminUser) ...[
-          Divider(),
-          ListTile(
-            leading: Icon(Icons.approval),
-            title: Text('Approvals'),
-            onTap: () {
-              Navigator.pop(context);
-              Navigator.of(context).pushNamed(ChangeApprovalScreen.routeName);
-            },
-          ),],
+          if (userData != null) ...[
+            if (userData.adminUser) ...[
+              Divider(),
+              ListTile(
+                leading: Icon(Icons.approval),
+                title: Text('Approvals'),
+                onTap: () {
+                  Navigator.pop(context);
+                  Navigator.of(context)
+                      .pushNamed(ChangeApprovalScreen.routeName);
+                },
+              ),
+            ],
+          ],
           Divider(),
           // This is the add Ringfort option, when tapped it checks if the
           // user is logged on or not and asks them to logon to proceed if not.

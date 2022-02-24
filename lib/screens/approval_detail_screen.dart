@@ -7,6 +7,7 @@ import 'package:ringfort_app/models/historic_site_staging.dart';
 import '../widgets/location_input.dart';
 import '../providers/historic_sites_provider.dart';
 import '../widgets/app_drawer.dart';
+import '../widgets/text_box.dart';
 
 class ApprovalDetailScreen extends StatefulWidget {
   static const routeName = '/approval-detail';
@@ -72,10 +73,10 @@ class _ApprovalDetailScreenState extends State<ApprovalDetailScreen> {
                   child: Column(
                     children: [
                       //----------------------------------------------------
-                      // This widget controlls the location selection
+                      // This widget displays the location in static map
                       //----------------------------------------------------
                       LocationInput(
-                        () {},
+                        null,
                         LatLng(_displayStagingSite.updatedSite.latitude,
                             _displayStagingSite.updatedSite.longitude),
                       ),
@@ -83,32 +84,42 @@ class _ApprovalDetailScreenState extends State<ApprovalDetailScreen> {
                         height: 5,
                       ),
                       //----------------------------------------------------
-                      // This widget controlls taking the image
+                      // This widget displays the image
                       //----------------------------------------------------
-                      Image.network(
-                        _displayStagingSite.updatedSite.image,
-                        fit: BoxFit.cover,
-                        //  width: double.infinity,
+                      Container(
+                        width: double.infinity,
+                        //color: Colors.grey[100],
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            width: 1,
+                            color: Theme.of(context).primaryColor,
+                          ),
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(5.0),
+                          ),
+                        ),
+                        child: Image.network(
+                          _displayStagingSite.updatedSite.image,
+                          fit: BoxFit.cover,
+                          //  width: double.infinity,
+                        ),
                       ),
                       SizedBox(
                         height: 5,
                       ),
                       //----------------------------------------------------
-                      // This Form will have a nested columns
+                      // This Container will have nested columns
                       //----------------------------------------------------
-                      Form(
+                      Container(
                         child: Column(
                           children: [
                             //---------------------------
                             // The Name form field
                             //---------------------------
-                            TextFormField(
-                              initialValue:
+                            TextBox(
+                              height: 45,
+                              displayText:
                                   _displayStagingSite.updatedSite.siteName,
-                              decoration: InputDecoration(
-                                hintText: 'Ringfort Name',
-                                border: OutlineInputBorder(),
-                              ),
                             ),
                             SizedBox(
                               height: 5,
@@ -116,14 +127,10 @@ class _ApprovalDetailScreenState extends State<ApprovalDetailScreen> {
                             //---------------------------
                             // The Description form field
                             //---------------------------
-                            TextFormField(
-                              initialValue:
+                            TextBox(
+                              height: 120,
+                              displayText:
                                   _displayStagingSite.updatedSite.siteDesc,
-                              decoration: InputDecoration(
-                                hintText: 'Description',
-                                border: OutlineInputBorder(),
-                              ),
-                              maxLines: 4,
                             ),
                             SizedBox(
                               height: 5,
@@ -131,28 +138,33 @@ class _ApprovalDetailScreenState extends State<ApprovalDetailScreen> {
                             //---------------------------
                             // The Access form field
                             //---------------------------
-                            TextFormField(
-                              initialValue:
+                            TextBox(
+                              height: 60,
+                              displayText:
                                   _displayStagingSite.updatedSite.siteAccess,
-                              decoration: InputDecoration(
-                                hintText: 'Access to Site',
-                                border: OutlineInputBorder(),
-                              ),
                             ),
                             SizedBox(
                               height: 5,
                             ),
                             //---------------------------
-                            // The Approx Size form field
+                            // The Approx Size field
                             //---------------------------
-                            TextFormField(
-                              initialValue: _displayStagingSite
+                            TextBox(
+                              height: 45,
+                              displayText: _displayStagingSite
                                   .updatedSite.siteSize
                                   .toString(),
-                              decoration: InputDecoration(
-                                hintText: 'Approx Size (Metres)',
-                                border: OutlineInputBorder(),
-                              ),
+                            ),
+                            SizedBox(
+                              height: 5,
+                            ),
+                            //---------------------------
+                            // The Approx address field
+                            //---------------------------
+                            TextBox(
+                              height: 60,
+                              displayText:
+                                  _displayStagingSite.updatedSite.address,
                             ),
                           ],
                         ),

@@ -33,7 +33,7 @@ class RingfortCard extends StatelessWidget {
     // Can also set the background i.e. red with a delete icon to appear
     // when the swipe is happening.
     return Dismissible(
-      key: ValueKey(uid),
+      key: UniqueKey(),
       background: Container(
         color: Theme.of(context).errorColor,
         child: Icon(
