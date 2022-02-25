@@ -9,14 +9,14 @@ import '../widgets/staging_card.dart';
 import '../widgets/app_drawer.dart';
 
 // This screen will show the list of ringforts
-class ChangeApprovalScreen extends StatefulWidget {
-  static const routeName = '/change-approval';
+class ApprovalHistoryScreen extends StatefulWidget {
+  static const routeName = '/approval-history';
 
   @override
-  State<ChangeApprovalScreen> createState() => _ChangeApprovalScreenState();
+  State<ApprovalHistoryScreen> createState() => _ApprovalHistoryScreenState();
 }
 
-class _ChangeApprovalScreenState extends State<ChangeApprovalScreen> {
+class _ApprovalHistoryScreenState extends State<ApprovalHistoryScreen> {
   var _initRun = true;
   var _isLoading = false;
   User user;
@@ -29,7 +29,7 @@ class _ChangeApprovalScreenState extends State<ChangeApprovalScreen> {
       _isLoading = true;
       user = Provider.of<User>(context, listen: false);
       Provider.of<HistoricSitesProvider>(context, listen: false)
-          .fetchAndSetStagingRingforts()
+          .fetchAndSetUserApprovalHistory(user.uid)
           .then((value) {
         Provider.of<UserProvider>(context, listen: false)
             .getCurrentUserData(user.uid)
@@ -59,7 +59,7 @@ class _ChangeApprovalScreenState extends State<ChangeApprovalScreen> {
 
   // Build a Text Widget for the Normal Screen title.
   Widget _buildTitle(BuildContext context) {
-    return Text('Changes for Approval');
+    return Text('My Approval History');
   }
 
   //--------------------------------------------------------
@@ -86,31 +86,37 @@ class _ChangeApprovalScreenState extends State<ChangeApprovalScreen> {
           : RefreshIndicator(
               onRefresh: () => _refreshStagingRingfortList(),
               child: Consumer<HistoricSitesProvider>(
-                builder: (context, historicSites, child) =>
-                    historicSites.awaitingApprovalSites.length > 0
-                        ? ListView.builder(
-                            itemCount: historicSites.awaitingApprovalSites.length,
-                            itemBuilder: (ctx, index) => StagingCard(
-                                  userHistoryData: false,
-                                  uid: historicSites.awaitingApprovalSites[index].uid,
-                                  action: historicSites.awaitingApprovalSites[index].action,
-                                  status: historicSites.awaitingApprovalSites[index].actionStatus,
-                                  siteName: historicSites
-                                      .awaitingApprovalSites[index].updatedSite.siteName,
-                                  siteDesc: historicSites
-                                      .awaitingApprovalSites[index].updatedSite.siteDesc,
-                                  siteProvince: historicSites
-                                      .awaitingApprovalSites[index].updatedSite.province,
-                                  siteCounty: historicSites
-                                      .awaitingApprovalSites[index].updatedSite.county,
-                                  siteImage: historicSites
-                                      .awaitingApprovalSites[index].updatedSite.image,
-                                  user:
-                                      Provider.of<User>(context, listen: false),
-                                ))
-                        : Center(
-                            child: Text('No Changes for Approval'),
-                          ),
+                builder: (context, historicSites, child) => historicSites
+                            .userApprovalHistory.length >
+                        0
+                    ? ListView.builder(
+                        itemCount: historicSites.userApprovalHistory.length,
+                        itemBuilder: (ctx, index) => StagingCard(
+                              userHistoryData: true,
+                              uid: historicSites.userApprovalHistory[index].uid,
+                              action: historicSites
+                                  .userApprovalHistory[index].action,
+                              status: historicSites
+                                  .userApprovalHistory[index].actionStatus,
+                              siteName: historicSites.userApprovalHistory[index]
+                                  .updatedSite.siteName,
+                              siteDesc: historicSites.userApprovalHistory[index]
+                                  .updatedSite.siteDesc,
+                              siteProvince: historicSites
+                                  .userApprovalHistory[index]
+                                  .updatedSite
+                                  .province,
+                              siteCounty: historicSites
+                                  .userApprovalHistory[index]
+                                  .updatedSite
+                                  .county,
+                              siteImage: historicSites
+                                  .userApprovalHistory[index].updatedSite.image,
+                              user: Provider.of<User>(context, listen: false),
+                            ))
+                    : Center(
+                        child: Text('No Approval History'),
+                      ),
               ),
             ),
     );

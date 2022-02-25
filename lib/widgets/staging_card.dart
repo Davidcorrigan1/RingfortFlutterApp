@@ -6,8 +6,10 @@ import '../screens/approval_detail_screen.dart';
 import '../providers/historic_sites_provider.dart';
 
 class StagingCard extends StatefulWidget {
+  final bool userHistoryData;
   final String uid;
   final String action;
+  final String status;
   final String siteName;
   final String siteDesc;
   final String siteProvince;
@@ -16,8 +18,10 @@ class StagingCard extends StatefulWidget {
   final User user;
 
   const StagingCard({
+    @required this.userHistoryData,
     @required this.uid,
     @required this.action,
+    @required this.status,
     @required this.siteName,
     @required this.siteDesc,
     @required this.siteProvince,
@@ -78,7 +82,7 @@ class _StagingCardState extends State<StagingCard> {
         ),
         alignment: Alignment.centerLeft,
         padding: EdgeInsets.only(right: 20),
-        margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+        margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
       ),
       secondaryBackground: Container(
         color: Theme.of(context).errorColor,
@@ -108,18 +112,21 @@ class _StagingCardState extends State<StagingCard> {
         if (direction == DismissDirection.startToEnd) {
           Provider.of<HistoricSitesProvider>(context, listen: false)
               .approveStagingSite(widget.uid);
+        } else {
+          Provider.of<HistoricSitesProvider>(context, listen: false)
+              .rejectStagingSite(widget.uid);
         }
       },
       child: Card(
         color: Colors.grey[100],
         elevation: 3.0,
-        margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 7),
+        margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
         child: ListTile(
           leading: CircleAvatar(
-            radius: 50,
+            //radius: 50,
             backgroundColor: Colors.green[100],
             child: Text(
-              widget.action,
+              widget.action.substring(0, 1).toUpperCase(),
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 color: Theme.of(context).primaryColor,
@@ -155,13 +162,37 @@ class _StagingCardState extends State<StagingCard> {
               ),
             ),
           ]),
+          trailing: Container(
+            decoration: BoxDecoration(
+              border: Border.all(
+                width: 1,
+                color: Theme.of(context).primaryColor,
+              ),
+              borderRadius: BorderRadius.all(
+                Radius.circular(5.0),
+              ),
+            ),
+            height: 40,
+            width: 100,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                widget.status,
+                textAlign: TextAlign.left,
+                style: TextStyle(fontSize: 16),
+              ),
+            ),
+          ),
           onTap: () {
             // Navigates to the details page with the uid of
             // the Ringfort pressed. It will execute the passed in onGoBack
             // function when we pop back from update screen.
-            if (widget.user != null) {
-              Navigator.of(context).pushNamed(ApprovalDetailScreen.routeName,
-                  arguments: widget.uid);
+            // If this is used by the ApprovalHistoryPage don't enable onTap
+            if (!widget.userHistoryData) {
+              if (widget.user != null) {
+                Navigator.of(context).pushNamed(ApprovalDetailScreen.routeName,
+                    arguments: widget.uid);
+              }
             }
           },
         ),

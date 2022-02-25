@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:ringfort_app/models/user_data.dart';
+import 'package:ringfort_app/screens/approval_history_screen.dart';
 import 'package:ringfort_app/screens/authentication_screen.dart';
 import 'package:ringfort_app/screens/change_approval_screen.dart';
 import 'package:ringfort_app/screens/map_overview_screen.dart';
@@ -94,6 +95,17 @@ class AppDrawer extends StatelessWidget {
                   Navigator.pop(context);
                   Navigator.of(context)
                       .pushNamed(ChangeApprovalScreen.routeName);
+                },
+              ),
+            ] else ...[
+              Divider(),
+              ListTile(
+                leading: Icon(Icons.history),
+                title: Text('My Approval History'),
+                onTap: () {
+                  Navigator.pop(context);
+                  Navigator.of(context)
+                      .pushNamed(ApprovalHistoryScreen.routeName);
                 },
               ),
             ],

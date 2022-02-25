@@ -65,6 +65,11 @@ class FirebaseDB {
     await siteCollection.doc(site.uid).update(site.toJson());
   }
 
+    // Update a specific ringfort document in the staging collection
+  void updateStagingSite(HistoricSiteStaging site) async {
+    await siteStagingCollection.doc(site.uid).update(site.toJson());
+  }
+
   // Delete a specific ringfort document from the collection
   void deleteSite(String uid) async {
     await siteCollection.doc(uid).delete();
