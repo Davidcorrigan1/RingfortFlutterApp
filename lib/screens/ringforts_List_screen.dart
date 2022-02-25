@@ -32,7 +32,7 @@ class _RingfortsListScreenState extends State<RingfortsListScreen> {
   // Refresh the ringforts from Firebase and then run the filter query
   void didChangeDependencies() {
     if (_initRun) {
-      print('didChangeDependancies run');
+      print('didChangeDependancies run RingfortList');
       _isLoading = true;
       user = Provider.of<User>(context, listen: false);
       Provider.of<HistoricSitesProvider>(context, listen: false)
@@ -263,18 +263,9 @@ class _RingfortsListScreenState extends State<RingfortsListScreen> {
                     ? ListView.builder(
                         itemCount: historicSites.filteredSites.length,
                         itemBuilder: (ctx, index) => RingfortCard(
-                              uid: historicSites.filteredSites[index].uid,
-                              siteName:
-                                  historicSites.filteredSites[index].siteName,
-                              siteDesc:
-                                  historicSites.filteredSites[index].siteDesc,
-                              siteProvince:
-                                  historicSites.filteredSites[index].province,
-                              siteCounty:
-                                  historicSites.filteredSites[index].county,
-                              siteImage:
-                                  historicSites.filteredSites[index].image,
+                              site: historicSites.filteredSites[index],
                               user: Provider.of<User>(context, listen: false),
+                              userData: userData
                             ))
                     : Center(
                         child: Text('No matches'),

@@ -2,16 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:ringfort_app/firebase/firebaseAuth.dart';
 
+import '../firebase/firebaseAuth.dart';
+import '../screens/approval_detail_screen.dart';
 import '../providers/user_provider.dart';
 import '../providers/historic_sites_provider.dart';
-import './screens/add_ringfort_screen.dart';
-import 'screens/ringfort_home_screen.dart';
+import '../screens/add_ringfort_screen.dart';
+import '../screens/ringfort_home_screen.dart';
 import './screens/ringforts_List_screen.dart';
 import './screens/ringfort_detail_screen.dart';
 import './screens/authentication_screen.dart';
 import '../screens/map_overview_screen.dart';
+import '../screens/change_approval_screen.dart';
+import '../screens/approval_history_screen.dart';
 
 Future<void> main() async {
   // WidgetsFlutterBinding is used to interact with the Flutter engine,
@@ -67,6 +70,12 @@ class MyApp extends StatelessWidget {
           AuthenticationScreen.routeName: (context) => AuthenticationScreen(),
           //Route - Map Overview screen
           MapOverviewScreen.routeName: (context) => MapOverviewScreen(),
+          //Route - Update Approval screen
+          ChangeApprovalScreen.routeName: (context) => ChangeApprovalScreen(),
+          //Route - Approval Detail screen
+          ApprovalDetailScreen.routeName: (context) => ApprovalDetailScreen(),
+          //Route - UIser Approval History screen
+          ApprovalHistoryScreen.routeName: (context) => ApprovalHistoryScreen(),
         },
       ),
     );
