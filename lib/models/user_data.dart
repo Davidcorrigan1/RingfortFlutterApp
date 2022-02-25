@@ -4,26 +4,27 @@ class UserData {
   String uid;
   String email;
   List<String> favourites;
+  bool adminUser;
 
   // Class constructor
-  UserData({
-    @required this.uid,
-    @required this.email,
-    this.favourites,
-  });
+  UserData(
+      {@required this.uid,
+      @required this.email,
+      this.favourites,
+      this.adminUser = false});
 
   // A factory constructor to create Ringfort object from JSON
   factory UserData.fromJson(Map<String, dynamic> json) {
     print('json: $json');
 
     List<String> favourites = [...json['favourites']];
-    //List<String> favourites = favJson != null ? List.from(favJson) : [];
 
-  
     return UserData(
-        uid: json['uid'] ?? '',
-        email: json['email'] ?? '',
-        favourites: favourites);
+      uid: json['uid'] ?? '',
+      email: json['email'] ?? '',
+      favourites: favourites,
+      adminUser: json['adminUser'],
+    );
   }
 
   // Function to turn Ringfort object to a Map of key values pairs
@@ -34,5 +35,6 @@ class UserData {
 Map<String, dynamic> _userToJson(UserData instance) => <String, dynamic>{
       'uid': instance.uid,
       'email': instance.email,
-      'favourites': instance.favourites
+      'favourites': instance.favourites,
+      'adminUser': instance.adminUser,
     };

@@ -61,8 +61,10 @@ class _LocationInputState extends State<LocationInput> {
     }
 
     // Call the passed in function to save the location
-    widget.onSelectSiteLocationHander(
-        _userSelectedLatitude, _userSelectedLongitude);
+    if (widget.onSelectSiteLocationHander != null) {
+      widget.onSelectSiteLocationHander(
+          _userSelectedLatitude, _userSelectedLongitude);
+    }
   }
 
   // This method Push the MapsScreen onto the stack. This will trigger that
@@ -112,17 +114,21 @@ class _LocationInputState extends State<LocationInput> {
                   width: double.infinity,
                 ),
         ),
-        Container(
-          width: double.infinity,
-          child: ElevatedButton.icon(
-            onPressed: () {
-              _selectPositionOnMap(
-                  _userSelectedLatitude, _userSelectedLongitude);
-            },
-            icon: Icon(Icons.map),
-            label: Text('Select Different Location'),
-          ),
-        )
+        // Only showing the location selection button if a function is
+        // passed in to handle the selection.
+        widget.onSelectSiteLocationHander != null
+            ? Container(
+                width: double.infinity,
+                child: ElevatedButton.icon(
+                  onPressed: () {
+                    _selectPositionOnMap(
+                        _userSelectedLatitude, _userSelectedLongitude);
+                  },
+                  icon: Icon(Icons.map),
+                  label: Text('Select Different Location'),
+                ),
+              )
+            : Container(),
       ],
     );
   }

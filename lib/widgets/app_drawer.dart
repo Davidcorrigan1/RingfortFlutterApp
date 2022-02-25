@@ -1,7 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:ringfort_app/models/user_data.dart';
+import 'package:ringfort_app/screens/approval_history_screen.dart';
 import 'package:ringfort_app/screens/authentication_screen.dart';
+import 'package:ringfort_app/screens/change_approval_screen.dart';
 import 'package:ringfort_app/screens/map_overview_screen.dart';
 import 'package:ringfort_app/screens/ringfort_home_screen.dart';
 import 'package:ringfort_app/screens/ringforts_List_screen.dart';
@@ -15,6 +18,7 @@ class AppDrawer extends StatelessWidget {
   Widget build(BuildContext context) {
     var userEmail;
     var user;
+    UserData userData;
 
     // This method will ask user if they want to login to proceed Yes or no
     void _showErrorDialog(BuildContext ctx) {
@@ -46,9 +50,11 @@ class AppDrawer extends StatelessWidget {
 
     // Here we check if the user is logged in, and get the email if they are.
     try {
-      user = Provider.of<User>(context);
+      user = Provider.of<User>(context, listen: false);
       if (user != null) {
         userEmail = user.email;
+        userData =
+            Provider.of<UserProvider>(context, listen: false).currentUserData;
       }
     } catch (e) {
       print('Error: $e');
@@ -78,6 +84,32 @@ class AppDrawer extends StatelessWidget {
               Navigator.of(context).pushNamed(MapOverviewScreen.routeName);
             },
           ),
+          // The link to the Approvals Screen for Admin users
+          if (userData != null) ...[
+            if (userData.adminUser) ...[
+              Divider(),
+              ListTile(
+                leading: Icon(Icons.approval),
+                title: Text('Approvals'),
+                onTap: () {
+                  Navigator.pop(context);
+                  Navigator.of(context)
+                      .pushNamed(ChangeApprovalScreen.routeName);
+                },
+              ),
+            ] else ...[
+              Divider(),
+              ListTile(
+                leading: Icon(Icons.history),
+                title: Text('My Approval History'),
+                onTap: () {
+                  Navigator.pop(context);
+                  Navigator.of(context)
+                      .pushNamed(ApprovalHistoryScreen.routeName);
+                },
+              ),
+            ],
+          ],
           Divider(),
           // This is the add Ringfort option, when tapped it checks if the
           // user is logged on or not and asks them to logon to proceed if not.
@@ -109,7 +141,8 @@ class AppDrawer extends StatelessWidget {
                         .pushReplacementNamed(RingfortHomeScreen.routeName);
                     //then FirebaseAuth to logout.
                     FireBaseAuth.logoutUser();
-                    Provider.of<UserProvider>(context, listen: false).logoutUser;
+                    Provider.of<UserProvider>(context, listen: false)
+                        .logoutUser;
                   })
               : ListTile(
                   leading: Icon(Icons.login),

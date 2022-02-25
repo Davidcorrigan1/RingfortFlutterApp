@@ -3,9 +3,11 @@ import 'dart:io' as io;
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:ringfort_app/models/historic_site.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:ringfort_app/providers/user_provider.dart';
 
+import '../models/user_data.dart';
+import '../models/historic_site.dart';
 import '../providers/historic_sites_provider.dart';
 import '../widgets/image_input.dart';
 import '../widgets/location_input.dart';
@@ -25,6 +27,8 @@ class _RingfortDetailScreenState extends State<RingfortDetailScreen> {
   var uid = '';
   // User collection uid
   var userUid = '';
+  // userData from Firestore
+  UserData userData;
   // Initialize a HistoricSite object to display
   var _displaySite = HistoricSite(
       uid: '',
@@ -77,6 +81,7 @@ class _RingfortDetailScreenState extends State<RingfortDetailScreen> {
       _displaySite = Provider.of<HistoricSitesProvider>(context, listen: false)
           .findSiteById(uid);
       userUid = Provider.of<User>(context).uid;
+      userData = Provider.of<UserProvider>(context).currentUserData;
       _initValues = {
         'uid': uid,
         'siteName': _displaySite.siteName,
@@ -146,7 +151,7 @@ class _RingfortDetailScreenState extends State<RingfortDetailScreen> {
     // Add the new Ringfort Site to the List and Pop back to the
     // prewvious screen.
     Provider.of<HistoricSitesProvider>(context, listen: false)
-        .updateSite(uid, _displaySite, _siteImage);
+        .updateSite(userData, uid, _displaySite, _siteImage);
     Navigator.of(context).pop();
   }
 

@@ -2,29 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:extended_image/extended_image.dart';
+import 'package:ringfort_app/models/historic_site.dart';
+import 'package:ringfort_app/models/user_data.dart';
 
 import '../screens/ringfort_detail_screen.dart';
 import '../providers/historic_sites_provider.dart';
 import '../widgets/favourite_icon.dart';
 
 class RingfortCard extends StatelessWidget {
-  final String uid;
-  final String siteName;
-  final String siteDesc;
-  final String siteProvince;
-  final String siteCounty;
-  final String siteImage;
+  final HistoricSite site;
   final User user;
+  final UserData userData;
 
-  const RingfortCard({
-    @required this.uid,
-    @required this.siteName,
-    @required this.siteDesc,
-    @required this.siteProvince,
-    @required this.siteCounty,
-    @required this.siteImage,
-    @required this.user,
-  });
+  const RingfortCard(
+      {@required this.site, @required this.user, @required this.userData});
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +24,7 @@ class RingfortCard extends StatelessWidget {
     // Can also set the background i.e. red with a delete icon to appear
     // when the swipe is happening.
     return Dismissible(
-      key: ValueKey(uid),
+      key: UniqueKey(),
       background: Container(
         color: Theme.of(context).errorColor,
         child: Icon(
@@ -75,7 +66,7 @@ class RingfortCard extends StatelessWidget {
       },
       onDismissed: (direction) {
         Provider.of<HistoricSitesProvider>(context, listen: false)
-            .deleteSite(uid);
+            .deleteSite(userData, site);
       },
       child: Card(
         color: Colors.grey[100],
@@ -86,31 +77,31 @@ class RingfortCard extends StatelessWidget {
             width: 90,
             height: 90,
             child: ExtendedImage.network(
-              siteImage,
+              site.image,
               cache: true,
               fit: BoxFit.cover,
             ),
           ),
-          title: Text(siteName),
+          title: Text(site.siteName),
           subtitle: Stack(children: [
             Container(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    siteDesc + '\n',
+                    site.siteDesc + '\n',
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
                   Text(
-                    siteProvince,
+                    site.province,
                     textAlign: TextAlign.left,
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   Text(
-                    siteCounty,
+                    site.county,
                     textAlign: TextAlign.left,
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
@@ -126,7 +117,7 @@ class RingfortCard extends StatelessWidget {
                 margin: const EdgeInsets.symmetric(horizontal: 1, vertical: 5),
                 child: user != null
                     ? FavouriteIcon(
-                        ringfortUID: uid,
+                        ringfortUID: site.uid,
                         user: user,
                       )
                     : Container(),
@@ -139,7 +130,7 @@ class RingfortCard extends StatelessWidget {
             // function when we pop back from update screen.
             if (user != null) {
               Navigator.of(context)
-                  .pushNamed(RingfortDetailScreen.routeName, arguments: uid);
+                  .pushNamed(RingfortDetailScreen.routeName, arguments: site.uid);
             }
           },
         ),
