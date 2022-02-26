@@ -219,12 +219,11 @@ class HistoricSitesProvider with ChangeNotifier {
     if (userData.adminUser) {
       // adding site to local site list, but only if admin user.
       _sites.add(newSite);
+      _filteredSites = [..._sites];
     } else {
       // else add it to the local staging list
       _stagingSites.add(newStagingSite);
     }
-
-    _filteredSites = [..._sites];
 
     // adding to Firebase Firestore
     firebaseDB.addSite(userData.adminUser, newSite, newStagingSite);
@@ -261,7 +260,7 @@ class HistoricSitesProvider with ChangeNotifier {
         actionedBy: updatedSite.lastUpdatedBy,
         updatedSite: updatedSite);
 
-    // Update the Rinfort object in the List if admin user
+    // Update the Live Ringfort object in the List if admin user
     if (userData.adminUser) {
       _sites[siteIndex] = updatedSite;
       _filteredSites = [..._sites];
@@ -277,27 +276,27 @@ class HistoricSitesProvider with ChangeNotifier {
           .where((site) => site.actionStatus == 'awaiting')
           .toList();
     }
-
-    // Notify comsumers of the data
+    // Notify consumers of the data
     notifyListeners();
   }
 
   //---------------------------------------------------------------------
   // This will delete the site which matches the uid
   //---------------------------------------------------------------------
-  void deleteSite(UserData userData, HistoricSite deletSite) {
+  void deleteSite(UserData userData, HistoricSite deleteSite) {
     if (userData.adminUser) {
-      _sites.removeWhere((site) => site.uid == deletSite.uid);
-      firebaseDB.deleteSite(deletSite.uid);
+      _sites.removeWhere((site) => site.uid == deleteSite.uid);
+      _filteredSites = [..._sites];
+      firebaseDB.deleteSite(deleteSite.uid);
     } else {
       // Set up the site data for staging
       final deleteStagingSite = HistoricSiteStaging(
-          uid: deletSite.uid,
+          uid: deleteSite.uid,
           action: 'delete',
           actionDate: DateTime.now(),
           actionStatus: 'awaiting',
           actionedBy: userData.uid,
-          updatedSite: deletSite);
+          updatedSite: deleteSite);
 
       // else add it to the local staging list
       _stagingSites.add(deleteStagingSite);
@@ -308,6 +307,23 @@ class HistoricSitesProvider with ChangeNotifier {
           .where((site) => site.actionStatus == 'awaiting')
           .toList();
     }
+    notifyListeners();
+  }
+
+  //---------------------------------------------------------------------
+  // This will delete the staging site which matches the uid
+  //---------------------------------------------------------------------
+  void deleteStagingSite(String uid) {
+    // Remove it to the local staging list
+    _stagingSites.removeWhere((stagingSite) => stagingSite.uid == uid);
+    // Remove from the Users Approval history list
+    _userApprovalHistory.removeWhere((stagingSite) => stagingSite.uid == uid);
+    // Remove staging document on Firestore collection
+    firebaseDB.deleteStagingSite(uid);
+    // update the list of awaiting staging records.
+    _awaitingApprovalSites =
+        _stagingSites.where((site) => site.actionStatus == 'awaiting').toList();
+
     notifyListeners();
   }
 

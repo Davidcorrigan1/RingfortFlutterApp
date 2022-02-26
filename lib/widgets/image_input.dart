@@ -4,17 +4,20 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as pathHelp;
 import 'package:path_provider/path_provider.dart' as systemPath;
+import 'package:ringfort_app/screens/display_image_screen.dart';
 
 class ImageInput extends StatefulWidget {
   final Function onSaveImage;
   final io.File passedImage;
   final String passedUrl;
+  final String siteUID;
 
   // Class constructor taking in function to save image
   const ImageInput({
     @required this.onSaveImage,
     @required this.passedImage,
     @required this.passedUrl,
+    @required this.siteUID,
   });
 
   @override
@@ -80,36 +83,46 @@ class _ImageInputState extends State<ImageInput> {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Container(
-          width: 110,
-          height: 110,
-          decoration: BoxDecoration(
-            border: Border.all(
-              width: 1,
-              color: Colors.grey,
+        GestureDetector(
+          // only allow tap to display screen when editing site. Not on new site.
+          onTap: () {
+            if (widget.siteUID != null) {
+              Navigator.of(context).pushNamed(DisplayImageScreen.routeName,
+                  arguments: widget.siteUID);
+            }
+          },
+          // This widget will trigger a transition animation when navigating
+          // to the display image screen
+          child: Hero(
+            tag: 'hero-animation',
+            child: Container(
+              width: 110,
+              height: 110,
+              decoration: BoxDecoration(
+                border: Border.all(
+                  width: 1,
+                  color: Colors.grey,
+                ),
+                borderRadius: BorderRadius.all(
+                  Radius.circular(5.0),
+                ),
+                // Deciding which image to display
+                // Either the image taken by camera or
+                // the image on the current Ringfort
+                // else a No Image message.
+                image: DecorationImage(
+                    image: _siteImage != null
+                        ? FileImage(_siteImage)
+                        : _siteUrl != null
+                            ? NetworkImage(_siteUrl)
+                            : AssetImage(
+                                'assets/images/no_image.jpg',
+                              ),
+                    alignment: Alignment.center,
+                    fit: BoxFit.fill),
+              ),
             ),
           ),
-          // Deciding which image to display
-          // Either the image taken by camera or
-          // the image on the current Ringfort
-          // else a No Image message.
-          child: _siteImage != null
-              ? Image.file(
-                  _siteImage,
-                  fit: BoxFit.cover,
-                  //width: double.infinity,
-                )
-              : _siteUrl != null
-                  ? Image.network(
-                      _siteUrl,
-                      fit: BoxFit.cover,
-                      //  width: double.infinity,
-                    )
-                  : Text(
-                      'No Image',
-                      textAlign: TextAlign.center,
-                    ),
-          alignment: Alignment.center,
         ),
         SizedBox(
           height: 10,

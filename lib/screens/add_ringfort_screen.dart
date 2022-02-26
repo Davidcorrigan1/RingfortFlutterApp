@@ -97,6 +97,19 @@ class _AddRingfortScreenState extends State<AddRingfortScreen> {
     );
   }
 
+  // Display a message on the bottom of screen
+  void showScreenMessage(BuildContext context, String screenMessage) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          screenMessage,
+        ),
+        duration: Duration(seconds: 2),
+        action: null,
+      ),
+    );
+  }
+
   // Function which will be call to submit form if there are
   // no validation errors found.
   void _saveForm() {
@@ -129,6 +142,10 @@ class _AddRingfortScreenState extends State<AddRingfortScreen> {
     // prewvious screen.
     Provider.of<HistoricSitesProvider>(context, listen: false)
         .addSite(user, _newSite, _siteImage);
+    // If it's a normal user, then show message to say it's sent for approval.
+    if (!user.adminUser) {
+      showScreenMessage(context, 'Add request sent for approval by Admin');
+    }
     Navigator.of(context).pop();
   }
 
@@ -182,6 +199,7 @@ class _AddRingfortScreenState extends State<AddRingfortScreen> {
                         onSaveImage: _saveImage,
                         passedImage: null,
                         passedUrl: null,
+                        siteUID: null,
                       ),
                       SizedBox(
                         height: 5,

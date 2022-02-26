@@ -1,13 +1,15 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:ringfort_app/models/user_data.dart';
-import 'package:ringfort_app/screens/approval_history_screen.dart';
-import 'package:ringfort_app/screens/authentication_screen.dart';
-import 'package:ringfort_app/screens/change_approval_screen.dart';
-import 'package:ringfort_app/screens/map_overview_screen.dart';
-import 'package:ringfort_app/screens/ringfort_home_screen.dart';
-import 'package:ringfort_app/screens/ringforts_List_screen.dart';
+
+import '../models/user_data.dart';
+import '../screens/approval_history_screen.dart';
+import '../screens/authentication_screen.dart';
+import '../screens/change_approval_screen.dart';
+import '../screens/map_overview_screen.dart';
+import '../screens/ringfort_home_screen.dart';
+import '../screens/ringforts_List_screen.dart';
+import '../providers/historic_sites_provider.dart';
 
 import '../firebase/firebaseAuth.dart';
 import '../screens/add_ringfort_screen.dart';
@@ -90,7 +92,8 @@ class AppDrawer extends StatelessWidget {
               Divider(),
               ListTile(
                 leading: Icon(Icons.approval),
-                title: Text('Approvals'),
+                title: Text(
+                    'Approvals (${Provider.of<HistoricSitesProvider>(context, listen: false).awaitingApprovalSites.length.toString()})'),
                 onTap: () {
                   Navigator.pop(context);
                   Navigator.of(context)

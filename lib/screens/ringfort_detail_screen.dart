@@ -124,6 +124,19 @@ class _RingfortDetailScreenState extends State<RingfortDetailScreen> {
     );
   }
 
+  // Display a message on the bottom of screen
+  void showScreenMessage(BuildContext context, String screenMessage) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          screenMessage,
+        ),
+        duration: Duration(seconds: 2),
+        action: null,
+      ),
+    );
+  }
+
   // Function which will be call to submit form if there are
   // no validation errors found.
   void _saveForm() {
@@ -152,6 +165,7 @@ class _RingfortDetailScreenState extends State<RingfortDetailScreen> {
     // prewvious screen.
     Provider.of<HistoricSitesProvider>(context, listen: false)
         .updateSite(userData, uid, _displaySite, _siteImage);
+    showScreenMessage(context, 'Update request sent for approval by Admin');
     Navigator.of(context).pop();
   }
 
@@ -201,9 +215,11 @@ class _RingfortDetailScreenState extends State<RingfortDetailScreen> {
                       // This widget controlls taking the image
                       //----------------------------------------------------
                       ImageInput(
-                          onSaveImage: _saveImage,
-                          passedImage: _siteImage,
-                          passedUrl: _displaySite.image),
+                        onSaveImage: _saveImage,
+                        passedImage: _siteImage,
+                        passedUrl: _displaySite.image,
+                        siteUID: _displaySite.uid,
+                      ),
                       SizedBox(
                         height: 5,
                       ),
