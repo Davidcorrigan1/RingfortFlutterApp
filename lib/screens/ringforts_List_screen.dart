@@ -49,7 +49,11 @@ class _RingfortsListScreenState extends State<RingfortsListScreen> {
               userData = value;
               _isLoading = false;
             });
-          });
+          }).then((value) =>
+                  // Don't need to wait for this to complete loading, but it is needed for the
+                  // App Drawer awaiting approval count.
+                  Provider.of<HistoricSitesProvider>(context, listen: false)
+                      .fetchAndSetStagingRingforts());
         } else {
           setState(() {
             _isLoading = false;
@@ -257,19 +261,17 @@ class _RingfortsListScreenState extends State<RingfortsListScreen> {
           : RefreshIndicator(
               onRefresh: () => _refreshRingfortList(),
               child: Consumer<HistoricSitesProvider>(
-                builder: (context, historicSites, child) => historicSites
-                            .filteredSites.length >
-                        0
-                    ? ListView.builder(
-                        itemCount: historicSites.filteredSites.length,
-                        itemBuilder: (ctx, index) => RingfortCard(
-                              site: historicSites.filteredSites[index],
-                              user: Provider.of<User>(context, listen: false),
-                              userData: userData
-                            ))
-                    : Center(
-                        child: Text('No matches'),
-                      ),
+                builder: (context, historicSites, child) =>
+                    historicSites.filteredSites.length > 0
+                        ? ListView.builder(
+                            itemCount: historicSites.filteredSites.length,
+                            itemBuilder: (ctx, index) => RingfortCard(
+                                site: historicSites.filteredSites[index],
+                                user: Provider.of<User>(context, listen: false),
+                                userData: userData))
+                        : Center(
+                            child: Text('No matches'),
+                          ),
               ),
             ),
     );

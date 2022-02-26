@@ -52,7 +52,7 @@ class _ApprovalHistoryScreenState extends State<ApprovalHistoryScreen> {
   // If there is a filter seach term entered it will filter the results to show.
   Future<void> _refreshStagingRingfortList() async {
     await Provider.of<HistoricSitesProvider>(context, listen: false)
-        .fetchAndSetStagingRingforts();
+        .fetchAndSetUserApprovalHistory(userData.uid);
 
     setState(() {});
   }

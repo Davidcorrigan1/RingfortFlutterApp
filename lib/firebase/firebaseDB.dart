@@ -47,7 +47,6 @@ class FirebaseDB {
     } else {
       return siteStagingCollection.doc(stageingSite.uid).set(stageingSite.toJson());
     }
-    
   }
 
   // Add user document on Firebase

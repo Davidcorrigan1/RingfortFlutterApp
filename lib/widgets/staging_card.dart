@@ -35,8 +35,9 @@ class StagingCard extends StatefulWidget {
 }
 
 class _StagingCardState extends State<StagingCard> {
-  bool swipeRight = false;
 
+  // Method to show a dialogue pop up which will return a boolean to 
+  // either confirm or reject an action.
   Future<bool> _showConfirmationMessage(String messageText) {
     return showDialog(
       context: context,
@@ -70,60 +71,93 @@ class _StagingCardState extends State<StagingCard> {
     // screen using swipe and allows the action to be defined when triggered.
     // Can also set the background i.e. red with a thumbs down icon to appear
     // when the right swipe is happening to approve. And green with a thumbs dowm when
-    // the left swipe to reject.
+    // the left swipe to reject. If it's used by the Approval History screen 
+    // then the background will be red with a delete icon for both directions.
     return Dismissible(
       key: UniqueKey(),
       background: Container(
-        color: Colors.green[400],
-        child: Icon(
-          Icons.thumb_up,
-          color: Colors.white,
-          size: 40,
-        ),
+        // Depending on if this card is used in the Approval History screen
+        // of a user or in the approvals screen of an Admin user, the 
+        // background icon for swipe right will be either thumbs up or delete
+        color: widget.userHistoryData
+            ? Theme.of(context).errorColor
+            : Colors.green[400],
+        child: widget.userHistoryData
+            ? Icon(
+                Icons.delete,
+                color: Colors.white,
+                size: 40,
+              )
+            : Icon(
+                Icons.thumb_up,
+                color: Colors.white,
+                size: 40,
+              ),
         alignment: Alignment.centerLeft,
         padding: EdgeInsets.only(right: 20),
-        margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+        margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 7),
       ),
       secondaryBackground: Container(
+        // Depending on if this card is used in the Approval History screen
+        // of a user or in the approvals screen of an Admin user, the 
+        // background icon for swipe left will be either thumbs down or delete
         color: Theme.of(context).errorColor,
-        child: Icon(
-          Icons.thumb_down,
-          color: Colors.white,
-          size: 40,
-        ),
+        child: widget.userHistoryData
+            ? Icon(
+                Icons.delete,
+                color: Colors.white,
+                size: 40,
+              )
+            : Icon(
+                Icons.thumb_down,
+                color: Colors.white,
+                size: 40,
+              ),
         alignment: Alignment.centerRight,
         padding: EdgeInsets.only(right: 20),
-        margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+        margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 7),
       ),
       direction: DismissDirection.horizontal,
       // Making sure the user wants to delete it!
       confirmDismiss: (direction) {
-        if (direction == DismissDirection.startToEnd) {
-          print('swipe right');
-          swipeRight = true;
-          return _showConfirmationMessage('Approve');
+        if (!widget.userHistoryData) {
+          if (direction == DismissDirection.startToEnd) {
+            return _showConfirmationMessage('Approve');
+          } else {
+            return _showConfirmationMessage('Reject');
+          }
         } else {
-          print('swipe left');
-          swipeRight = false;
-          return _showConfirmationMessage('Reject');
+          return _showConfirmationMessage('Delete');
         }
       },
       onDismissed: (direction) {
-        if (direction == DismissDirection.startToEnd) {
-          Provider.of<HistoricSitesProvider>(context, listen: false)
-              .approveStagingSite(widget.uid);
+        // Depending on if this card is used in the Approval History screen
+        // of a user or in the approvals screen of an Admin user, the 
+        // dismiss directions will have different actions. The user history
+        // will just delete staging record, which the Approvals screen
+        // will either approve or reject the staged change.
+        if (!widget.userHistoryData) {
+          if (direction == DismissDirection.startToEnd) {
+            Provider.of<HistoricSitesProvider>(context, listen: false)
+                .approveStagingSite(widget.uid);
+          } else {
+            Provider.of<HistoricSitesProvider>(context, listen: false)
+                .rejectStagingSite(widget.uid);
+          }
         } else {
+          print('delete staging site');
           Provider.of<HistoricSitesProvider>(context, listen: false)
-              .rejectStagingSite(widget.uid);
+              .deleteStagingSite(widget.uid);
         }
       },
       child: Card(
         color: Colors.grey[100],
         elevation: 3.0,
-        margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+        margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 7),
         child: ListTile(
           leading: CircleAvatar(
-            //radius: 50,
+            // This will show with 'A', 'U' or 'D' to indicate the action is
+            // either Add, Update or Delete.
             backgroundColor: Colors.green[100],
             child: Text(
               widget.action.substring(0, 1).toUpperCase(),

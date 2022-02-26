@@ -15,6 +15,7 @@ import './screens/authentication_screen.dart';
 import '../screens/map_overview_screen.dart';
 import '../screens/change_approval_screen.dart';
 import '../screens/approval_history_screen.dart';
+import '../screens/display_image_screen.dart';
 
 Future<void> main() async {
   // WidgetsFlutterBinding is used to interact with the Flutter engine,
@@ -74,8 +75,10 @@ class MyApp extends StatelessWidget {
           ChangeApprovalScreen.routeName: (context) => ChangeApprovalScreen(),
           //Route - Approval Detail screen
           ApprovalDetailScreen.routeName: (context) => ApprovalDetailScreen(),
-          //Route - UIser Approval History screen
+          //Route - User Approval History screen
           ApprovalHistoryScreen.routeName: (context) => ApprovalHistoryScreen(),
+          //Route - Display Image screen
+          DisplayImageScreen.routeName: (context) => DisplayImageScreen(),
         },
       ),
     );

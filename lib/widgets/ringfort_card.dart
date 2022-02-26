@@ -17,6 +17,19 @@ class RingfortCard extends StatelessWidget {
   const RingfortCard(
       {@required this.site, @required this.user, @required this.userData});
 
+  // Display a message on the screen
+  void showScreenMessage(BuildContext context, String screenMessage) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          screenMessage,
+        ),
+        duration: Duration(seconds: 2),
+        action: null,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     // Adding the Dismissible which controls the deletion of a item from the
@@ -34,7 +47,7 @@ class RingfortCard extends StatelessWidget {
         ),
         alignment: Alignment.centerRight,
         padding: EdgeInsets.only(right: 20),
-        margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+        margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 7),
       ),
       direction: DismissDirection.endToStart,
       // Making sure the user wants to delete it!
@@ -67,6 +80,10 @@ class RingfortCard extends StatelessWidget {
       onDismissed: (direction) {
         Provider.of<HistoricSitesProvider>(context, listen: false)
             .deleteSite(userData, site);
+        if (!userData.adminUser) {
+          showScreenMessage(
+              context, 'Delete Request sent for approval by Admin');
+        }
       },
       child: Card(
         color: Colors.grey[100],
@@ -129,8 +146,8 @@ class RingfortCard extends StatelessWidget {
             // the Ringfort pressed. It will execute the passed in onGoBack
             // function when we pop back from update screen.
             if (user != null) {
-              Navigator.of(context)
-                  .pushNamed(RingfortDetailScreen.routeName, arguments: site.uid);
+              Navigator.of(context).pushNamed(RingfortDetailScreen.routeName,
+                  arguments: site.uid);
             }
           },
         ),
