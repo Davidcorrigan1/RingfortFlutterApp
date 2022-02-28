@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:ringfort_app/models/user_data.dart';
-import 'package:ringfort_app/screens/authentication_screen.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
+import '../models/user_data.dart';
+import '../screens/authentication_screen.dart';
 import '../providers/historic_sites_provider.dart';
 import '../providers/user_provider.dart';
 import '../screens/add_ringfort_screen.dart';
@@ -39,7 +40,7 @@ class _RingfortsListScreenState extends State<RingfortsListScreen> {
           .fetchAndSetRingforts()
           .then((value) =>
               Provider.of<HistoricSitesProvider>(context, listen: false)
-                  .setFilteredSites(searchQuery, false, null))
+                  .setFilteredSites(searchQuery, false, false, LatLng(0.0, 0.0), null))
           .then((value) {
         if (user != null) {
           Provider.of<UserProvider>(context, listen: false)
@@ -106,7 +107,7 @@ class _RingfortsListScreenState extends State<RingfortsListScreen> {
 
     setState(() {
       Provider.of<HistoricSitesProvider>(context, listen: false)
-          .setFilteredSites(searchQuery, _showFavourites, userData);
+          .setFilteredSites(searchQuery, _showFavourites, false, LatLng(0.0, 0.0), userData);
     });
   }
 
@@ -163,12 +164,12 @@ class _RingfortsListScreenState extends State<RingfortsListScreen> {
       user != null
           ? Switch(
               value: _showFavourites,
-              activeColor: Theme.of(context).errorColor,
+              activeColor: Theme.of(context).primaryColor,
               onChanged: (value) {
                 setState(() {
                   _showFavourites = value;
                   Provider.of<HistoricSitesProvider>(context, listen: false)
-                      .setFilteredSites(searchQuery, _showFavourites, userData);
+                      .setFilteredSites(searchQuery, _showFavourites, false, LatLng(0.0, 0.0), userData);
                 });
               },
             )
@@ -210,7 +211,7 @@ class _RingfortsListScreenState extends State<RingfortsListScreen> {
     setState(() {
       searchQuery = newQuery;
       Provider.of<HistoricSitesProvider>(context, listen: false)
-          .setFilteredSites(searchQuery, _showFavourites, userData);
+          .setFilteredSites(searchQuery, _showFavourites, false, LatLng(0.0, 0.0), userData);
     });
   }
 

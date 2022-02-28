@@ -3,6 +3,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
+import 'package:location/location.dart';
 
 import '../models/user_data.dart';
 import '../widgets/app_drawer.dart';
@@ -23,6 +24,7 @@ class _MapOverviewScreenState extends State<MapOverviewScreen> {
   var _isLoading = false;
   var _isMapVisible = false;
   var _showFavourites = false;
+  var _showLocal = false;
   User user;
   UserData userData;
   MapType _selectMapType = MapType.normal;
@@ -33,6 +35,7 @@ class _MapOverviewScreenState extends State<MapOverviewScreen> {
   bool _isSearching = false;
   String searchQuery = "";
   GoogleMapController _myController;
+  LocationData _currentLocation;
   final ItemScrollController itemScrollController = ItemScrollController();
 
   // Before the Widget builds do a refresh of the site list in the
@@ -55,6 +58,13 @@ class _MapOverviewScreenState extends State<MapOverviewScreen> {
               userData = value;
               _isLoading = false;
             });
+          }).then((value) {
+            // No need to wait on the current location before setting loading to
+            // false and displaying the map. But it is needed for the local ringforts
+            // button.
+            Location()
+                .getLocation()
+                .then((location) => _currentLocation = location);
           });
         } else {
           setState(() {
@@ -76,8 +86,14 @@ class _MapOverviewScreenState extends State<MapOverviewScreen> {
   void _retrieveSiteandMarkers(BuildContext context) {
     print('MapsScreen: Run _retrieveSiteandMarkers ');
     // Filter the sites based on the search criteria
-    Provider.of<HistoricSitesProvider>(context, listen: false)
-        .setFilteredSites(searchQuery, _showFavourites, userData);
+    LatLng _currentLatLng;
+    if (_currentLocation != null) {
+      _currentLatLng =
+          LatLng(_currentLocation.latitude, _currentLocation.longitude);
+    }
+
+    Provider.of<HistoricSitesProvider>(context, listen: false).setFilteredSites(
+        searchQuery, _showFavourites, _showLocal, _currentLatLng, userData);
 
     var _filteredSites =
         Provider.of<HistoricSitesProvider>(context, listen: false)
@@ -113,23 +129,25 @@ class _MapOverviewScreenState extends State<MapOverviewScreen> {
     // do it. But will do subsequently if there is a visible marker in the map.
     // If there is only 1 matching marker then the zoom needs to be handled
     // differently so as to not zoom too much.
-    if (!_initFirst &&
-        _myController != null &&
-        _markers.first.markerId != null) {
-      if (_myController.isMarkerInfoWindowShown(_markers.first.markerId) !=
-          null) {
-        if (_filteredSites.length > 1) {
-          _myController.animateCamera(
-            CameraUpdate.newLatLngBounds(
-                MapHelper.boundsFromLatLngList(_points), 45),
-          );
-        } else {
-          _myController.animateCamera(CameraUpdate.newLatLngZoom(
-              LatLng(_filteredSites[0].latitude, _filteredSites[0].longitude),
-              15));
+    if (_markers.length > 0) {
+      if (!_initFirst &&
+          _myController != null &&
+          _markers.first.markerId != null) {
+        if (_myController.isMarkerInfoWindowShown(_markers.first.markerId) !=
+            null) {
+          if (_filteredSites.length > 1) {
+            _myController.animateCamera(
+              CameraUpdate.newLatLngBounds(
+                  MapHelper.boundsFromLatLngList(_points), 45),
+            );
+          } else {
+            _myController.animateCamera(CameraUpdate.newLatLngZoom(
+                LatLng(_filteredSites[0].latitude, _filteredSites[0].longitude),
+                15));
+          }
         }
       }
-    }
+    } 
   }
 
   // Based on https://stackoverflow.com/questions/58908968/how-to-implement-a-flutter-search-app-bar
@@ -182,10 +200,11 @@ class _MapOverviewScreenState extends State<MapOverviewScreen> {
         icon: const Icon(Icons.search),
         onPressed: _startSearch,
       ),
+      // show the favourites ion if the user is logged on.
       user != null
           ? Switch(
               value: _showFavourites,
-              activeColor: Colors.black87,
+              activeColor: Theme.of(context).primaryColor,
               onChanged: (value) {
                 setState(() {
                   _showFavourites = value;
@@ -332,6 +351,34 @@ class _MapOverviewScreenState extends State<MapOverviewScreen> {
                       ),
                     ),
                   ),
+                  //-----------------------------------------------------------
+                  // Stacked Local Ringfort Selection Chip
+                  //-----------------------------------------------------------
+                  _currentLocation != null
+                      ? Padding(
+                          padding: const EdgeInsets.all(15.0),
+                          child: Align(
+                            alignment: Alignment.topLeft,
+                            child: ChoiceChip(
+                              label: Text('Local'),
+                              labelStyle:
+                                  TextStyle(fontWeight: FontWeight.bold),
+                              selectedColor: Theme.of(context).backgroundColor,
+                              disabledColor: Theme.of(context).primaryColor,
+                              elevation: 10,
+                              selected: _showLocal,
+                              onSelected: (val) {
+                                // Trigger a switch in the Map type depending on the
+                                // current status, and trigger re-build to show new map.
+                                setState(() {
+                                  _showLocal = val;
+                                  _retrieveSiteandMarkers(context);
+                                });
+                              },
+                            ),
+                          ),
+                        )
+                      : Container(),
                   //-----------------------------------------------------------
                   // Stacked Horizonal Scrolling list of sites
                   //-----------------------------------------------------------

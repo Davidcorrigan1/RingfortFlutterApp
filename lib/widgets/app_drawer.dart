@@ -104,7 +104,7 @@ class AppDrawer extends StatelessWidget {
               Divider(),
               ListTile(
                 leading: Icon(Icons.history),
-                title: Text('My Approval History'),
+                title: Text('My Change History'),
                 onTap: () {
                   Navigator.pop(context);
                   Navigator.of(context)

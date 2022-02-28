@@ -30,7 +30,7 @@ class _RingfortDetailScreenState extends State<RingfortDetailScreen> {
   // userData from Firestore
   UserData userData;
   // Initialize a HistoricSite object to display
-  var _displaySite = HistoricSite(
+  var _updateSite = HistoricSite(
       uid: '',
       siteName: '',
       siteDesc: '',
@@ -69,8 +69,8 @@ class _RingfortDetailScreenState extends State<RingfortDetailScreen> {
 
   // A method to pass into 'location_input' widget to save the location lat,lng
   void _selectSiteLocation(double latitude, double longitude) {
-    _displaySite.latitude = latitude;
-    _displaySite.longitude = longitude;
+    _updateSite.latitude = latitude;
+    _updateSite.longitude = longitude;
   }
 
   @override
@@ -78,19 +78,33 @@ class _RingfortDetailScreenState extends State<RingfortDetailScreen> {
   void didChangeDependencies() {
     if (_isInit) {
       uid = ModalRoute.of(context).settings.arguments;
-      _displaySite = Provider.of<HistoricSitesProvider>(context, listen: false)
+      var matchSite = Provider.of<HistoricSitesProvider>(context, listen: false)
           .findSiteById(uid);
+      _updateSite.uid = matchSite.uid;
+      _updateSite.siteName = matchSite.siteName;
+      _updateSite.siteDesc = matchSite.siteDesc;
+      _updateSite.siteAccess = matchSite.siteAccess;
+      _updateSite.siteSize = matchSite.siteSize;
+      _updateSite.latitude = matchSite.latitude;
+      _updateSite.longitude = matchSite.longitude;
+      _updateSite.image = matchSite.image;
+      _updateSite.address = matchSite.address;
+      _updateSite.province = matchSite.province;
+      _updateSite.county = matchSite.county;
+      _updateSite.createdBy = matchSite.createdBy;
+      _updateSite.lastUpdatedBy = matchSite.lastUpdatedBy;
+      
       userUid = Provider.of<User>(context).uid;
       userData = Provider.of<UserProvider>(context).currentUserData;
       _initValues = {
         'uid': uid,
-        'siteName': _displaySite.siteName,
-        'siteDesc': _displaySite.siteDesc,
-        'siteAccess': _displaySite.siteAccess,
-        'latitude': _displaySite.latitude,
-        'longitude': _displaySite.longitude,
-        'siteSize': _displaySite.siteSize,
-        'image': _displaySite.image,
+        'siteName': _updateSite.siteName,
+        'siteDesc': _updateSite.siteDesc,
+        'siteAccess': _updateSite.siteAccess,
+        'latitude': _updateSite.latitude,
+        'longitude': _updateSite.longitude,
+        'siteSize': _updateSite.siteSize,
+        'image': _updateSite.image,
       };
     }
     _isInit = false;
@@ -143,18 +157,18 @@ class _RingfortDetailScreenState extends State<RingfortDetailScreen> {
     final noErrors = _form.currentState.validate();
 
     // Set the new site with the image taken
-    if (_displaySite.image == null) {
+    if (_updateSite.image == null) {
       _showErrorDialog('You need to take an Image to proceed');
       return;
     }
 
     // Set the new site with the location picked.
-    if (_displaySite.latitude == null || _displaySite.longitude == null) {
+    if (_updateSite.latitude == null || _updateSite.longitude == null) {
       _showErrorDialog('You need to select a location to proceed');
       return;
     }
 
-    _displaySite.lastUpdatedBy = userUid;
+    _updateSite.lastUpdatedBy = userUid;
 
     if (!noErrors) {
       return;
@@ -164,7 +178,7 @@ class _RingfortDetailScreenState extends State<RingfortDetailScreen> {
     // Add the new Ringfort Site to the List and Pop back to the
     // prewvious screen.
     Provider.of<HistoricSitesProvider>(context, listen: false)
-        .updateSite(userData, uid, _displaySite, _siteImage);
+        .updateSite(userData, uid, _updateSite, _siteImage);
     showScreenMessage(context, 'Update request sent for approval by Admin');
     Navigator.of(context).pop();
   }
@@ -173,7 +187,7 @@ class _RingfortDetailScreenState extends State<RingfortDetailScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(_displaySite.siteName),
+        title: Text(_updateSite.siteName),
         actions: [
           IconButton(
             onPressed: () => Navigator.of(context).pop(),
@@ -217,8 +231,8 @@ class _RingfortDetailScreenState extends State<RingfortDetailScreen> {
                       ImageInput(
                         onSaveImage: _saveImage,
                         passedImage: _siteImage,
-                        passedUrl: _displaySite.image,
-                        siteUID: _displaySite.uid,
+                        passedUrl: _updateSite.image,
+                        siteUID: _updateSite.uid,
                       ),
                       SizedBox(
                         height: 5,
@@ -251,7 +265,7 @@ class _RingfortDetailScreenState extends State<RingfortDetailScreen> {
                                 return null;
                               },
                               onSaved: (newValue) {
-                                _displaySite.siteName = newValue;
+                                _updateSite.siteName = newValue;
                               },
                             ),
                             SizedBox(
@@ -286,7 +300,7 @@ class _RingfortDetailScreenState extends State<RingfortDetailScreen> {
                               },
                               // what happens on saving the form
                               onSaved: (newValue) {
-                                _displaySite.siteDesc = newValue;
+                                _updateSite.siteDesc = newValue;
                               },
                             ),
                             SizedBox(
@@ -318,7 +332,7 @@ class _RingfortDetailScreenState extends State<RingfortDetailScreen> {
                               },
                               // what happens on saving the form
                               onSaved: (newValue) {
-                                _displaySite.siteAccess = newValue;
+                                _updateSite.siteAccess = newValue;
                               },
                             ),
                             SizedBox(
@@ -352,7 +366,7 @@ class _RingfortDetailScreenState extends State<RingfortDetailScreen> {
                               },
                               // what happens on saving the form
                               onSaved: (newValue) {
-                                _displaySite.siteSize = double.parse(newValue);
+                                _updateSite.siteSize = double.parse(newValue);
                               },
                             ),
                           ],
