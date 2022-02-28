@@ -48,6 +48,8 @@ dependencies:
   extended_image: ^6.0.1
   # to scroll to a specific item in a list
   scrollable_positioned_list: ^0.2.3
+  # using to calculate distance between 2 points
+  geolocator: ^8.2.0
 
 
 

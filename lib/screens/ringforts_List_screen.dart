@@ -163,7 +163,7 @@ class _RingfortsListScreenState extends State<RingfortsListScreen> {
       user != null
           ? Switch(
               value: _showFavourites,
-              activeColor: Theme.of(context).errorColor,
+              activeColor: Theme.of(context).primaryColor,
               onChanged: (value) {
                 setState(() {
                   _showFavourites = value;

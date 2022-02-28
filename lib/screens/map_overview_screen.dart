@@ -185,7 +185,7 @@ class _MapOverviewScreenState extends State<MapOverviewScreen> {
       user != null
           ? Switch(
               value: _showFavourites,
-              activeColor: Colors.black87,
+              activeColor: Theme.of(context).primaryColor,
               onChanged: (value) {
                 setState(() {
                   _showFavourites = value;
