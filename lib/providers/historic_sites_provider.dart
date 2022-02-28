@@ -3,6 +3,7 @@ import 'dart:io' as io;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../models/historic_site_staging.dart';
 import '../models/user_data.dart';
@@ -53,11 +54,28 @@ class HistoricSitesProvider with ChangeNotifier {
   // ringforts fields, and if favourite selected, check if
   // the ringfort uid is one of the users favourites.
   //-------------------------------------------------------------
-  void setFilteredSites(
-      String searchQuery, bool _showFavourites, UserData userData) {
+  void setFilteredSites(String searchQuery, bool _showFavourites,
+      bool _showLocal, LatLng currentLocation, UserData userData) {
+    List<HistoricSite> _localSites = [];
+    // First it checks if locals sites are requested. If so then it
+    // checks the distance between the passed in current location and
+    // each of the saved sites and returns those < 50km.
+    if (_showLocal) {
+      _localSites = _sites.where((site) {
+        return (Geolocator.distanceBetween(site.latitude, site.longitude,
+                currentLocation.latitude, currentLocation.longitude) <
+            50000);
+      }).toList();
+    } else {
+      _localSites = [..._sites];
+    }
+
     if (searchQuery.isEmpty) {
+      // Here it checks if the return favourites is requested.
+      // If so it checks each site uid with the current users list
+      // if favourite site uids and returns matches.
       if (_showFavourites) {
-        _filteredSites = _sites.where((ringfort) {
+        _filteredSites = _localSites.where((ringfort) {
           bool _found = false;
           userData.favourites.forEach((fav) {
             if (fav == ringfort.uid) {
@@ -67,10 +85,12 @@ class HistoricSitesProvider with ChangeNotifier {
           return _found;
         }).toList();
       } else {
-        _filteredSites = [..._sites];
+        _filteredSites = [..._localSites];
       }
     } else {
-      var _searchedSites = _sites.where((ringfort) {
+      // Here if the search text has been passed in it searches each
+      // site data fields with that text and returns matches.
+      var _searchedSites = _localSites.where((ringfort) {
         return ((ringfort.siteName
                 .toLowerCase()
                 .contains(searchQuery.toLowerCase())) ||
@@ -252,7 +272,7 @@ class HistoricSitesProvider with ChangeNotifier {
     updatedSite.county = addressMap['county'];
     updatedSite.province = addressMap['province'];
 
-    // Set up the staging site data 
+    // Set up the staging site data
     final updateStagingSite = HistoricSiteStaging(
         uid: siteUid,
         action: 'update',

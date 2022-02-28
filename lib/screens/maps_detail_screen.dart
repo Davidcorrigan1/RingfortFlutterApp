@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-class MapsScreen extends StatefulWidget {
+class MapsDetailScreen extends StatefulWidget {
   final double initialLatitude;
   final double initialLongitude;
   final bool isSelecting;
 
-  const MapsScreen(this.initialLatitude, this.initialLongitude,
+  const MapsDetailScreen(this.initialLatitude, this.initialLongitude,
       [this.isSelecting = false]);
 
   @override
-  _MapsScreenState createState() => _MapsScreenState();
+  _MapsDetailScreenState createState() => _MapsDetailScreenState();
 }
 
-class _MapsScreenState extends State<MapsScreen> {
+class _MapsDetailScreenState extends State<MapsDetailScreen> {
   LatLng _userSelectedLocation;
   MapType _selectMapType = MapType.normal;
 
