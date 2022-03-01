@@ -15,6 +15,9 @@ class RingfortHomeScreen extends StatefulWidget {
   State<RingfortHomeScreen> createState() => _RingfortHomeScreenState();
 }
 
+// This is the landing screen when the app is first open. The back button is 
+// disabled with the WillPopScope widget and setting the onWillPop to false.
+// These are 'List' 'Map' and 'Login' or 'Logout' depending on current status.
 class _RingfortHomeScreenState extends State<RingfortHomeScreen> {
   @override
   Widget build(BuildContext context) {
@@ -55,6 +58,7 @@ class _RingfortHomeScreenState extends State<RingfortHomeScreen> {
                 ],
               ),
             ),
+            // Here the 3 areas at the bottom of the screen are defined.
             Container(
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,

@@ -251,10 +251,9 @@ class _RingfortsListScreenState extends State<RingfortsListScreen> {
       drawer: AppDrawer(),
       // Wrapping with RefreshIndicator which takes a function which returns a future.
       // We define this to call the Provider class. The returned future tells the widget
-      // to stop showing the loader symbol
-      // Wrapping with a FutureBuilder which allows you to build a widget which depends on a Future
-      // being returned. We can then check the status of the Future with the snapShow.connectionState
-      // and display loader or the actual widget depending on if it's waiting or done.
+      // to stop showing the loader symbol.
+      // Using the Consumer widget which listens for changes in the provider and will 
+      // rebuild widget tree from that point down when changes happen.
       body: _isLoading
           ? Center(
               child: CircularProgressIndicator(),
