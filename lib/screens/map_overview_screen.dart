@@ -1,9 +1,11 @@
+import 'dart:async';
+import 'dart:io' show Platform;
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
-import 'package:location/location.dart';
+import 'package:geolocator/geolocator.dart';
 
 import '../models/user_data.dart';
 import '../widgets/app_drawer.dart';
@@ -33,10 +35,13 @@ class _MapOverviewScreenState extends State<MapOverviewScreen> {
   Marker _marker;
   TextEditingController _searchQueryController = TextEditingController();
   bool _isSearching = false;
+  bool _serviceEnabled;
+  LocationPermission _locationPermission;
   String searchQuery = "";
   GoogleMapController _myController;
-  LocationData _currentLocation;
+  Position _currentLocation;
   final ItemScrollController itemScrollController = ItemScrollController();
+  final GeolocatorPlatform _geolocatorPlatform = GeolocatorPlatform.instance;
 
   // Before the Widget builds do a refresh of the site list in the
   // provider from Firebase.
@@ -62,9 +67,7 @@ class _MapOverviewScreenState extends State<MapOverviewScreen> {
             // No need to wait on the current location before setting loading to
             // false and displaying the map. But it is needed for the local ringforts
             // button.
-            Location()
-                .getLocation()
-                .then((location) => _currentLocation = location);
+            getCurrentLocation();
           });
         } else {
           setState(() {
@@ -75,6 +78,35 @@ class _MapOverviewScreenState extends State<MapOverviewScreen> {
     }
     _initFirst = false;
     super.didChangeDependencies();
+  }
+
+  // Gets the users current location
+  Future<void> getCurrentLocation() async {
+    _serviceEnabled = await _geolocatorPlatform.isLocationServiceEnabled();
+    if (!_serviceEnabled) {
+      return Future.error('Location services are disabled.');
+    }
+    _locationPermission = await _geolocatorPlatform.requestPermission();
+    print('permission: $_locationPermission');
+
+    if (_locationPermission == LocationPermission.denied) {
+      _locationPermission = await _geolocatorPlatform.requestPermission();
+      if (_locationPermission != LocationPermission.denied) {
+        return Future.error('Location permissions are denied');
+      }
+    }
+    if (_locationPermission == LocationPermission.deniedForever) {
+      // Permissions are denied forever, handle appropriately.
+      return Future.error(
+          'Location permissions are permanently denied, we cannot request permissions.');
+    }
+    try {
+      print('about to call current location');
+      _currentLocation = await _geolocatorPlatform.getCurrentPosition();
+      print('After call current position: $_currentLocation');
+    } catch (error) {
+      print('Getting location: $error');
+    }
   }
 
   // It calls the HistoricSitesProvider to refresh the site list from Firebase
@@ -147,7 +179,7 @@ class _MapOverviewScreenState extends State<MapOverviewScreen> {
           }
         }
       }
-    } 
+    }
   }
 
   // Based on https://stackoverflow.com/questions/58908968/how-to-implement-a-flutter-search-app-bar

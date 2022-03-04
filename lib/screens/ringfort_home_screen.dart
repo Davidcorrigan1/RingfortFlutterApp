@@ -45,7 +45,7 @@ class _RingfortHomeScreenState extends State<RingfortHomeScreen> {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(top: 190, left: 80),
+                    padding: const EdgeInsets.only(top: 190, left: 40),
                     child: Text(
                       'Ringforts',
                       textAlign: TextAlign.center,

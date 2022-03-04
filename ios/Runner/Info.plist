@@ -8,12 +8,12 @@
 	<string>Ringfort App</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
-	<key>CFBundleIdentifier</key> 
+	<key>CFBundleIdentifier</key>
 	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>ringfort_app</string>
+	<string>ringfortapp</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
@@ -24,22 +24,18 @@
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>We need to access your photos to proceed</string>
-	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>We need to access your photos to proceed</string>
 	<key>NSCameraUsageDescription</key>
 	<string>We need to access your camera to proceed</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>We need to access your location to proceed</string>
-	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>We need to access your location to proceed</string>
+	<string>This app needs access to location when open.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>We need to access your photos to proceed</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>We need to access your photos to proceed</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
 	<string>Main</string>
-	<key>io.flutter.embedded_views_preview</key>
-	<true/>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
@@ -54,6 +50,8 @@
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
+	<true/>
+	<key>io.flutter.embedded_views_preview</key>
 	<true/>
 </dict>
 </plist>
