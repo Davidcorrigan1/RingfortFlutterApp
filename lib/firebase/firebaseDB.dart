@@ -1,8 +1,8 @@
 import 'dart:io' as io;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:ringfort_app/models/historic_site_staging.dart';
 
+import '../models/historic_site_staging.dart';
 import '../models/historic_site.dart';
 import '../models/user_data.dart';
 
@@ -11,13 +11,17 @@ class FirebaseDB {
   final CollectionReference siteCollection =
       FirebaseFirestore.instance.collection('historicSites');
 
-    // Store a reference to the 'historicSitesStaging' collection
+  // Store a reference to the 'historicSitesStaging' collection
   final CollectionReference siteStagingCollection =
       FirebaseFirestore.instance.collection('historicSitesStaging');
 
   // Store a reference to the 'users' collection
   final CollectionReference userCollection =
       FirebaseFirestore.instance.collection('users');
+
+  // Store a reference to the 'NMS-Ringforts' collection
+  final CollectionReference NMSCollection =
+      FirebaseFirestore.instance.collection('NMS-Ringforts');
 
   // Store a reference to the Firebase Storage
   final FirebaseStorage storage = FirebaseStorage.instance;
@@ -40,12 +44,21 @@ class FirebaseDB {
     return siteStagingCollection.get();
   }
 
+  // Retrieve 300 Ringfort site documents from NMS-Ringforts collection. Limiting
+  // here to manage the costs.
+  Future<QuerySnapshot> fetchNMSSites() async {
+    return NMSCollection.limit(500).get();
+  }
+
   // Add site document on Firebase
-  Future<void> addSite(bool adminUser, HistoricSite site, HistoricSiteStaging stageingSite) async {
+  Future<void> addSite(bool adminUser, HistoricSite site,
+      HistoricSiteStaging stageingSite) async {
     if (adminUser) {
       return siteCollection.doc(site.uid).set(site.toJson());
     } else {
-      return siteStagingCollection.doc(stageingSite.uid).set(stageingSite.toJson());
+      return siteStagingCollection
+          .doc(stageingSite.uid)
+          .set(stageingSite.toJson());
     }
   }
 
@@ -64,7 +77,7 @@ class FirebaseDB {
     await siteCollection.doc(site.uid).update(site.toJson());
   }
 
-    // Update a specific ringfort document in the staging collection
+  // Update a specific ringfort document in the staging collection
   void updateStagingSite(HistoricSiteStaging site) async {
     await siteStagingCollection.doc(site.uid).update(site.toJson());
   }

@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:ringfort_app/screens/nms_overview_screen.dart';
 
 import '../models/user_data.dart';
 import '../screens/approval_history_screen.dart';
@@ -84,6 +85,15 @@ class AppDrawer extends StatelessWidget {
             onTap: () {
               Navigator.pop(context);
               Navigator.of(context).pushNamed(MapOverviewScreen.routeName);
+            },
+          ),
+          Divider(),
+          ListTile(
+            leading: Icon(Icons.archive),
+            title: Text('NMS Upload Data'),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.of(context).pushNamed(NmsOverviewScreen.routeName);
             },
           ),
           // The link to the Approvals Screen for Admin users
