@@ -92,6 +92,11 @@ class FirebaseDB {
     await siteStagingCollection.doc(uid).delete();
   }
 
+  // Delete a specific ringfort document from the NMS collection
+  void deleteNMSSite(String uid) async {
+    await NMSCollection.doc(uid).delete();
+  }
+
   Future<String> addImage(io.File image, String imageName) async {
     String imageUrl = '';
     Reference ref = await storage.ref().child("images/image-${imageName}.jpg");

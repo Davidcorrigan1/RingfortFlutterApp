@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
+import 'package:ringfort_app/providers/NMS_provider.dart';
 
+import '../models/NMS_data.dart';
 import '../models/user_data.dart';
 import '../models/historic_site.dart';
 import '../providers/historic_sites_provider.dart';
@@ -23,17 +25,17 @@ class AddRingfortScreen extends StatefulWidget {
 class _AddRingfortScreenState extends State<AddRingfortScreen> {
   var _initFirst = true;
   String uid;
+  String nmsUid;
   UserData user;
+  NMSData nmsSite;
 
-  @override
-  void didChangeDependencies() {
-    if (_initFirst) {
-      uid = Provider.of<User>(context, listen: false).uid;
-      user = Provider.of<UserProvider>(context, listen: false).currentUserData;
-    }
-    _initFirst = false;
-    super.didChangeDependencies();
-  }
+  // Initial screen vales if adding NMS site
+  var _initValues = {
+    'siteName': '',
+    'siteDesc': '',
+    'latitude': 0.0,
+    'longitude': 0.0,
+  };
 
   // The taken site image
   io.File _siteImage;
@@ -76,6 +78,30 @@ class _AddRingfortScreenState extends State<AddRingfortScreen> {
     _accessFocusNode.dispose();
     _sizeFocusNode.dispose();
     super.dispose();
+  }
+
+  @override
+  void didChangeDependencies() {
+    if (_initFirst) {
+      print('ADD RINGFORT : didChangeDependencies');
+      uid = Provider.of<User>(context, listen: false).uid;
+      user = Provider.of<UserProvider>(context, listen: false).currentUserData;
+      nmsUid = ModalRoute.of(context).settings.arguments;
+
+      if (nmsUid != null) {
+        nmsSite = Provider.of<NMSProvider>(context, listen: false)
+            .findSiteById(nmsUid);
+        print('getting nms data: ${nmsSite.latitude}, ${nmsSite.longitude}');
+        _initValues = {
+          'siteName': nmsSite.siteName,
+          'siteDesc': nmsSite.siteDesc,
+          'latitude': nmsSite.latitude,
+          'longitude': nmsSite.longitude,
+        };
+      }
+    }
+    _initFirst = false;
+    super.didChangeDependencies();
   }
 
   // Function will generate an error dialogue
@@ -142,6 +168,12 @@ class _AddRingfortScreenState extends State<AddRingfortScreen> {
     // prewvious screen.
     Provider.of<HistoricSitesProvider>(context, listen: false)
         .addSite(user, _newSite, _siteImage);
+
+    // Delete the NMS data as it's now on the main collection
+    if (nmsSite != null) {
+      Provider.of<NMSProvider>(context, listen: false)
+          .deleteSite(user, nmsSite);
+    }
     // If it's a normal user, then show message to say it's sent for approval.
     if (!user.adminUser) {
       showScreenMessage(context, 'Add request sent for approval by Admin');
@@ -153,7 +185,9 @@ class _AddRingfortScreenState extends State<AddRingfortScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Add New Ringfort'),
+        title: nmsSite != null
+            ? Text('Update a NMS Site')
+            : Text('Add New Ringfort'),
         actions: [
           IconButton(
             onPressed: () => Navigator.of(context).pop(),
@@ -188,7 +222,10 @@ class _AddRingfortScreenState extends State<AddRingfortScreen> {
                       //----------------------------------------------------
                       // This widget controlls the location selection
                       //----------------------------------------------------
-                      LocationInput(_selectSiteLocation, null),
+                      nmsSite == null
+                          ? LocationInput(_selectSiteLocation, null)
+                          : LocationInput(_selectSiteLocation,
+                              LatLng(nmsSite.latitude, nmsSite.longitude)),
                       SizedBox(
                         height: 5,
                       ),
@@ -215,6 +252,7 @@ class _AddRingfortScreenState extends State<AddRingfortScreen> {
                             // The Name form field
                             //---------------------------
                             TextFormField(
+                              initialValue: _initValues['siteName'],
                               decoration: InputDecoration(
                                 hintText: 'Ringfort Name',
                                 border: OutlineInputBorder(),
@@ -241,6 +279,7 @@ class _AddRingfortScreenState extends State<AddRingfortScreen> {
                             // The Description form field
                             //---------------------------
                             TextFormField(
+                              initialValue: _initValues['siteDesc'],
                               decoration: InputDecoration(
                                 hintText: 'Description',
                                 border: OutlineInputBorder(),

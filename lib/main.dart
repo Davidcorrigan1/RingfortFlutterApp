@@ -51,8 +51,8 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider<NMSProvider>.value(
           value: NMSProvider(),
         ),
-        ChangeNotifierProvider<UserProvider>.value(
-          value: UserProvider(),
+        ChangeNotifierProvider<UserProvider>(
+          create: (_) => UserProvider(),
         ),
       ],
       child: MaterialApp(

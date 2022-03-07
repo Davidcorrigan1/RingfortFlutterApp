@@ -3,13 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
-import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 import '../models/user_data.dart';
 import '../widgets/app_drawer.dart';
 import '../providers/NMS_provider.dart';
 import '../providers/user_provider.dart';
+import '../widgets/nms_card.dart';
 import '../helpers/map_helper.dart';
 
 class NmsOverviewScreen extends StatefulWidget {
@@ -24,6 +25,7 @@ class _NmsOverviewScreenState extends State<NmsOverviewScreen> {
   var _isLoading = false;
   var _isMapVisible = false;
   var _showLocal = false;
+  String onTapUID;
   User user;
   UserData userData;
   MapType _selectMapType = MapType.normal;
@@ -34,8 +36,8 @@ class _NmsOverviewScreenState extends State<NmsOverviewScreen> {
   LocationPermission _locationPermission;
   GoogleMapController _myController;
   Position _currentLocation;
-  final ItemScrollController itemScrollController = ItemScrollController();
   final GeolocatorPlatform _geolocatorPlatform = GeolocatorPlatform.instance;
+  final ItemScrollController itemScrollController1 = ItemScrollController();
 
   // Before the Widget builds do a refresh of the NMS list in the
   // provider from Firebase.
@@ -74,6 +76,12 @@ class _NmsOverviewScreenState extends State<NmsOverviewScreen> {
     super.didChangeDependencies();
   }
 
+  @override
+  void dispose() {
+    _myController = null;
+    super.dispose();
+  }
+
   // Gets the users current location
   Future<void> getCurrentLocation() async {
     _serviceEnabled = await _geolocatorPlatform.isLocationServiceEnabled();
@@ -95,9 +103,11 @@ class _NmsOverviewScreenState extends State<NmsOverviewScreen> {
           'Location permissions are permanently denied, we cannot request permissions.');
     }
     try {
-      print('about to call current location');
-      _currentLocation = await _geolocatorPlatform.getCurrentPosition();
-      print('After call current position: $_currentLocation');
+      _geolocatorPlatform.getCurrentPosition().then((value) {
+        setState(() {
+          _currentLocation = value;
+        });
+      });
     } catch (error) {
       print('Getting location: $error');
     }
@@ -114,7 +124,6 @@ class _NmsOverviewScreenState extends State<NmsOverviewScreen> {
     if (_currentLocation != null) {
       _currentLatLng =
           LatLng(_currentLocation.latitude, _currentLocation.longitude);
-      print('Current Position: ${_currentLocation.latitude}');
     }
 
     Provider.of<NMSProvider>(context, listen: false)
@@ -134,9 +143,16 @@ class _NmsOverviewScreenState extends State<NmsOverviewScreen> {
         _marker = Marker(
           markerId: MarkerId('${site.uid}'),
           position: LatLng(site.latitude, site.longitude),
-          infoWindow: InfoWindow(title: site.siteName),
+          infoWindow: InfoWindow(title: site.siteName, onTap: () {}),
           onTap: () {
-            // Add route here to add screen!
+            var index = _nmsSites.indexOf(site);
+            // See https://pub.dev/packages/scrollable_positioned_list
+            itemScrollController1.scrollTo(
+              index: index,
+              duration: Duration(
+                seconds: 1,
+              ),
+            );
           },
         );
         _markers.add(_marker);
@@ -285,6 +301,38 @@ class _NmsOverviewScreenState extends State<NmsOverviewScreen> {
                           ),
                         )
                       : Container(),
+                  //-----------------------------------------------------------
+                  // Stacked Horizonal Scrolling list of sites
+                  //-----------------------------------------------------------
+                  Padding(
+                    padding: const EdgeInsets.all(5),
+                    child: Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Container(
+                        width: MediaQuery.of(context).size.width,
+                        height: 120,
+                        child: Consumer<NMSProvider>(
+                          builder: (context, nmsSites, child) => nmsSites
+                                      .filteredNmsData.length >
+                                  0
+                              ? ScrollablePositionedList.builder(
+                                  // See https://pub.dev/packages/scrollable_positioned_list
+                                  itemScrollController: itemScrollController1,
+                                  scrollDirection: Axis.horizontal,
+                                  itemCount: nmsSites.filteredNmsData.length,
+                                  itemBuilder: (ctx, index) => NMSCard(
+                                      uid: nmsSites.filteredNmsData[index].uid,
+                                      siteName: nmsSites
+                                          .filteredNmsData[index].siteName,
+                                      siteDesc: nmsSites
+                                          .filteredNmsData[index].siteDesc))
+                              : Center(
+                                  child: Text('No matches'),
+                                ),
+                        ),
+                      ),
+                    ),
+                  )
                 ])
               : Center(
                   child: Text('No Matching Ringforts'),

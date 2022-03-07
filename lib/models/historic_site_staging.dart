@@ -1,5 +1,4 @@
 import 'package:flutter/foundation.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../models/historic_site.dart';
 
@@ -29,21 +28,8 @@ class HistoricSiteStaging {
       actionDate: json['actionDate'].toDate() ?? DateTime.now(),
       actionStatus: json['actionStatus'] ?? '',
       actionedBy: json['actionedBy'] ?? '',
-      updatedSite: HistoricSite.fromJson(json['updatedSite'] as Map<String, dynamic>),
-    );
-  }
-
-  // Add a function to convert from firestore snapshot into a historicSite object
-  factory HistoricSiteStaging.fromFirestore(DocumentSnapshot document) {
-    Map data = document.data as Map;
-
-    return HistoricSiteStaging(
-      uid: document.id,
-      action: data['action'] ?? '',
-      actionDate: data['actionDate'] ?? '',
-      actionStatus: data['actionStatus'] ?? '',
-      actionedBy: data['actionedBy'] ?? '',
-      updatedSite: data['actionedBy'] ?? null,
+      updatedSite:
+          HistoricSite.fromJson(json['updatedSite'] as Map<String, dynamic>),
     );
   }
 

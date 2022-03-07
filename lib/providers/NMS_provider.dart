@@ -4,6 +4,7 @@ import 'package:geolocator/geolocator.dart';
 
 import '../firebase/firebaseDB.dart';
 import '../models/NMS_data.dart';
+import '../models/user_data.dart';
 
 class NMSProvider with ChangeNotifier {
   var firebaseDB = FirebaseDB();
@@ -27,12 +28,12 @@ class NMSProvider with ChangeNotifier {
     final List<NMSData> loadedSites = [];
     var snapshot = await firebaseDB.fetchNMSSites();
 
-    final documents = snapshot.docs.map((docs) => docs.data()).toList();
-    documents.forEach((site) {
-      NMSData ringfort = NMSData.fromJson(site);
+    snapshot.docs.forEach((site) {
+      NMSData ringfort = NMSData.fromFirestore(site);
       loadedSites.add(ringfort);
     });
     _nmsData = loadedSites;
+    _filteredNmsData = loadedSites;
     notifyListeners();
   }
 
@@ -56,6 +57,25 @@ class NMSProvider with ChangeNotifier {
       _filteredNmsData = [..._nmsData];
     }
 
+    notifyListeners();
+  }
+
+  //-------------------------------------------------------------
+  // Returns a single NMS Ringfort Site by the uid.
+  //-------------------------------------------------------------
+  NMSData findSiteById(String uid) {
+    return _nmsData.firstWhere((site) => site.uid == uid);
+  }
+
+  //---------------------------------------------------------------------
+  // This will delete the NMS site which matches the uid
+  //---------------------------------------------------------------------
+  void deleteSite(UserData userData, NMSData deleteSite) {
+    if (userData.adminUser) {
+      _nmsData.removeWhere((site) => site.uid == deleteSite.uid);
+      _filteredNmsData = [..._nmsData];
+      firebaseDB.deleteNMSSite(deleteSite.uid);
+    }
     notifyListeners();
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 // This class defines the National Monument Services Data. This data was
 // downloaded from the National Monument Services website into csv
@@ -31,13 +32,23 @@ class NMSData {
 
   // Function to turn Ringfort object to a Map of key values pairs
   Map<String, dynamic> toJson() => _NMSDataToJson(this);
-}
+
+  // Function to convert from firestore snapshot into a NMSData object
+  // Getting the uid from the document reference id.
+  factory NMSData.fromFirestore(DocumentSnapshot document) {
+    final newNMSData = NMSData.fromJson(document.data());
+
+    newNMSData.uid = document.reference.id;
+
+    return newNMSData;
+  }
 
 // Convert a NMSData object into a map of key/value pairs.
-Map<String, dynamic> _NMSDataToJson(NMSData instance) => <String, dynamic>{
-      'uid': instance.uid,
-      'siteName': instance.siteName,
-      'siteDesc': instance.siteDesc,
-      'latitude': instance.latitude.toString(),
-      'longitude': instance.longitude.toString(),
-    };
+  Map<String, dynamic> _NMSDataToJson(NMSData instance) => <String, dynamic>{
+        'uid': instance.uid,
+        'siteName': instance.siteName,
+        'siteDesc': instance.siteDesc,
+        'latitude': instance.latitude.toString(),
+        'longitude': instance.longitude.toString(),
+      };
+}
