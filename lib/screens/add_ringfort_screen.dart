@@ -83,15 +83,12 @@ class _AddRingfortScreenState extends State<AddRingfortScreen> {
   @override
   void didChangeDependencies() {
     if (_initFirst) {
-      print('ADD RINGFORT : didChangeDependencies:');
       uid = Provider.of<User>(context, listen: false).uid;
       user = Provider.of<UserProvider>(context, listen: false).currentUserData;
       nmsUid = ModalRoute.of(context).settings.arguments;
-      print('ADD RINGFORT1: $nmsUid');
       if (nmsUid != null) {
         nmsSite = Provider.of<NMSProvider>(context, listen: false)
             .findSiteById(nmsUid);
-        print('ADD RINGFORT2: ${nmsSite.uid}');
         _initValues = {
           'siteName': nmsSite.siteName,
           'siteDesc': nmsSite.siteDesc,
@@ -166,7 +163,6 @@ class _AddRingfortScreenState extends State<AddRingfortScreen> {
 
     // Add the new Ringfort Site to the List and Pop back to the
     // prewvious screen.
-    print('ADD RINGFORT4: $nmsUid');
     Provider.of<HistoricSitesProvider>(context, listen: false)
         .addSite(user, _newSite, nmsUid, _siteImage);
 
