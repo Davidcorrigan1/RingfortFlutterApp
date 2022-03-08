@@ -83,15 +83,15 @@ class _AddRingfortScreenState extends State<AddRingfortScreen> {
   @override
   void didChangeDependencies() {
     if (_initFirst) {
-      print('ADD RINGFORT : didChangeDependencies');
+      print('ADD RINGFORT : didChangeDependencies:');
       uid = Provider.of<User>(context, listen: false).uid;
       user = Provider.of<UserProvider>(context, listen: false).currentUserData;
       nmsUid = ModalRoute.of(context).settings.arguments;
-
+      print('ADD RINGFORT1: $nmsUid');
       if (nmsUid != null) {
         nmsSite = Provider.of<NMSProvider>(context, listen: false)
             .findSiteById(nmsUid);
-        print('getting nms data: ${nmsSite.latitude}, ${nmsSite.longitude}');
+        print('ADD RINGFORT2: ${nmsSite.uid}');
         _initValues = {
           'siteName': nmsSite.siteName,
           'siteDesc': nmsSite.siteDesc,
@@ -166,13 +166,13 @@ class _AddRingfortScreenState extends State<AddRingfortScreen> {
 
     // Add the new Ringfort Site to the List and Pop back to the
     // prewvious screen.
+    print('ADD RINGFORT4: $nmsUid');
     Provider.of<HistoricSitesProvider>(context, listen: false)
-        .addSite(user, _newSite, _siteImage);
+        .addSite(user, _newSite, nmsUid, _siteImage);
 
     // Delete the NMS data as it's now on the main collection
-    if (nmsSite != null) {
-      Provider.of<NMSProvider>(context, listen: false)
-          .deleteSite(user, nmsSite);
+    if (nmsSite != null && user.adminUser) {
+      Provider.of<NMSProvider>(context, listen: false).deleteSite(nmsUid);
     }
     // If it's a normal user, then show message to say it's sent for approval.
     if (!user.adminUser) {

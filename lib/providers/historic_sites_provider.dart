@@ -199,7 +199,8 @@ class HistoricSitesProvider with ChangeNotifier {
   // admin user or not, the new site will either be added to the
   // live list of sites, or the staging sites list for approval
   //-------------------------------------------------------------
-  void addSite(UserData userData, HistoricSite site, io.File image) async {
+  void addSite(UserData userData, HistoricSite site, String nmsUID,
+      io.File image) async {
     // generate a document id for the new document on FB
     var docId = await firebaseDB.generateDocumentId();
     site.uid = docId;
@@ -230,12 +231,14 @@ class HistoricSitesProvider with ChangeNotifier {
 
     // Set up the site data for staging
     final newStagingSite = HistoricSiteStaging(
-        uid: site.uid,
-        action: 'add',
-        actionDate: DateTime.now(),
-        actionStatus: 'awaiting',
-        actionedBy: userData.uid,
-        updatedSite: newSite);
+      uid: site.uid,
+      action: 'add',
+      actionDate: DateTime.now(),
+      actionStatus: 'awaiting',
+      actionedBy: userData.uid,
+      updatedSite: newSite,
+      nmdUID: nmsUID,
+    );
 
     if (userData.adminUser) {
       // adding site to local site list, but only if admin user.
@@ -274,12 +277,14 @@ class HistoricSitesProvider with ChangeNotifier {
 
     // Set up the staging site data
     final updateStagingSite = HistoricSiteStaging(
-        uid: siteUid,
-        action: 'update',
-        actionDate: DateTime.now(),
-        actionStatus: 'awaiting',
-        actionedBy: updatedSite.lastUpdatedBy,
-        updatedSite: updatedSite);
+      uid: siteUid,
+      action: 'update',
+      actionDate: DateTime.now(),
+      actionStatus: 'awaiting',
+      actionedBy: updatedSite.lastUpdatedBy,
+      updatedSite: updatedSite,
+      nmdUID: null,
+    );
 
     // Update the Live Ringfort object in the List if admin user
     if (userData.adminUser) {
@@ -317,12 +322,14 @@ class HistoricSitesProvider with ChangeNotifier {
     } else {
       // Set up the site data for staging
       final deleteStagingSite = HistoricSiteStaging(
-          uid: deleteSite.uid,
-          action: 'delete',
-          actionDate: DateTime.now(),
-          actionStatus: 'awaiting',
-          actionedBy: userData.uid,
-          updatedSite: deleteSite);
+        uid: deleteSite.uid,
+        action: 'delete',
+        actionDate: DateTime.now(),
+        actionStatus: 'awaiting',
+        actionedBy: userData.uid,
+        updatedSite: deleteSite,
+        nmdUID: null,
+      );
 
       // else add it to the local staging list
       _stagingSites.add(deleteStagingSite);

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:ringfort_app/providers/NMS_provider.dart';
 
 import '../screens/approval_detail_screen.dart';
 import '../providers/historic_sites_provider.dart';
@@ -15,6 +16,7 @@ class StagingCard extends StatefulWidget {
   final String siteProvince;
   final String siteCounty;
   final String siteImage;
+  final String nmsUID;
   final User user;
 
   const StagingCard({
@@ -27,6 +29,7 @@ class StagingCard extends StatefulWidget {
     @required this.siteProvince,
     @required this.siteCounty,
     @required this.siteImage,
+    @required this.nmsUID,
     @required this.user,
   });
 
@@ -35,8 +38,7 @@ class StagingCard extends StatefulWidget {
 }
 
 class _StagingCardState extends State<StagingCard> {
-
-  // Method to show a dialogue pop up which will return a boolean to 
+  // Method to show a dialogue pop up which will return a boolean to
   // either confirm or reject an action.
   Future<bool> _showConfirmationMessage(String messageText) {
     return showDialog(
@@ -71,13 +73,13 @@ class _StagingCardState extends State<StagingCard> {
     // screen using swipe and allows the action to be defined when triggered.
     // Can also set the background i.e. red with a thumbs down icon to appear
     // when the right swipe is happening to approve. And green with a thumbs dowm when
-    // the left swipe to reject. If it's used by the Approval History screen 
+    // the left swipe to reject. If it's used by the Approval History screen
     // then the background will be red with a delete icon for both directions.
     return Dismissible(
       key: UniqueKey(),
       background: Container(
         // Depending on if this card is used in the Approval History screen
-        // of a user or in the approvals screen of an Admin user, the 
+        // of a user or in the approvals screen of an Admin user, the
         // background icon for swipe right will be either thumbs up or delete
         color: widget.userHistoryData
             ? Theme.of(context).errorColor
@@ -99,7 +101,7 @@ class _StagingCardState extends State<StagingCard> {
       ),
       secondaryBackground: Container(
         // Depending on if this card is used in the Approval History screen
-        // of a user or in the approvals screen of an Admin user, the 
+        // of a user or in the approvals screen of an Admin user, the
         // background icon for swipe left will be either thumbs down or delete
         color: Theme.of(context).errorColor,
         child: widget.userHistoryData
@@ -132,7 +134,7 @@ class _StagingCardState extends State<StagingCard> {
       },
       onDismissed: (direction) {
         // Depending on if this card is used in the Approval History screen
-        // of a user or in the approvals screen of an Admin user, the 
+        // of a user or in the approvals screen of an Admin user, the
         // dismiss directions will have different actions. The user history
         // will just delete staging record, which the Approvals screen
         // will either approve or reject the staged change.
@@ -140,6 +142,9 @@ class _StagingCardState extends State<StagingCard> {
           if (direction == DismissDirection.startToEnd) {
             Provider.of<HistoricSitesProvider>(context, listen: false)
                 .approveStagingSite(widget.uid);
+            print('nmdUID : ${widget.nmsUID}');
+            Provider.of<NMSProvider>(context, listen: false)
+                .deleteSite(widget.nmsUID);
           } else {
             Provider.of<HistoricSitesProvider>(context, listen: false)
                 .rejectStagingSite(widget.uid);

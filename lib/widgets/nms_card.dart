@@ -47,6 +47,7 @@ class NMSCard extends StatelessWidget {
           onTap: () {
             // Navigates to the add Ringfort page with the uid of
             // the Ringfort pressed.
+            print('nmsUID: $uid');
             Navigator.of(context)
                 .pushNamed(AddRingfortScreen.routeName, arguments: uid);
           },

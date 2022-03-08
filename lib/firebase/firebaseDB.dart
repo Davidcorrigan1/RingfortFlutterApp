@@ -95,6 +95,7 @@ class FirebaseDB {
   // Delete a specific ringfort document from the NMS collection
   void deleteNMSSite(String uid) async {
     await NMSCollection.doc(uid).delete();
+    print('Return from Delete of $uid');
   }
 
   Future<String> addImage(io.File image, String imageName) async {

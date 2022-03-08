@@ -112,6 +112,8 @@ class _ApprovalHistoryScreenState extends State<ApprovalHistoryScreen> {
                                   .county,
                               siteImage: historicSites
                                   .userApprovalHistory[index].updatedSite.image,
+                              nmsUID: historicSites
+                                  .userApprovalHistory[index].updatedSite.uid,
                               user: Provider.of<User>(context, listen: false),
                             ))
                     : Center(

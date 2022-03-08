@@ -4,7 +4,6 @@ import 'package:geolocator/geolocator.dart';
 
 import '../firebase/firebaseDB.dart';
 import '../models/NMS_data.dart';
-import '../models/user_data.dart';
 
 class NMSProvider with ChangeNotifier {
   var firebaseDB = FirebaseDB();
@@ -70,12 +69,11 @@ class NMSProvider with ChangeNotifier {
   //---------------------------------------------------------------------
   // This will delete the NMS site which matches the uid
   //---------------------------------------------------------------------
-  void deleteSite(UserData userData, NMSData deleteSite) {
-    if (userData.adminUser) {
-      _nmsData.removeWhere((site) => site.uid == deleteSite.uid);
-      _filteredNmsData = [..._nmsData];
-      firebaseDB.deleteNMSSite(deleteSite.uid);
-    }
+  void deleteSite(String uid) {
+    _nmsData.removeWhere((site) => site.uid == uid);
+    _filteredNmsData = [..._nmsData];
+    firebaseDB.deleteNMSSite(uid);
+
     notifyListeners();
   }
 }
