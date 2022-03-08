@@ -90,7 +90,7 @@ class AppDrawer extends StatelessWidget {
           Divider(),
           ListTile(
             leading: Icon(Icons.archive),
-            title: Text('NMS Upload Data'),
+            title: Text('NMS Uploaded Data'),
             onTap: () {
               Navigator.pop(context);
               Navigator.of(context).pushNamed(NmsOverviewScreen.routeName);
