@@ -1,5 +1,4 @@
 import 'package:flutter/foundation.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../models/historic_site.dart';
 
@@ -10,6 +9,7 @@ class HistoricSiteStaging {
   String actionStatus;
   String actionedBy;
   HistoricSite updatedSite;
+  String nmdUID;
 
   // Class constructor
   HistoricSiteStaging({
@@ -19,32 +19,20 @@ class HistoricSiteStaging {
     @required this.actionStatus,
     @required this.actionedBy,
     @required this.updatedSite,
+    @required this.nmdUID,
   });
 
   // A factory constructor to create Ringfort object from JSON
   factory HistoricSiteStaging.fromJson(Map<String, dynamic> json) {
     return HistoricSiteStaging(
-      uid: json['uid'] ?? '',
-      action: json['action'] ?? '',
-      actionDate: json['actionDate'].toDate() ?? DateTime.now(),
-      actionStatus: json['actionStatus'] ?? '',
-      actionedBy: json['actionedBy'] ?? '',
-      updatedSite: HistoricSite.fromJson(json['updatedSite'] as Map<String, dynamic>),
-    );
-  }
-
-  // Add a function to convert from firestore snapshot into a historicSite object
-  factory HistoricSiteStaging.fromFirestore(DocumentSnapshot document) {
-    Map data = document.data as Map;
-
-    return HistoricSiteStaging(
-      uid: document.id,
-      action: data['action'] ?? '',
-      actionDate: data['actionDate'] ?? '',
-      actionStatus: data['actionStatus'] ?? '',
-      actionedBy: data['actionedBy'] ?? '',
-      updatedSite: data['actionedBy'] ?? null,
-    );
+        uid: json['uid'] ?? '',
+        action: json['action'] ?? '',
+        actionDate: json['actionDate'].toDate() ?? DateTime.now(),
+        actionStatus: json['actionStatus'] ?? '',
+        actionedBy: json['actionedBy'] ?? '',
+        updatedSite:
+            HistoricSite.fromJson(json['updatedSite'] as Map<String, dynamic>),
+        nmdUID: json['nmdUID'] ?? '');
   }
 
   // Function to turn Ringfort object to a Map of key values pairs
@@ -60,4 +48,5 @@ Map<String, dynamic> _historicSiteStagingToJson(HistoricSiteStaging instance) =>
       'actionStatus': instance.actionStatus,
       'actionedBy': instance.actionedBy,
       'updatedSite': instance.updatedSite.toJson(),
+      'nmdUID': instance.nmdUID,
     };

@@ -89,6 +89,7 @@ class MapCard extends StatelessWidget {
             // Navigates to the details page with the uid of
             // the Ringfort pressed. It will execute the passed in onGoBack
             // function when we pop back from update screen.
+            print('mapCard: $uid');
             if (user != null) {
               Navigator.of(context)
                   .pushNamed(RingfortDetailScreen.routeName, arguments: uid);
