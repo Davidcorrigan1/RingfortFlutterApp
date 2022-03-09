@@ -1,5 +1,4 @@
 import 'package:flutter/foundation.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 class HistoricSite {
   String uid;
@@ -49,27 +48,6 @@ class HistoricSite {
         image: json['image'] ?? '',
         lastUpdatedBy: json['lastUpdatedBy'] ?? '',
         createdBy: json['createdBy']);
-  }
-
-  // Add a function to convert from firestore snapshot into a historicSite object
-  factory HistoricSite.fromFirestore(DocumentSnapshot document) {
-    Map data = document.data as Map;
-
-    return HistoricSite(
-      uid: document.id,
-      siteName: data['siteName'] ?? '',
-      siteDesc: data['siteDesc'] ?? '',
-      siteAccess: data['siteAccess'] ?? '',
-      siteSize: data['siteSize'] ?? 0.0,
-      latitude: data['latitude'] ?? 0.0,
-      longitude: data['longitude'] ?? 0.0,
-      address: data['address'] ?? '',
-      province: data['province'] ?? '',
-      county: data['county'] ?? '',
-      image: data['image'] ?? '',
-      lastUpdatedBy: data['lastUpdatedBy'] ?? '',
-      createdBy: data['createdBy'],
-    );
   }
 
   // Function to turn Ringfort object to a Map of key values pairs

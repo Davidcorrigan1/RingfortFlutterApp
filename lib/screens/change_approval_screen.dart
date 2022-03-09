@@ -86,31 +86,46 @@ class _ChangeApprovalScreenState extends State<ChangeApprovalScreen> {
           : RefreshIndicator(
               onRefresh: () => _refreshStagingRingfortList(),
               child: Consumer<HistoricSitesProvider>(
-                builder: (context, historicSites, child) =>
-                    historicSites.awaitingApprovalSites.length > 0
-                        ? ListView.builder(
-                            itemCount: historicSites.awaitingApprovalSites.length,
-                            itemBuilder: (ctx, index) => StagingCard(
-                                  userHistoryData: false,
-                                  uid: historicSites.awaitingApprovalSites[index].uid,
-                                  action: historicSites.awaitingApprovalSites[index].action,
-                                  status: historicSites.awaitingApprovalSites[index].actionStatus,
-                                  siteName: historicSites
-                                      .awaitingApprovalSites[index].updatedSite.siteName,
-                                  siteDesc: historicSites
-                                      .awaitingApprovalSites[index].updatedSite.siteDesc,
-                                  siteProvince: historicSites
-                                      .awaitingApprovalSites[index].updatedSite.province,
-                                  siteCounty: historicSites
-                                      .awaitingApprovalSites[index].updatedSite.county,
-                                  siteImage: historicSites
-                                      .awaitingApprovalSites[index].updatedSite.image,
-                                  user:
-                                      Provider.of<User>(context, listen: false),
-                                ))
-                        : Center(
-                            child: Text('No Changes for Approval'),
-                          ),
+                builder: (context, historicSites, child) => historicSites
+                            .awaitingApprovalSites.length >
+                        0
+                    ? ListView.builder(
+                        itemCount: historicSites.awaitingApprovalSites.length,
+                        itemBuilder: (ctx, index) => StagingCard(
+                              userHistoryData: false,
+                              uid: historicSites
+                                  .awaitingApprovalSites[index].uid,
+                              action: historicSites
+                                  .awaitingApprovalSites[index].action,
+                              status: historicSites
+                                  .awaitingApprovalSites[index].actionStatus,
+                              siteName: historicSites
+                                  .awaitingApprovalSites[index]
+                                  .updatedSite
+                                  .siteName,
+                              siteDesc: historicSites
+                                  .awaitingApprovalSites[index]
+                                  .updatedSite
+                                  .siteDesc,
+                              siteProvince: historicSites
+                                  .awaitingApprovalSites[index]
+                                  .updatedSite
+                                  .province,
+                              siteCounty: historicSites
+                                  .awaitingApprovalSites[index]
+                                  .updatedSite
+                                  .county,
+                              siteImage: historicSites
+                                  .awaitingApprovalSites[index]
+                                  .updatedSite
+                                  .image,
+                              nmsUID: historicSites
+                                  .awaitingApprovalSites[index].nmdUID,
+                              user: Provider.of<User>(context, listen: false),
+                            ))
+                    : Center(
+                        child: Text('No Changes for Approval'),
+                      ),
               ),
             ),
     );

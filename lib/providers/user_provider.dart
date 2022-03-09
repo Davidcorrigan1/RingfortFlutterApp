@@ -29,7 +29,6 @@ class UserProvider with ChangeNotifier {
     _currentUserData = await firebaseDB.getUserdata(uid);
     notifyListeners();
     return _currentUserData;
-    
   }
 
   // Clear the cuurent user data on logout
@@ -51,9 +50,9 @@ class UserProvider with ChangeNotifier {
 
     if (!exists) {
       _currentUserData.favourites.add(favouriteUID);
+      notifyListeners();
       await firebaseDB.updateUser(_currentUserData);
     }
-    notifyListeners();
   }
 
   // Removes a favourite to the user if it doesn't exist and updates firestore.
@@ -63,8 +62,8 @@ class UserProvider with ChangeNotifier {
 
     if (exists) {
       _currentUserData.favourites.remove(favouriteUID);
+      notifyListeners();
       await firebaseDB.updateUser(_currentUserData);
     }
-    notifyListeners();
   }
 }
