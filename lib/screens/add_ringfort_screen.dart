@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
-import 'package:ringfort_app/providers/NMS_provider.dart';
+import 'package:recase/recase.dart';
 
+import '../providers/NMS_provider.dart';
 import '../models/NMS_data.dart';
 import '../models/user_data.dart';
 import '../models/historic_site.dart';
@@ -90,8 +91,8 @@ class _AddRingfortScreenState extends State<AddRingfortScreen> {
         nmsSite = Provider.of<NMSProvider>(context, listen: false)
             .findSiteById(nmsUid);
         _initValues = {
-          'siteName': nmsSite.siteName,
-          'siteDesc': nmsSite.siteDesc,
+          'siteName': nmsSite.siteName.titleCase,
+          'siteDesc': nmsSite.siteDesc.titleCase,
           'latitude': nmsSite.latitude,
           'longitude': nmsSite.longitude,
         };

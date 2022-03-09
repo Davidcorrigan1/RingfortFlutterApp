@@ -29,6 +29,7 @@ Future<void> main() async {
 
   // await Firebase.initializeApp() initializes the Firebase app and then
   // rest of the code is executed.
+  // Remove the Splash Screen after the Firebase Initialisation method runs
   await Firebase.initializeApp();
 
   runApp(MyApp());

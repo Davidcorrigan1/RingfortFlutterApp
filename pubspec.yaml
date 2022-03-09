@@ -50,8 +50,11 @@ dependencies:
   scrollable_positioned_list: ^0.2.3
   # using to calculate distance between 2 points
   geolocator: ^8.2.0
-
-
+  # Recase package
+  recase: ^4.0.0
+  # Splash Screen 
+  flutter_native_splash: ^2.1.0
+  
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -60,6 +63,12 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
+
+
+flutter_native_splash:
+  color: "#FFFFFF"
+  image: assets/images/splash.png
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
