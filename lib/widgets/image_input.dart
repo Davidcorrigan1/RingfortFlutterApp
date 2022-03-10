@@ -83,7 +83,6 @@ class _ImageInputState extends State<ImageInput> {
     // Copy the site image file to the application directory and save location.
     final savedSiteImage =
         await _siteImage.copy('${applicationDirectory.path}/${fileName}');
-    print('The image was saved at ${savedSiteImage.path}');
     widget.onSaveImage(savedSiteImage);
   }
 
@@ -108,6 +107,7 @@ class _ImageInputState extends State<ImageInput> {
   Widget build(BuildContext context) {
     if (widget.useStaticMapImage && widget.staticMapUrl != null) {
       urlToFile(widget.staticMapUrl).then((value) {
+        print('ImageInput going to run onSaveImage');
         widget.onSaveImage(value);
       });
     }

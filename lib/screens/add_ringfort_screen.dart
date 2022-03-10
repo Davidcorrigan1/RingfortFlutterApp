@@ -53,8 +53,8 @@ class _AddRingfortScreenState extends State<AddRingfortScreen> {
   };
 
   // Method to save the taken image from image_input widget to this class
-  void _saveImage(io.File takenImage) {
-    _siteImage = takenImage;
+  void _saveImage(io.File chosenImage) {
+    _siteImage = chosenImage;
   }
 
   // A method to pass into 'location_input' widget to save the location lat,lng

@@ -72,7 +72,6 @@ class _AuthenticationCardState extends State<AuthenticationCard> {
       await Provider.of<UserProvider>(context, listen: false)
           .getCurrentUserData(uid);
     } on Exception catch (error) {
-      print('AuthScreen: $error');
       var errorMessage = 'Authentication Failed';
 
       if (error.toString().contains('firebase_auth/wrong-password')) {

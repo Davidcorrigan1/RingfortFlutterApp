@@ -44,12 +44,10 @@ class LocationHelper {
     // Determine the county and province from the address returned,
     for (int i = 0; i < responseMap['address_components'].length - 1; i++) {
       if (responseMap['address_components'][i]['types'][0] != null) {
-        print(responseMap['address_components'][i]['long_name'].toString());
         if (responseMap['address_components'][i]['types'][0] ==
             'administrative_area_level_1') {
           addressMap['county'] =
               responseMap['address_components'][i]['long_name'].toString();
-          print(responseMap['address_components'][i]['short_name']);
           if (leinster
               .contains(responseMap['address_components'][i]['short_name'])) {
             addressMap['province'] = 'Leinster';
@@ -68,7 +66,6 @@ class LocationHelper {
         }
       }
     }
-    print(addressMap);
     return addressMap;
   }
 }
