@@ -68,7 +68,7 @@ class _RingfortDetailScreenState extends State<RingfortDetailScreen> {
   }
 
   // A method to pass into 'location_input' widget to save the location lat,lng
-  void _selectSiteLocation(double latitude, double longitude) {
+  void _selectSiteLocation(double latitude, double longitude, String staticMapUrl) {
     _updateSite.latitude = latitude;
     _updateSite.longitude = longitude;
   }
@@ -233,6 +233,8 @@ class _RingfortDetailScreenState extends State<RingfortDetailScreen> {
                         passedImage: _siteImage,
                         passedUrl: _updateSite.image,
                         siteUID: _updateSite.uid,
+                        useStaticMapImage: false,
+                        staticMapUrl: null,
                       ),
                       SizedBox(
                         height: 5,
