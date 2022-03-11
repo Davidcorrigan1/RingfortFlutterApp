@@ -41,7 +41,7 @@ class FirebaseDB {
 
   // Retrieve all Staging ringforts changes from the HistoricSitesStaging collection
   Future<QuerySnapshot> fetchStagingSites() async {
-    return siteStagingCollection.get();
+    return siteStagingCollection.orderBy("actionDate", descending: true).get();
   }
 
   // Retrieve 300 Ringfort site documents from NMS-Ringforts collection. Limiting
