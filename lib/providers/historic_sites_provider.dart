@@ -288,13 +288,11 @@ class HistoricSitesProvider with ChangeNotifier {
 
     // Update the Live Ringfort object in the List if admin user
     if (userData.adminUser) {
-      print('Site Update - Admin user');
       _sites[siteIndex] = updatedSite;
       _filteredSites = [..._sites];
       // Update the live document on Firestore
       firebaseDB.updateSite(updatedSite);
     } else {
-      print('Site Update - Normal user');
       // else add it to the local staging list
       _stagingSites.add(updateStagingSite);
       // add new staging document on Firestore for update
@@ -305,9 +303,6 @@ class HistoricSitesProvider with ChangeNotifier {
           .toList();
     }
     // Notify consumers of the data
-    _filteredSites.forEach((site) {
-      print(site.siteDesc);
-    });
     notifyListeners();
   }
 

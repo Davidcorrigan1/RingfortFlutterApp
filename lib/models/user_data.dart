@@ -15,7 +15,6 @@ class UserData {
 
   // A factory constructor to create Ringfort object from JSON
   factory UserData.fromJson(Map<String, dynamic> json) {
-    print('json: $json');
 
     List<String> favourites = [...json['favourites']];
 

@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
-import 'package:ringfort_app/providers/NMS_provider.dart';
+import 'package:recase/recase.dart';
 
+import '../providers/NMS_provider.dart';
 import '../models/NMS_data.dart';
 import '../models/user_data.dart';
 import '../models/historic_site.dart';
@@ -29,14 +30,6 @@ class _AddRingfortScreenState extends State<AddRingfortScreen> {
   UserData user;
   NMSData nmsSite;
 
-  // Initial screen vales if adding NMS site
-  var _initValues = {
-    'siteName': '',
-    'siteDesc': '',
-    'latitude': 0.0,
-    'longitude': 0.0,
-  };
-
   // The taken site image
   io.File _siteImage;
   // Focus node for the description and access fields.
@@ -47,15 +40,28 @@ class _AddRingfortScreenState extends State<AddRingfortScreen> {
   final _form = GlobalKey<FormState>();
   // Location picked  by the user
   LatLng _pickedLocation;
+  // Static Map Picture URL
+  String _staticMapURL;
+  bool _useStaticMap = false;
+
+  // Initial screen vales if adding NMS site
+  var _initValues = {
+    'siteName': '',
+    'siteDesc': '',
+    'latitude': 0.0,
+    'longitude': 0.0,
+  };
 
   // Method to save the taken image from image_input widget to this class
-  void _saveImage(io.File takenImage) {
-    _siteImage = takenImage;
+  void _saveImage(io.File chosenImage) {
+    _siteImage = chosenImage;
   }
 
   // A method to pass into 'location_input' widget to save the location lat,lng
-  void _selectSiteLocation(double latitude, double longitude) {
+  void _selectSiteLocation(
+      double latitude, double longitude, String staticMapUrl) {
     _pickedLocation = LatLng(latitude, longitude);
+    _staticMapURL = staticMapUrl;
   }
 
   // Create an initialize HistoricSite object
@@ -90,8 +96,8 @@ class _AddRingfortScreenState extends State<AddRingfortScreen> {
         nmsSite = Provider.of<NMSProvider>(context, listen: false)
             .findSiteById(nmsUid);
         _initValues = {
-          'siteName': nmsSite.siteName,
-          'siteDesc': nmsSite.siteDesc,
+          'siteName': nmsSite.siteName.titleCase,
+          'siteDesc': nmsSite.siteDesc.titleCase,
           'latitude': nmsSite.latitude,
           'longitude': nmsSite.longitude,
         };
@@ -111,10 +117,22 @@ class _AddRingfortScreenState extends State<AddRingfortScreen> {
         actions: [
           ElevatedButton(
             onPressed: () {
+              setState(() {
+                _useStaticMap = true;
+              });
               Navigator.of(ctx).pop(); // Close the dialogue
             },
-            child: Text('OK'),
+            child: Text('YES'),
           ),
+          ElevatedButton(
+            onPressed: () {
+              setState(() {
+                _useStaticMap = false;
+              });
+              Navigator.of(ctx).pop(); // Close the dialogue
+            },
+            child: Text('NO'),
+          )
         ],
       ),
     );
@@ -138,17 +156,15 @@ class _AddRingfortScreenState extends State<AddRingfortScreen> {
   void _saveForm() {
     final noErrors = _form.currentState.validate();
 
-    // Set the new site with the image taken
-    if (_siteImage == null) {
-      _showErrorDialog('You need to take an Image to proceed');
+    // Check an image has been picked or the user has chosen to use the satalite image
+    if (_siteImage == null && !_useStaticMap) {
+      _showErrorDialog(
+          'You have not taken or chosen an image, do you want to use the satalite image?');
       return;
     }
 
     // Set the new site with the location picked.
-    if (_pickedLocation == null) {
-      _showErrorDialog('You need to select a location to proceed');
-      return;
-    } else {
+    if (_pickedLocation != null) {
       _newSite.latitude = _pickedLocation.latitude;
       _newSite.longitude = _pickedLocation.longitude;
     }
@@ -233,6 +249,8 @@ class _AddRingfortScreenState extends State<AddRingfortScreen> {
                         passedImage: null,
                         passedUrl: null,
                         siteUID: null,
+                        useStaticMapImage: _useStaticMap,
+                        staticMapUrl: _staticMapURL,
                       ),
                       SizedBox(
                         height: 5,

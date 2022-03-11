@@ -33,7 +33,6 @@ class _RingfortsListScreenState extends State<RingfortsListScreen> {
   // Refresh the ringforts from Firebase and then run the filter query
   void didChangeDependencies() {
     if (_initRun) {
-      print('didChangeDependancies run RingfortList');
       _isLoading = true;
       user = Provider.of<User>(context, listen: false);
       Provider.of<HistoricSitesProvider>(context, listen: false)
@@ -101,7 +100,6 @@ class _RingfortsListScreenState extends State<RingfortsListScreen> {
   // Also used as the method for the future builder.
   // If there is a filter seach term entered it will filter the results to show.
   Future<void> _refreshRingfortList() async {
-    print("calling refreshRingfortList");
     await Provider.of<HistoricSitesProvider>(context, listen: false)
         .fetchAndSetRingforts();
 

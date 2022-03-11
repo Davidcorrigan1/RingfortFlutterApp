@@ -46,7 +46,6 @@ class _MapOverviewScreenState extends State<MapOverviewScreen> {
   // provider from Firebase.
   @override
   void didChangeDependencies() {
-    print('MapsScreen: didChangeDependencies ');
     if (_initFirst) {
       _isLoading = true;
       user = Provider.of<User>(context, listen: false);
@@ -86,7 +85,6 @@ class _MapOverviewScreenState extends State<MapOverviewScreen> {
       return Future.error('Location services are disabled.');
     }
     _locationPermission = await _geolocatorPlatform.requestPermission();
-    print('permission: $_locationPermission');
 
     if (_locationPermission == LocationPermission.denied) {
       _locationPermission = await _geolocatorPlatform.requestPermission();
@@ -100,9 +98,7 @@ class _MapOverviewScreenState extends State<MapOverviewScreen> {
           'Location permissions are permanently denied, we cannot request permissions.');
     }
     try {
-      print('about to call current location');
       _currentLocation = await _geolocatorPlatform.getCurrentPosition();
-      print('After call current position: $_currentLocation');
     } catch (error) {
       print('Getting location: $error');
     }
@@ -115,7 +111,6 @@ class _MapOverviewScreenState extends State<MapOverviewScreen> {
   // So if _showFavourites set to true will only show those ringforts which
   // match the users selected favs.
   void _retrieveSiteandMarkers(BuildContext context) {
-    print('MapsScreen: Run _retrieveSiteandMarkers ');
     // Filter the sites based on the search criteria
     LatLng _currentLatLng;
     if (_currentLocation != null) {
@@ -328,7 +323,6 @@ class _MapOverviewScreenState extends State<MapOverviewScreen> {
                             : _markers,
                         onMapCreated: (controller) {
                           _myController = controller;
-                          print('MapsScreen: onMapCreated executed');
                           Future.delayed(
                               const Duration(milliseconds: 550),
                               () => setState(() {

@@ -1,16 +1,20 @@
 import 'dart:io' as io;
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as pathHelp;
 import 'package:path_provider/path_provider.dart' as systemPath;
 import 'package:ringfort_app/screens/display_image_screen.dart';
+import 'package:http/http.dart' as http;
 
 class ImageInput extends StatefulWidget {
   final Function onSaveImage;
   final io.File passedImage;
   final String passedUrl;
   final String siteUID;
+  final bool useStaticMapImage;
+  final String staticMapUrl;
 
   // Class constructor taking in function to save image
   const ImageInput({
@@ -18,6 +22,8 @@ class ImageInput extends StatefulWidget {
     @required this.passedImage,
     @required this.passedUrl,
     @required this.siteUID,
+    @required this.useStaticMapImage,
+    @required this.staticMapUrl,
   });
 
   @override
@@ -41,9 +47,11 @@ class _ImageInputState extends State<ImageInput> {
   io.File _siteImage;
   String _siteUrl;
 
+  //--------------------------------------------------------
+  // Set up an image picker object
+  // and use it to take a picure on the camera or from photos
+  //--------------------------------------------------------
   Future<void> _getImage({bool camera}) async {
-    // Set up an image picker object
-    // and use it to take a picure on the camera
     final imagePicker = ImagePicker();
     XFile imageFile;
     if (camera) {
@@ -75,12 +83,35 @@ class _ImageInputState extends State<ImageInput> {
     // Copy the site image file to the application directory and save location.
     final savedSiteImage =
         await _siteImage.copy('${applicationDirectory.path}/${fileName}');
-    print('The image was saved at ${savedSiteImage.path}');
     widget.onSaveImage(savedSiteImage);
+  }
+
+  //---------------------------------------------------------
+  // Convert URl to File - from this artical
+  // https://mrgulshanyadav.medium.com/convert-image-url-to-file-format-in-flutter-10421bccfd18
+  //---------------------------------------------------------
+  Future<io.File> urlToFile(String imageUrl) async {
+    var randonNum = new Random();
+    io.Directory applicationDirectory =
+        await systemPath.getApplicationDocumentsDirectory();
+    String directoryPath = applicationDirectory.path;
+    io.File file = new io.File(
+        '$directoryPath' + randonNum.nextInt(1000).toString() + '.png');
+
+    http.Response response = await http.get(Uri.parse(imageUrl));
+    await file.writeAsBytes(response.bodyBytes);
+    return file;
   }
 
   @override
   Widget build(BuildContext context) {
+    if (widget.useStaticMapImage && widget.staticMapUrl != null) {
+      urlToFile(widget.staticMapUrl).then((value) {
+        print('ImageInput going to run onSaveImage');
+        widget.onSaveImage(value);
+      });
+    }
+
     return Row(
       children: [
         GestureDetector(
@@ -109,15 +140,19 @@ class _ImageInputState extends State<ImageInput> {
                 // Deciding which image to display
                 // Either the image taken by camera or
                 // the image on the current Ringfort
+                // Else staticMapUrl is to be used if flag true
                 // else a No Image message.
                 image: DecorationImage(
                     image: _siteImage != null
                         ? FileImage(_siteImage)
                         : _siteUrl != null
                             ? NetworkImage(_siteUrl)
-                            : AssetImage(
-                                'assets/images/no_image.jpg',
-                              ),
+                            : widget.useStaticMapImage &&
+                                    widget.staticMapUrl != null
+                                ? NetworkImage(widget.staticMapUrl)
+                                : AssetImage(
+                                    'assets/images/no_image.jpg',
+                                  ),
                     alignment: Alignment.center,
                     fit: BoxFit.fill),
               ),

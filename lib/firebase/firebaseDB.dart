@@ -41,7 +41,7 @@ class FirebaseDB {
 
   // Retrieve all Staging ringforts changes from the HistoricSitesStaging collection
   Future<QuerySnapshot> fetchStagingSites() async {
-    return siteStagingCollection.get();
+    return siteStagingCollection.orderBy("actionDate", descending: true).get();
   }
 
   // Retrieve 300 Ringfort site documents from NMS-Ringforts collection. Limiting
@@ -95,7 +95,6 @@ class FirebaseDB {
   // Delete a specific ringfort document from the NMS collection
   void deleteNMSSite(String uid) async {
     await NMSCollection.doc(uid).delete();
-    print('Return from Delete of $uid');
   }
 
   Future<String> addImage(io.File image, String imageName) async {
@@ -105,7 +104,7 @@ class FirebaseDB {
       var snapshot = await ref.putFile(image);
       if (snapshot.state == TaskState.success) {
         imageUrl = await snapshot.ref.getDownloadURL();
-        print('Image updated successfully');
+        print('Image updated successfullyto : $imageUrl');
       }
     }
     return imageUrl;
@@ -120,9 +119,7 @@ class FirebaseDB {
 
   // retrieve user data from Firestore and convert to 'UserData' class object
   Future<UserData> getUserdata(String uid) async {
-    print('userid: $uid');
     var snapshot = await userCollection.doc(uid).get();
-    print('snapshot: $snapshot');
     UserData userData = UserData.fromJson(snapshot.data());
     return userData;
   }

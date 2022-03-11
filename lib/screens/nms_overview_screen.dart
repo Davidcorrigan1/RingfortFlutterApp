@@ -43,7 +43,6 @@ class _NmsOverviewScreenState extends State<NmsOverviewScreen> {
   // provider from Firebase.
   @override
   void didChangeDependencies() {
-    print('NMSScreen: didChangeDependencies ');
     if (_initFirst) {
       _isLoading = true;
       user = Provider.of<User>(context, listen: false);
@@ -89,7 +88,6 @@ class _NmsOverviewScreenState extends State<NmsOverviewScreen> {
       return Future.error('Location services are disabled.');
     }
     _locationPermission = await _geolocatorPlatform.requestPermission();
-    print('permission: $_locationPermission');
 
     if (_locationPermission == LocationPermission.denied) {
       _locationPermission = await _geolocatorPlatform.requestPermission();
@@ -118,7 +116,6 @@ class _NmsOverviewScreenState extends State<NmsOverviewScreen> {
   // If there is a show local flaf set it will filter the sites to within
   // 50km of the current location
   void _retrieveSiteandMarkers(BuildContext context) {
-    print('NMS: Run _retrieveSiteandMarkers ');
     // Filter the sites based on the search criteria
     LatLng _currentLatLng;
     if (_currentLocation != null) {
@@ -220,7 +217,6 @@ class _NmsOverviewScreenState extends State<NmsOverviewScreen> {
                             nmsData.filteredNmsData.length <= 0 ? {} : _markers,
                         onMapCreated: (controller) {
                           _myController = controller;
-                          print('MapsScreen: onMapCreated executed');
                           Future.delayed(
                               const Duration(milliseconds: 550),
                               () => setState(() {

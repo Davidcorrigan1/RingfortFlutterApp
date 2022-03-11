@@ -63,7 +63,7 @@ class _LocationInputState extends State<LocationInput> {
     // Call the passed in function to save the location
     if (widget.onSelectSiteLocationHander != null) {
       widget.onSelectSiteLocationHander(
-          _userSelectedLatitude, _userSelectedLongitude);
+          _userSelectedLatitude, _userSelectedLongitude, _mapImageUrl);
     }
   }
 
@@ -89,7 +89,7 @@ class _LocationInputState extends State<LocationInput> {
 
     // Call the passed in function to save the location
     widget.onSelectSiteLocationHander(
-        selectedLocation.latitude, selectedLocation.longitude);
+        selectedLocation.latitude, selectedLocation.longitude, _mapImageUrl);
     return null;
   }
 

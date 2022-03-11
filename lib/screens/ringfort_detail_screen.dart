@@ -68,7 +68,8 @@ class _RingfortDetailScreenState extends State<RingfortDetailScreen> {
   }
 
   // A method to pass into 'location_input' widget to save the location lat,lng
-  void _selectSiteLocation(double latitude, double longitude) {
+  void _selectSiteLocation(
+      double latitude, double longitude, String staticMapUrl) {
     _updateSite.latitude = latitude;
     _updateSite.longitude = longitude;
   }
@@ -93,7 +94,7 @@ class _RingfortDetailScreenState extends State<RingfortDetailScreen> {
       _updateSite.county = matchSite.county;
       _updateSite.createdBy = matchSite.createdBy;
       _updateSite.lastUpdatedBy = matchSite.lastUpdatedBy;
-      
+
       userUid = Provider.of<User>(context).uid;
       userData = Provider.of<UserProvider>(context).currentUserData;
       _initValues = {
@@ -179,7 +180,10 @@ class _RingfortDetailScreenState extends State<RingfortDetailScreen> {
     // prewvious screen.
     Provider.of<HistoricSitesProvider>(context, listen: false)
         .updateSite(userData, uid, _updateSite, _siteImage);
-    showScreenMessage(context, 'Update request sent for approval by Admin');
+    // If it's a normal user, then show message to say it's sent for approval.
+    if (!userData.adminUser) {
+      showScreenMessage(context, 'Update request sent for approval by Admin');
+    }
     Navigator.of(context).pop();
   }
 
@@ -233,6 +237,8 @@ class _RingfortDetailScreenState extends State<RingfortDetailScreen> {
                         passedImage: _siteImage,
                         passedUrl: _updateSite.image,
                         siteUID: _updateSite.uid,
+                        useStaticMapImage: false,
+                        staticMapUrl: null,
                       ),
                       SizedBox(
                         height: 5,
