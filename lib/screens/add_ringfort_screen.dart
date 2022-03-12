@@ -87,6 +87,9 @@ class _AddRingfortScreenState extends State<AddRingfortScreen> {
   }
 
   @override
+  // This runs when a dependency of the state object changes. It runs after
+  // initState() but before build widget. Here I only call the providers
+  // the first time this method runs, after the screen is loaded.
   void didChangeDependencies() {
     if (_initFirst) {
       uid = Provider.of<User>(context, listen: false).uid;
@@ -145,7 +148,9 @@ class _AddRingfortScreenState extends State<AddRingfortScreen> {
         content: Text(
           screenMessage,
         ),
-        duration: Duration(seconds: 2),
+        duration: Duration(seconds: 4),
+        elevation: 10,
+        backgroundColor: Theme.of(context).errorColor,
         action: null,
       ),
     );

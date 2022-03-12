@@ -146,7 +146,9 @@ class _RingfortDetailScreenState extends State<RingfortDetailScreen> {
         content: Text(
           screenMessage,
         ),
-        duration: Duration(seconds: 2),
+        duration: Duration(seconds: 4),
+        elevation: 10,
+        backgroundColor: Theme.of(context).errorColor,
         action: null,
       ),
     );
