@@ -10,22 +10,19 @@ One of the tools which the user can take advantage of is the National Monument S
 All data for the application is stored in the cloud in Firebase Firestore collections.
 
 ## Firestore Collections
-* historicSites - This is the collection of 'live' Ringfort data which is maintained by the application. This populates the main Ringfort List and Map Overview screens.
+* **historicSites** - This is the collection of 'live' Ringfort data which is maintained by the application. This populates the main Ringfort List and Map Overview screens.
 
-* historicSitesStaging - This is a staging collection. When a normal user attempts to makes any updates to the live data, the updates get stored on this staging collection with a status of 'awaiting' approval until an admin user approves or rejects the update. Approval will trigger the updates to be applied to the live 'historicSites' collection, and the status on the staging record gets updated to 'approved'. And rejection means no update is applied and the status of the staging record gets updated to 'rejected'
+* **historicSitesStaging** - This is a staging collection. When a normal user attempts to makes any updates to the live data, the updates get stored on this staging collection with a status of 'awaiting' approval until an admin user approves or rejects the update. Approval will trigger the updates to be applied to the live 'historicSites' collection, and the status on the staging record gets updated to 'approved'. And rejection means no update is applied and the status of the staging record gets updated to 'rejected'
 
-* NMS-Ringforts - This is the collection which stores the data downloaded from the National Monument Services website. When one of these is selected by the user and updated it will appear on the 'historicSitesStaging' collection as a new Ringfort awaiting approval. When it the addition is approved, then the data gets added to the live 'historicSites' collection and deleted from the NMS-Ringforts collection. The staging record status will get updated to approved.
+* **NMS-Ringforts** - This is the collection which stores the data downloaded from the National Monument Services website. When one of these is selected by the user and updated it will appear on the 'historicSitesStaging' collection as a new Ringfort awaiting approval. When it the addition is approved, then the data gets added to the live 'historicSites' collection and deleted from the NMS-Ringforts collection. The staging record status will get updated to approved.
 
-* users - This collection will store information about registered users, including their favourite if they have selected any.
+* **users** - This collection will store information about registered users, including their favourite if they have selected any.
 
 
 
 * https://github.com/Davidcorrigan1/RingfortFlutterApp
 
 
-## Getting Started
-
-The Ringfort app c 
 
 ## How to Use 
 
@@ -45,7 +42,8 @@ Go to project root and execute the following command in console to get the requi
 flutter pub get 
 ```
 
-
+**Step 3:**
+Note you will need Firebase API keys to run.
 
 
 ## Main Features:
