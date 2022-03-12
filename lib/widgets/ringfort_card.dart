@@ -17,14 +17,16 @@ class RingfortCard extends StatelessWidget {
   const RingfortCard(
       {@required this.site, @required this.user, @required this.userData});
 
-  // Display a message on the screen
+  // Display a message on the bottom of screen
   void showScreenMessage(BuildContext context, String screenMessage) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
           screenMessage,
         ),
-        duration: Duration(seconds: 2),
+        duration: Duration(seconds: 4),
+        elevation: 10,
+        backgroundColor: Theme.of(context).errorColor,
         action: null,
       ),
     );

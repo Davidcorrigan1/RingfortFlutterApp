@@ -54,6 +54,8 @@ dependencies:
   recase: ^4.0.0
   # Splash Screen 
   flutter_native_splash: ^2.1.0
+  # Custom Switch button
+  flutter_switch: ^0.3.2
   
 
   # The following adds the Cupertino Icons font to your application.

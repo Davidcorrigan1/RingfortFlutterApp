@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:flutter_switch/flutter_switch.dart';
 
 import '../models/user_data.dart';
 import '../widgets/app_drawer.dart';
@@ -228,15 +229,32 @@ class _MapOverviewScreenState extends State<MapOverviewScreen> {
       ),
       // show the favourites ion if the user is logged on.
       user != null
-          ? Switch(
-              value: _showFavourites,
-              activeColor: Theme.of(context).primaryColor,
-              onChanged: (value) {
-                setState(() {
-                  _showFavourites = value;
-                  _retrieveSiteandMarkers(context);
-                });
-              },
+          // The FlutterSwitch widget from an imported package Flutter_Switch
+          // Wrapping in padding to move away from right side
+          ? Padding(
+              padding: const EdgeInsets.only(right: 10),
+              child: FlutterSwitch(
+                value: _showFavourites,
+                height: 22,
+                width: 44,
+                padding: 0,
+                inactiveColor: Theme.of(context).backgroundColor,
+                inactiveIcon: Icon(
+                  Icons.favorite_border,
+                  color: Colors.red,
+                ),
+                activeColor: Theme.of(context).primaryColorDark,
+                activeIcon: Icon(
+                  Icons.favorite,
+                  color: Colors.red,
+                ),
+                onToggle: (value) {
+                  setState(() {
+                    _showFavourites = value;
+                    _retrieveSiteandMarkers(context);
+                  });
+                },
+              ),
             )
           : Container(),
     ];

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:flutter_switch/flutter_switch.dart';
 
 import '../models/user_data.dart';
 import '../screens/authentication_screen.dart';
@@ -39,7 +40,8 @@ class _RingfortsListScreenState extends State<RingfortsListScreen> {
           .fetchAndSetRingforts()
           .then((value) =>
               Provider.of<HistoricSitesProvider>(context, listen: false)
-                  .setFilteredSites(searchQuery, false, false, LatLng(0.0, 0.0), null))
+                  .setFilteredSites(
+                      searchQuery, false, false, LatLng(0.0, 0.0), null))
           .then((value) {
         if (user != null) {
           Provider.of<UserProvider>(context, listen: false)
@@ -105,7 +107,8 @@ class _RingfortsListScreenState extends State<RingfortsListScreen> {
 
     setState(() {
       Provider.of<HistoricSitesProvider>(context, listen: false)
-          .setFilteredSites(searchQuery, _showFavourites, false, LatLng(0.0, 0.0), userData);
+          .setFilteredSites(
+              searchQuery, _showFavourites, false, LatLng(0.0, 0.0), userData);
     });
   }
 
@@ -160,14 +163,28 @@ class _RingfortsListScreenState extends State<RingfortsListScreen> {
         onPressed: _startSearch,
       ),
       user != null
-          ? Switch(
+          // The FlutterSwitch widget from an imported package Flutter_Switch
+          ? FlutterSwitch(
               value: _showFavourites,
-              activeColor: Theme.of(context).primaryColor,
-              onChanged: (value) {
+              height: 22,
+              width: 44,
+              padding: 0,
+              inactiveColor: Theme.of(context).backgroundColor,
+              inactiveIcon: Icon(
+                Icons.favorite_border,
+                color: Colors.red,
+              ),
+              activeColor: Theme.of(context).primaryColorDark,
+              activeIcon: Icon(
+                Icons.favorite,
+                color: Colors.red,
+              ),
+              onToggle: (value) {
                 setState(() {
                   _showFavourites = value;
                   Provider.of<HistoricSitesProvider>(context, listen: false)
-                      .setFilteredSites(searchQuery, _showFavourites, false, LatLng(0.0, 0.0), userData);
+                      .setFilteredSites(searchQuery, _showFavourites, false,
+                          LatLng(0.0, 0.0), userData);
                 });
               },
             )
@@ -209,7 +226,8 @@ class _RingfortsListScreenState extends State<RingfortsListScreen> {
     setState(() {
       searchQuery = newQuery;
       Provider.of<HistoricSitesProvider>(context, listen: false)
-          .setFilteredSites(searchQuery, _showFavourites, false, LatLng(0.0, 0.0), userData);
+          .setFilteredSites(
+              searchQuery, _showFavourites, false, LatLng(0.0, 0.0), userData);
     });
   }
 
@@ -250,7 +268,7 @@ class _RingfortsListScreenState extends State<RingfortsListScreen> {
       // Wrapping with RefreshIndicator which takes a function which returns a future.
       // We define this to call the Provider class. The returned future tells the widget
       // to stop showing the loader symbol.
-      // Using the Consumer widget which listens for changes in the provider and will 
+      // Using the Consumer widget which listens for changes in the provider and will
       // rebuild widget tree from that point down when changes happen.
       body: _isLoading
           ? Center(

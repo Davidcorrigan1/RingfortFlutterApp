@@ -55,7 +55,7 @@ class _StagingCardState extends State<StagingCard> {
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
-              primary: Theme.of(context).primaryColor,
+              primary: Theme.of(context).errorColor,
             ),
             onPressed: () {
               Navigator.of(context).pop(true);
