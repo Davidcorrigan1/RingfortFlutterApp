@@ -46,7 +46,26 @@ flutter pub get
 
 ### Libraries & Tools Used
 
-* [Provider](https://github.com/rrousselGit/provider) (State Management)
+* [provider](https://pub.dev/packages/provider) (State Management)
+* [image_picker](https://pub.dev/packages/image_picker) (For camera images and picking images)
+* [path_provider](https://pub.dev/packages/path_provider) (For finding usage storage locations on devices)
+* [path](https://pub.dev/packages/path) (Helps with constructing file paths)
+* [location](https://pub.dev/packages/location) (Package to handle getting user location)
+* [google_maps_flutter](https://pub.dev/packages/google_maps_flutter) (Google Maps Package)
+* [http](https://pub.dev/packages/http) (For making Http requests easily)
+* [firebase_core](https://pub.dev/packages/firebase_core) (To anable connections to multiple Firebase apps)
+* [cloud_firestore](https://pub.dev/packages/cloud_firestore) (A Flutter plugin to use the Cloud Firestore API)
+* [firebase_storage](https://pub.dev/packages/firebase_storage) (A Flutter plugin to use the Firebase Cloud Storage API)
+* [firebase_auth](https://pub.dev/packages/firebase_auth) (A Flutter plugin to use the Firebase Authentication API.)
+* [tuple](https://pub.dev/packages/tuple) (For dart tuple imeplentation)
+* [extended_image](https://pub.dev/packages/extended_image) (Additional Image capabilities)
+* [scrollable_positioned_list](https://pub.dev/packages/scrollable_positioned_list) (To scroll to a specific item in a list)
+* [geolocator](https://pub.dev/packages/geolocator) (To calculate distance between 2 points)
+* [recase](https://pub.dev/packages/recase) (For String case managemnent)
+* [flutter_native_splash](https://pub.dev/packages/flutter_native_splash) (For generating a splash screen)
+* [flutter_switch](https://pub.dev/packages/flutter_switch) (For additional Switch button implementation option)
+
+
 
 
 ### Folder Structure
