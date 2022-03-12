@@ -49,16 +49,18 @@ Note you will need Firebase API keys to run.
 ## Main Features:
 
 * Splash
-* Login
+* Login/Logout
 * Sign-up
 * List Ringforts
-* Map Overview if Ringforts
+* Map Overview of Ringforts
+* Map of NMS Sites
+* Approval Functionality
+* Add new Ringfort 
+* Update/Delete Ringfort
+* Search and Favourites Functionality
+* Adding Ringfort images from Camera, Photos or Satelitte image of location 
+* View map by favourites and view local sites within 50km.
 
-
-### Up-Coming Features:
-
-* Connectivity Support
-* Background Fetch Support
 
 ### Libraries & Tools Used
 
