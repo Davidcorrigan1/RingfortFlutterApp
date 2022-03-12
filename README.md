@@ -1,6 +1,24 @@
 # Ringforts - Final Year Project
 
-This Ringforts mobile app was build using Flutter and Dart. It will run on Android and IOS Devices.
+The Ringforts project is a mobile app which was build using Flutter and Dart and which will run on both Android and IOS Devices.
+The application main object is to allow users to discover ringfort around the island of ireland, and also to give them the opportunity to add this database of information by adding new ringfort locations or by updating the information of existing locations. The app give the user the ability to search the list of Ringforts sites and add them to a list of favourites.
+
+One of the tools which the user can take advantage of is the National Monument Services (NMS) of Ireland data on Ringforts. This is data which was downloaded from [Data.gov.ie](https://data.gov.ie/dataset/national-monuments-service-archaeological-survey-of-ireland), and uploaded to databse available to the application. This data can be accessed on a map view by using the 'NMS Uploaded Data' option from the Nav Drawer. The user can select any of these sites and quickly update the information and add it to the live ringforts database.
+
+ Any updates made by a 'normal' user need to be approved by an Admin user before they become live on the system. This approval process was added to protect the integrity of the data and to make sure it stays high quality. By contrast when a 'Admin' user makes any updates they are reflected in the 'live' collection immediately without any need for approval.
+
+All data for the application is stored in the cloud in Firebase Firestore collections.
+
+## Firestore Collections
+* historicSites - This is the collection of 'live' Ringfort data which is maintained by the application. This populates the main Ringfort List and Map Overview screens.
+
+* historicSitesStaging - This is a staging collection. When a normal user attempts to makes any updates to the live data, the updates get stored on this staging collection with a status of 'awaiting' approval until an admin user approves or rejects the update. Approval will trigger the updates to be applied to the live 'historicSites' collection, and the status on the staging record gets updated to 'approved'. And rejection means no update is applied and the status of the staging record gets updated to 'rejected'
+
+* NMS-Ringforts - This is the collection which stores the data downloaded from the National Monument Services website. When one of these is selected by the user and updated it will appear on the 'historicSitesStaging' collection as a new Ringfort awaiting approval. When it the addition is approved, then the data gets added to the live 'historicSites' collection and deleted from the NMS-Ringforts collection. The staging record status will get updated to approved.
+
+* users - This collection will store information about registered users, including their favourite if they have selected any.
+
+
 
 * https://github.com/Davidcorrigan1/RingfortFlutterApp
 
@@ -81,7 +99,7 @@ flutter-app/
 |- web
 ```
 
-Here is the folder structure we have been using in this project
+Here is the folder structure I used in this project
 
 ```
 lib/
