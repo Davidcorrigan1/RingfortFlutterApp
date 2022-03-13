@@ -95,9 +95,11 @@ class _ImageInputState extends State<ImageInput> {
     io.Directory applicationDirectory =
         await systemPath.getApplicationDocumentsDirectory();
     String directoryPath = applicationDirectory.path;
-    io.File file = new io.File(
-        '$directoryPath' + randonNum.nextInt(1000).toString() + '.png');
-
+    io.File file = new io.File('$directoryPath' +
+        '/sat' +
+        randonNum.nextInt(1000).toString() +
+        '.png');
+    print('Image is saved here: ${file.path}');
     http.Response response = await http.get(Uri.parse(imageUrl));
     await file.writeAsBytes(response.bodyBytes);
     return file;

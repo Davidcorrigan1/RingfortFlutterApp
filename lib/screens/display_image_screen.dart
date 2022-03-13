@@ -44,10 +44,16 @@ class _DisplayImageScreenState extends State<DisplayImageScreen> {
         ],
       ),
       drawer: AppDrawer(),
-      body: Center(
-        child: Hero(
-          tag: 'hero-animation',
-          child: Image.network(_displaySite.image),
+      body: InteractiveViewer(
+        panEnabled: true,
+        boundaryMargin: EdgeInsets.all(50),
+        minScale: 0.5,
+        maxScale: 3,
+        child: Center(
+          child: Hero(
+            tag: 'hero-animation',
+            child: Image.network(_displaySite.image),
+          ),
         ),
       ),
     );
