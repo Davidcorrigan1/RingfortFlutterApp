@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
+import 'package:maps_launcher/maps_launcher.dart' as launcher;
 
 import '../models/user_data.dart';
 import '../widgets/app_drawer.dart';
@@ -211,7 +212,10 @@ class _NmsOverviewScreenState extends State<NmsOverviewScreen> {
                             target: LatLng(52.55444, -6.2376), zoom: 16),
                         // positioning the Horizonal listview on marker selction.
                         // FInd index of marker which matches the LatLng selected.
-                        onTap: null,
+                        onLongPress: (val) {
+                          launcher.MapsLauncher.launchCoordinates(
+                              val.latitude, val.longitude, 'Ringfort');
+                        },
                         mapType: _selectMapType,
                         markers:
                             nmsData.filteredNmsData.length <= 0 ? {} : _markers,

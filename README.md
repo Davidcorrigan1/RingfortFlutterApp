@@ -82,6 +82,7 @@ Note you will need Firebase API keys to run.
 * [recase](https://pub.dev/packages/recase) (For String case managemnent)
 * [flutter_native_splash](https://pub.dev/packages/flutter_native_splash) (For generating a splash screen)
 * [flutter_switch](https://pub.dev/packages/flutter_switch) (For additional Switch button implementation option)
+* [maps_launcher](https://pub.dev/packages/maps_launcher) (For launching map apps from this app)
 
 
 

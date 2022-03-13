@@ -6,7 +6,8 @@ import 'package:provider/provider.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter_switch/flutter_switch.dart';
- 
+import 'package:maps_launcher/maps_launcher.dart' as launcher;
+
 import '../models/user_data.dart';
 import '../widgets/app_drawer.dart';
 import '../widgets/map_card.dart';
@@ -334,7 +335,10 @@ class _MapOverviewScreenState extends State<MapOverviewScreen> {
                             target: LatLng(52.55444, -6.2376), zoom: 16),
                         // positioning the Horizonal listview on marker selction.
                         // FInd index of marker which matches the LatLng selected.
-                        onTap: null,
+                        onLongPress: (val) {
+                          launcher.MapsLauncher.launchCoordinates(
+                              val.latitude, val.longitude, 'Ringfort');
+                        },
                         mapType: _selectMapType,
                         markers: historicSites.filteredSites.length <= 0
                             ? {}
