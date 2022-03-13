@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter_switch/flutter_switch.dart';
-
+ 
 import '../models/user_data.dart';
 import '../widgets/app_drawer.dart';
 import '../widgets/map_card.dart';
