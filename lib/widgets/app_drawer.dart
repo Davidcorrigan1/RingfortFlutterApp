@@ -87,17 +87,18 @@ class AppDrawer extends StatelessWidget {
               Navigator.of(context).pushNamed(MapOverviewScreen.routeName);
             },
           ),
-          Divider(),
-          ListTile(
-            leading: Icon(Icons.archive),
-            title: Text('NMS Uploaded Data'),
-            onTap: () {
-              Navigator.pop(context);
-              Navigator.of(context).pushNamed(NmsOverviewScreen.routeName);
-            },
-          ),
           // The link to the Approvals Screen for Admin users
           if (userData != null) ...[
+            // Show the NMS option for logged in users only
+            Divider(),
+            ListTile(
+              leading: Icon(Icons.archive),
+              title: Text('NMS Uploaded Data'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.of(context).pushNamed(NmsOverviewScreen.routeName);
+              },
+            ),
             if (userData.adminUser) ...[
               Divider(),
               ListTile(
