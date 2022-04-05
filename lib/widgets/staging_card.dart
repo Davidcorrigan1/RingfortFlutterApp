@@ -142,8 +142,10 @@ class _StagingCardState extends State<StagingCard> {
           if (direction == DismissDirection.startToEnd) {
             Provider.of<HistoricSitesProvider>(context, listen: false)
                 .approveStagingSite(widget.uid);
-            Provider.of<NMSProvider>(context, listen: false)
+            if (widget.nmsUID != null) {
+              Provider.of<NMSProvider>(context, listen: false)
                 .deleteSite(widget.nmsUID);
+            }
           } else {
             Provider.of<HistoricSitesProvider>(context, listen: false)
                 .rejectStagingSite(widget.uid);
